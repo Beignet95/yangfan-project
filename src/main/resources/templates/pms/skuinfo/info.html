@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('sku信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>spuId：</label>
+                                <input type="text" name="spuId"/>
+                            </li>
+                            <li>
+                                <label>sku名称：</label>
+                                <input type="text" name="skuName"/>
+                            </li>
+                            <li>
+                                <label>所属分类id：</label>
+                                <input type="text" name="catalogId"/>
+                            </li>
+                            <li>
+                                <label>品牌id：</label>
+                                <input type="text" name="brandId"/>
+                            </li>
+                            <li>
+                                <label>标题：</label>
+                                <input type="text" name="skuTitle"/>
+                            </li>
+                            <li>
+                                <label>价格：</label>
+                                <input type="text" name="price"/>
+                            </li>
+                            <li>
+                                <label>销量：</label>
+                                <input type="text" name="saleCount"/>
+                            </li>
+                            <li>
+                                <label>sku：</label>
+                                <input type="text" name="sku"/>
+                            </li>
+                            <li>
+                                <label>asin：</label>
+                                <input type="text" name="asin"/>
+                            </li>
+                            <li>
+                                <label>商店编码：</label>
+                                <input type="text" name="storeCode"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:info:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:info:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:info:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:info:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+                <a class="btn btn-info" onclick="$.table.importCompExcel()">
+                    <i class="fa fa-upload"></i> 综合导入
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:info:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:info:remove')}]];
+        var prefix = ctx + "pms/skuinfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                importUrl: prefix + "/importCompData",
+                importTemplateUrl: prefix + "/importTemplate",
+                modalName: "sku信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'skuId',
+                    title: 'skuId',
+                    visible: false
+                },
+                {
+                    field: 'spuId',
+                    title: 'spuId'
+                },
+                {
+                    field: 'skuName',
+                    title: 'sku名称'
+                },
+                {
+                    field: 'skuDesc',
+                    title: 'sku介绍描述'
+                },
+                {
+                    field: 'catalogId',
+                    title: '所属分类id'
+                },
+                {
+                    field: 'brandId',
+                    title: '品牌id'
+                },
+                {
+                    field: 'skuTitle',
+                    title: '标题'
+                },
+                {
+                    field: 'skuSubtitle',
+                    title: '副标题'
+                },
+                {
+                    field: 'price',
+                    title: '价格'
+                },
+                {
+                    field: 'saleCount',
+                    title: '销量'
+                },
+                {
+                    field: 'sku',
+                    title: 'sku'
+                },
+                {
+                    field: 'asin',
+                    title: 'asin'
+                },
+                {
+                    field: 'storeCode',
+                    title: '商店编码'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.skuId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.skuId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+
+            $("#datetimepicker-month").datetimepicker({
+                format: "yyyy-mm-dd",
+                minView: "month",
+                autoclose: true
+            });
+        });
+    </script>
+     <!-- 导入区域 -->
+     <script id="importTpl" type="text/template">
+         <form enctype="multipart/form-data" class="mt20 mb10">
+             <div class="col-xs-offset-1">
+                 <input type="file" id="file" name="file"/>
+                 时间选择：
+                 <select name="year" class="form-control" style="width: 100px;display: inline;" id="type">
+                     <option value="2020年">2020年</option>
+                     <option value="2021年" selected="selected">2021年</option>
+                 </select>
+                     <select name="month" class="form-control" style="width: 100px;display: inline;" id="type">
+                     <option value="01月">1月</option>
+                     <option value="02月">2月</option>
+                     <option value="03月">3月</option>
+                     <option value="04月">4月</option>
+                     <option value="05月">5月</option>
+                     <option value="06月">6月</option>
+                     <option value="07月">7月</option>
+                     <option value="08月">8月</option>
+                     <option value="09月">9月</option>
+                     <option value="10月">10月</option>
+                     <option value="11月">11月</option>
+                     <option value="12月">12月</option>
+                 </select><br/>
+                 Excel类型选择：
+                 <select name="filetype" class="form-control" style="width: 200px;display: inline;" id="type">
+                     <option value="advertisingOriginData">广告组数据源</option>
+                     <option value="typeAsinRalationData" selected="selected">型号asin对照表</option>
+                 </select>
+
+                 <div class="mt10 pt5">
+                     <input type="checkbox" id="updateSupport" name="updateSupport" title="如果相关已经存在，更新这条数据。"> 是否更新已经存在的相关数据（此为综合导入按钮，系统会通过您上传文件的文件名称来导入相关数据
+                     <a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o" style="display: none;"></i> <span style="display: none;">下载模板</span></a>
+                 </div>
+                 <font color="red" class="pull-left mt10">
+                     提示：仅允许导入“xls”或“xlsx”格式文件！
+                 </font>
+             </div>
+         </form>
+     </script>
+</body>
+</html>

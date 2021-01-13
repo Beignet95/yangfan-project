@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.mapper.AdvertisingMapper">
+
+
+
+    <resultMap type="AdvertisingAnalyParamVo" id="AdvertisingAnalyParamVoResult">
+        <result property="type"    column="type"    />
+        <result property="storeCode"    column="storeCode"    />
+        <result property="sku"    column="sku"    />
+        <result property="asin"    column="asin"    />
+    </resultMap>
+
+    <resultMap type="AdvertisingAnalyVo" id="AdvertisingAnalyVoResult">
+        <result property="month"    column="month"    />
+        <result property="totalExposure"    column="totalExposure"    />
+        <result property="totalClick"    column="totalClick"    />
+        <result property="methCtr"    column="methCtr"    />
+        <result property="totalAdvertisingOrder"    column="totalAdvertisingOrder"    />
+        <result property="methCvr"    column="methCvr"    />
+        <result property="maxSessions"    column="maxSessions"    />
+        <result property="maxCvr"    column="maxCvr"    />
+        <result property="totalAdvertisingSpend"    column="totalAdvertisingSpend"    />
+        <result property="totalSales"    column="totalSales"    />
+        <result property="methAcos"    column="methAcos"    />
+        <result property="methAcoas"    column="methAcoas"    />
+        <result property="methCpc"    column="methCpc"    />
+        <result property="methAdvertisingOrderPercentage"    column="methAdvertisingOrderPercentage"    />
+        <result property="methRefundRate"    column="methRefundRate"    />
+        <result property="totalAdvertisingSales"    column="totalAdvertisingSales"    />
+    </resultMap>
+
+    <resultMap type="Advertising" id="AdvertisingResult">
+        <result property="id"    column="id"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="country"    column="country"    />
+        <result property="type"    column="type"    />
+        <result property="asin"    column="asin"    />
+        <result property="sku"    column="sku"    />
+        <result property="click"    column="click"    />
+        <result property="exposure"    column="exposure"    />
+        <result property="month"    column="month"    />
+        <result property="ctr"    column="ctr"    />
+        <result property="cvr"    column="cvr"    />
+        <result property="advertisingOrder"    column="advertising_order"    />
+        <result property="advertisingSpend"    column="advertising_spend"    />
+        <result property="acos"    column="acos"    />
+        <result property="cpc"    column="cpc"    />
+        <result property="advertisingOrderPercentage"    column="advertising_order_percentage"    />
+        <result property="acoas"    column="acoas"    />
+        <result property="refundRate"    column="refund_rate"    />
+        <result property="sessions"    column="sessions"    />
+        <result property="advertisingSales"    column="advertising_sales"    />
+        <result property="sales"    column="sales"    />
+        <result property="refund"    column="refund"    />
+        <result property="salesNum"    column="sales_num"    />
+        <result property="orderNum"    column="order_num"    />
+    </resultMap>
+
+    <sql id="selectAdvertisingVo">
+        select id, store_code, country, type, asin, sku, click, exposure, month, ctr, cvr, advertising_order, advertising_spend, acos, cpc, advertising_order_percentage, acoas, refund_rate, sessions, advertising_sales, sales, refund, sales_num, order_num from cpd_advertising
+    </sql>
+
+    <select id="selectAdvertisingList" parameterType="Advertising" resultMap="AdvertisingResult">
+        <include refid="selectAdvertisingVo"/>
+        <where>
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="click != null "> and click = #{click}</if>
+            <if test="exposure != null "> and exposure = #{exposure}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="ctr != null "> and ctr = #{ctr}</if>
+            <if test="cvr != null "> and cvr = #{cvr}</if>
+            <if test="advertisingOrder != null "> and advertising_order = #{advertisingOrder}</if>
+            <if test="advertisingSpend != null "> and advertising_spend = #{advertisingSpend}</if>
+            <if test="acos != null "> and acos = #{acos}</if>
+            <if test="cpc != null "> and cpc = #{cpc}</if>
+            <if test="advertisingOrderPercentage != null "> and advertising_order_percentage = #{advertisingOrderPercentage}</if>
+            <if test="acoas != null "> and acoas = #{acoas}</if>
+            <if test="refundRate != null "> and refund_rate = #{refundRate}</if>
+            <if test="sessions != null "> and sessions = #{sessions}</if>
+            <if test="advertisingSales != null "> and advertising_sales = #{advertisingSales}</if>
+            <if test="sales != null "> and sales = #{sales}</if>
+            <if test="refund != null "> and refund = #{refund}</if>
+            <if test="salesNum != null "> and sales_num = #{salesNum}</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+        </where>
+    </select>
+
+    <select id="selectAdvertisingById" parameterType="Long" resultMap="AdvertisingResult">
+        <include refid="selectAdvertisingVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAdvertising" parameterType="Advertising" useGeneratedKeys="true" keyProperty="id">
+        insert into cpd_advertising
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">store_code,</if>
+            <if test="country != null">country,</if>
+            <if test="type != null">type,</if>
+            <if test="asin != null">asin,</if>
+            <if test="sku != null">sku,</if>
+            <if test="click != null">click,</if>
+            <if test="exposure != null">exposure,</if>
+            <if test="month != null">month,</if>
+            <if test="ctr != null">ctr,</if>
+            <if test="cvr != null">cvr,</if>
+            <if test="advertisingOrder != null">advertising_order,</if>
+            <if test="advertisingSpend != null">advertising_spend,</if>
+            <if test="acos != null">acos,</if>
+            <if test="cpc != null">cpc,</if>
+            <if test="advertisingOrderPercentage != null">advertising_order_percentage,</if>
+            <if test="acoas != null">acoas,</if>
+            <if test="refundRate != null">refund_rate,</if>
+            <if test="sessions != null">sessions,</if>
+            <if test="advertisingSales != null">advertising_sales,</if>
+            <if test="sales != null">sales,</if>
+            <if test="refund != null">refund,</if>
+            <if test="salesNum != null">sales_num,</if>
+            <if test="orderNum != null">order_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="country != null">#{country},</if>
+            <if test="type != null">#{type},</if>
+            <if test="asin != null">#{asin},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="click != null">#{click},</if>
+            <if test="exposure != null">#{exposure},</if>
+            <if test="month != null">#{month},</if>
+            <if test="ctr != null">#{ctr},</if>
+            <if test="cvr != null">#{cvr},</if>
+            <if test="advertisingOrder != null">#{advertisingOrder},</if>
+            <if test="advertisingSpend != null">#{advertisingSpend},</if>
+            <if test="acos != null">#{acos},</if>
+            <if test="cpc != null">#{cpc},</if>
+            <if test="advertisingOrderPercentage != null">#{advertisingOrderPercentage},</if>
+            <if test="acoas != null">#{acoas},</if>
+            <if test="refundRate != null">#{refundRate},</if>
+            <if test="sessions != null">#{sessions},</if>
+            <if test="advertisingSales != null">#{advertisingSales},</if>
+            <if test="sales != null">#{sales},</if>
+            <if test="refund != null">#{refund},</if>
+            <if test="salesNum != null">#{salesNum},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAdvertising" parameterType="Advertising">
+        update cpd_advertising
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="click != null">click = #{click},</if>
+            <if test="exposure != null">exposure = #{exposure},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="ctr != null">ctr = #{ctr},</if>
+            <if test="cvr != null">cvr = #{cvr},</if>
+            <if test="advertisingOrder != null">advertising_order = #{advertisingOrder},</if>
+            <if test="advertisingSpend != null">advertising_spend = #{advertisingSpend},</if>
+            <if test="acos != null">acos = #{acos},</if>
+            <if test="cpc != null">cpc = #{cpc},</if>
+            <if test="advertisingOrderPercentage != null">advertising_order_percentage = #{advertisingOrderPercentage},</if>
+            <if test="acoas != null">acoas = #{acoas},</if>
+            <if test="refundRate != null">refund_rate = #{refundRate},</if>
+            <if test="sessions != null">sessions = #{sessions},</if>
+            <if test="advertisingSales != null">advertising_sales = #{advertisingSales},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="refund != null">refund = #{refund},</if>
+            <if test="salesNum != null">sales_num = #{salesNum},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdvertisingById" parameterType="Long">
+        delete from cpd_advertising where id = #{id}
+    </delete>
+
+    <delete id="deleteAdvertisingByIds" parameterType="String">
+        delete from cpd_advertising where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAdvertisingByOnlyCondition" resultMap="AdvertisingResult">
+        <include refid="selectAdvertisingVo"/>
+        where store_code = #{storeCode} and asin = #{asin} and month = #{month}
+    </select>
+
+
+    <select id="selectAdvertisingAnalyVo" resultMap="AdvertisingAnalyVoResult" parameterType="advertisingAnalyParamVo">
+        select `month`,SUM(exposure) as totalExposure,
+               SUM(click) as totalClick,
+               SUM(click)/SUM(exposure) as methCtr,
+               SUM(advertising_order) as totalAdvertisingOrder,
+               SUM(advertising_order)/SUM(click) as methCvr,
+               MAX(sessions) as maxSessions ,
+               MAX(cvr) as maxCvr,
+               SUM(advertising_spend) as totalAdvertisingSpend,
+               SUM(advertising_sales) as totalAdvertisingSales,
+               SUM(sales) as totalSales,
+               SUM(advertising_spend)/SUM(advertising_sales) as methAcos,
+               SUM(advertising_spend)/SUM(sales) as methAcoas,
+               SUM(advertising_spend)/SUM(click) as methCpc,
+               SUM(advertising_order)/SUM(order_num) as methAdvertisingOrderPercentage,
+               SUM(refund)/SUM(sales_num) as methRefundRate
+               from cpd_advertising
+        <where>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+        </where>
+              GROUP BY `month`
+    </select>
+
+
+    <update id="updateAdvertisingByOnlyCondition" parameterType="Advertising">
+        update cpd_advertising
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="click != null">click = #{click},</if>
+            <if test="exposure != null">exposure = #{exposure},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="ctr != null">ctr = #{ctr},</if>
+            <if test="cvr != null">cvr = #{cvr},</if>
+            <if test="advertisingOrder != null">advertising_order = #{advertisingOrder},</if>
+            <if test="advertisingSpend != null">advertising_spend = #{advertisingSpend},</if>
+            <if test="acos != null">acos = #{acos},</if>
+            <if test="cpc != null">cpc = #{cpc},</if>
+            <if test="advertisingOrderPercentage != null">advertising_order_percentage = #{advertisingOrderPercentage},</if>
+            <if test="acoas != null">acoas = #{acoas},</if>
+            <if test="refundRate != null">refund_rate = #{refundRate},</if>
+            <if test="sessions != null">sessions = #{sessions},</if>
+            <if test="advertisingSales != null">advertising_sales = #{advertisingSales},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="refund != null">refund = #{refund},</if>
+            <if test="salesNum != null">sales_num = #{salesNum},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+        </trim>
+        where store_code = #{storeCode} and asin = #{asin} and month = #{month}
+    </update>
+
+    <select id="selectDistinctColumn" resultType="java.lang.String" parameterType="advertisingAnalyParamVo">
+        SELECT DISTINCT ${columnName} from cpd_advertising
+        <where>
+            <if test="advertisingAnalyParamVo.type != null  and advertisingAnalyParamVo.type != ''"> and type = #{advertisingAnalyParamVo.type}</if>
+            <if test="advertisingAnalyParamVo.storeCode != null  and advertisingAnalyParamVo.storeCode != ''"> and store_code = #{advertisingAnalyParamVo.storeCode}</if>
+            <if test="advertisingAnalyParamVo.asin != null  and advertisingAnalyParamVo.asin != ''"> and asin = #{advertisingAnalyParamVo.asin}</if>
+            <if test="advertisingAnalyParamVo.sku != null  and advertisingAnalyParamVo.sku != ''"> and sku = #{advertisingAnalyParamVo.sku}</if>
+        </where>
+    </select>
+
+</mapper>
