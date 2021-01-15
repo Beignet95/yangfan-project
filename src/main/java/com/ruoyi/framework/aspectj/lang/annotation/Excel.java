@@ -31,6 +31,11 @@ public @interface Excel
     public String dateFormat() default "";
 
     /**
+     * 日期类型，如Float型，针对Excel有些以数字存储的日期
+     */
+    public String dateType() default "";
+
+    /**
      * 如果是字典类型，请设置字典的type值 (如: sys_user_sex)
      */
     public String dictType() default "";

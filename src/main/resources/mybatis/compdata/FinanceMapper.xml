@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.finance.mapper.FinanceMapper">
+
+    <resultMap type="Finance" id="FinanceResult">
+        <result property="id"    column="id"    />
+        <result property="month"    column="month"    />
+        <result property="site"    column="site"    />
+        <result property="principal"    column="principal"    />
+        <result property="type"    column="type"    />
+        <result property="salesRevenue"    column="sales_revenue"    />
+        <result property="compensation"    column="compensation"    />
+        <result property="finalFreight"    column="final_freight"    />
+        <result property="packagingFee"    column="packaging_fee"    />
+        <result property="promotionFee"    column="promotion_fee"    />
+        <result property="platformRefund"    column="platform_refund"    />
+        <result property="finalFreightReturn"    column="final_freight_return"    />
+        <result property="selfdeliveryCommission"    column="selfdelivery_commission"    />
+        <result property="fbaSalesCommission"    column="fba_sales_commission"    />
+        <result property="otherTransactionFee"    column="other_transaction_fee"    />
+        <result property="storageFee"    column="storage_fee"    />
+        <result property="shippingLabelFee"    column="shipping_label_fee"    />
+        <result property="platformServiceFee"    column="platform_service_fee"    />
+        <result property="platformRefundServiceFee"    column="platform_refund_service_fee"    />
+        <result property="platformServiceAdjustmentFee"    column="platform_service_adjustment_fee"    />
+        <result property="advertisingFee"    column="advertising_fee"    />
+        <result property="serviceProviderFee"    column="service_provider_fee"    />
+        <result property="grossProfit"    column="gross_profit"    />
+        <result property="asinkingNum"    column="asinking_num"    />
+        <result property="ycDeliveryNum"    column="yc_delivery_num"    />
+        <result property="price"    column="price"    />
+        <result property="mixedVat"    column="mixed_vat"    />
+        <result property="otherFee"    column="other_fee"    />
+        <result property="mixedVat2"    column="mixed_vat2"    />
+        <result property="clearBrokerFee"    column="clear_broker_fee"    />
+    </resultMap>
+
+    <sql id="selectFinanceVo">
+        select id, month, site, principal, type, sales_revenue, compensation, final_freight, packaging_fee, promotion_fee, platform_refund, final_freight_return, selfdelivery_commission, fba_sales_commission, other_transaction_fee, storage_fee, shipping_label_fee, platform_service_fee, platform_refund_service_fee, platform_service_adjustment_fee, advertising_fee, service_provider_fee, gross_profit, asinking_num, yc_delivery_num, price, mixed_vat, other_fee, mixed_vat2, clear_broker_fee from cpd_finance
+    </sql>
+
+    <select id="selectFinanceList" parameterType="Finance" resultMap="FinanceResult">
+        <include refid="selectFinanceVo"/>
+        <where>
+            <if test="month != null  and month != ''"> and month = #{month}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="salesRevenue != null "> and sales_revenue = #{salesRevenue}</if>
+            <if test="compensation != null "> and compensation = #{compensation}</if>
+            <if test="finalFreight != null "> and final_freight = #{finalFreight}</if>
+            <if test="packagingFee != null "> and packaging_fee = #{packagingFee}</if>
+            <if test="promotionFee != null "> and promotion_fee = #{promotionFee}</if>
+            <if test="platformRefund != null "> and platform_refund = #{platformRefund}</if>
+            <if test="finalFreightReturn != null "> and final_freight_return = #{finalFreightReturn}</if>
+            <if test="selfdeliveryCommission != null "> and selfdelivery_commission = #{selfdeliveryCommission}</if>
+            <if test="fbaSalesCommission != null "> and fba_sales_commission = #{fbaSalesCommission}</if>
+            <if test="otherTransactionFee != null "> and other_transaction_fee = #{otherTransactionFee}</if>
+            <if test="storageFee != null "> and storage_fee = #{storageFee}</if>
+            <if test="shippingLabelFee != null "> and shipping_label_fee = #{shippingLabelFee}</if>
+            <if test="platformServiceFee != null "> and platform_service_fee = #{platformServiceFee}</if>
+            <if test="platformRefundServiceFee != null "> and platform_refund_service_fee = #{platformRefundServiceFee}</if>
+            <if test="platformServiceAdjustmentFee != null "> and platform_service_adjustment_fee = #{platformServiceAdjustmentFee}</if>
+            <if test="advertisingFee != null "> and advertising_fee = #{advertisingFee}</if>
+            <if test="serviceProviderFee != null "> and service_provider_fee = #{serviceProviderFee}</if>
+            <if test="grossProfit != null "> and gross_profit = #{grossProfit}</if>
+            <if test="asinkingNum != null "> and asinking_num = #{asinkingNum}</if>
+            <if test="ycDeliveryNum != null "> and yc_delivery_num = #{ycDeliveryNum}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="mixedVat != null "> and mixed_vat = #{mixedVat}</if>
+            <if test="otherFee != null "> and other_fee = #{otherFee}</if>
+            <if test="mixedVat2 != null "> and mixed_vat2 = #{mixedVat2}</if>
+            <if test="clearBrokerFee != null "> and clear_broker_fee = #{clearBrokerFee}</if>
+        </where>
+    </select>
+
+    <select id="selectFinanceById" parameterType="Long" resultMap="FinanceResult">
+        <include refid="selectFinanceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFinance" parameterType="Finance" useGeneratedKeys="true" keyProperty="id">
+        insert into cpd_finance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="month != null and month != ''">month,</if>
+            <if test="site != null">site,</if>
+            <if test="principal != null">principal,</if>
+            <if test="type != null">type,</if>
+            <if test="salesRevenue != null">sales_revenue,</if>
+            <if test="compensation != null">compensation,</if>
+            <if test="finalFreight != null">final_freight,</if>
+            <if test="packagingFee != null">packaging_fee,</if>
+            <if test="promotionFee != null">promotion_fee,</if>
+            <if test="platformRefund != null">platform_refund,</if>
+            <if test="finalFreightReturn != null">final_freight_return,</if>
+            <if test="selfdeliveryCommission != null">selfdelivery_commission,</if>
+            <if test="fbaSalesCommission != null">fba_sales_commission,</if>
+            <if test="otherTransactionFee != null">other_transaction_fee,</if>
+            <if test="storageFee != null">storage_fee,</if>
+            <if test="shippingLabelFee != null">shipping_label_fee,</if>
+            <if test="platformServiceFee != null">platform_service_fee,</if>
+            <if test="platformRefundServiceFee != null">platform_refund_service_fee,</if>
+            <if test="platformServiceAdjustmentFee != null">platform_service_adjustment_fee,</if>
+            <if test="advertisingFee != null">advertising_fee,</if>
+            <if test="serviceProviderFee != null">service_provider_fee,</if>
+            <if test="grossProfit != null">gross_profit,</if>
+            <if test="asinkingNum != null">asinking_num,</if>
+            <if test="ycDeliveryNum != null">yc_delivery_num,</if>
+            <if test="price != null">price,</if>
+            <if test="mixedVat != null">mixed_vat,</if>
+            <if test="otherFee != null">other_fee,</if>
+            <if test="mixedVat2 != null">mixed_vat2,</if>
+            <if test="clearBrokerFee != null">clear_broker_fee,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="month != null and month != ''">#{month},</if>
+            <if test="site != null">#{site},</if>
+            <if test="principal != null">#{principal},</if>
+            <if test="type != null">#{type},</if>
+            <if test="salesRevenue != null">#{salesRevenue},</if>
+            <if test="compensation != null">#{compensation},</if>
+            <if test="finalFreight != null">#{finalFreight},</if>
+            <if test="packagingFee != null">#{packagingFee},</if>
+            <if test="promotionFee != null">#{promotionFee},</if>
+            <if test="platformRefund != null">#{platformRefund},</if>
+            <if test="finalFreightReturn != null">#{finalFreightReturn},</if>
+            <if test="selfdeliveryCommission != null">#{selfdeliveryCommission},</if>
+            <if test="fbaSalesCommission != null">#{fbaSalesCommission},</if>
+            <if test="otherTransactionFee != null">#{otherTransactionFee},</if>
+            <if test="storageFee != null">#{storageFee},</if>
+            <if test="shippingLabelFee != null">#{shippingLabelFee},</if>
+            <if test="platformServiceFee != null">#{platformServiceFee},</if>
+            <if test="platformRefundServiceFee != null">#{platformRefundServiceFee},</if>
+            <if test="platformServiceAdjustmentFee != null">#{platformServiceAdjustmentFee},</if>
+            <if test="advertisingFee != null">#{advertisingFee},</if>
+            <if test="serviceProviderFee != null">#{serviceProviderFee},</if>
+            <if test="grossProfit != null">#{grossProfit},</if>
+            <if test="asinkingNum != null">#{asinkingNum},</if>
+            <if test="ycDeliveryNum != null">#{ycDeliveryNum},</if>
+            <if test="price != null">#{price},</if>
+            <if test="mixedVat != null">#{mixedVat},</if>
+            <if test="otherFee != null">#{otherFee},</if>
+            <if test="mixedVat2 != null">#{mixedVat2},</if>
+            <if test="clearBrokerFee != null">#{clearBrokerFee},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFinance" parameterType="Finance">
+        update cpd_finance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="month != null and month != ''">month = #{month},</if>
+            <if test="site != null">site = #{site},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="salesRevenue != null">sales_revenue = #{salesRevenue},</if>
+            <if test="compensation != null">compensation = #{compensation},</if>
+            <if test="finalFreight != null">final_freight = #{finalFreight},</if>
+            <if test="packagingFee != null">packaging_fee = #{packagingFee},</if>
+            <if test="promotionFee != null">promotion_fee = #{promotionFee},</if>
+            <if test="platformRefund != null">platform_refund = #{platformRefund},</if>
+            <if test="finalFreightReturn != null">final_freight_return = #{finalFreightReturn},</if>
+            <if test="selfdeliveryCommission != null">selfdelivery_commission = #{selfdeliveryCommission},</if>
+            <if test="fbaSalesCommission != null">fba_sales_commission = #{fbaSalesCommission},</if>
+            <if test="otherTransactionFee != null">other_transaction_fee = #{otherTransactionFee},</if>
+            <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="shippingLabelFee != null">shipping_label_fee = #{shippingLabelFee},</if>
+            <if test="platformServiceFee != null">platform_service_fee = #{platformServiceFee},</if>
+            <if test="platformRefundServiceFee != null">platform_refund_service_fee = #{platformRefundServiceFee},</if>
+            <if test="platformServiceAdjustmentFee != null">platform_service_adjustment_fee = #{platformServiceAdjustmentFee},</if>
+            <if test="advertisingFee != null">advertising_fee = #{advertisingFee},</if>
+            <if test="serviceProviderFee != null">service_provider_fee = #{serviceProviderFee},</if>
+            <if test="grossProfit != null">gross_profit = #{grossProfit},</if>
+            <if test="asinkingNum != null">asinking_num = #{asinkingNum},</if>
+            <if test="ycDeliveryNum != null">yc_delivery_num = #{ycDeliveryNum},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="mixedVat != null">mixed_vat = #{mixedVat},</if>
+            <if test="otherFee != null">other_fee = #{otherFee},</if>
+            <if test="mixedVat2 != null">mixed_vat2 = #{mixedVat2},</if>
+            <if test="clearBrokerFee != null">clear_broker_fee = #{clearBrokerFee},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFinanceById" parameterType="Long">
+        delete from cpd_finance where id = #{id}
+    </delete>
+
+    <delete id="deleteFinanceByIds" parameterType="String">
+        delete from cpd_finance where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUserByOnlyCondition" parameterType="Finance" resultMap="FinanceResult">
+        <include refid="selectFinanceVo"/>
+        <where>
+            <if test="month != null  and month != ''"> and month = #{month}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectFinanceAgg" parameterType="Finance" resultType="com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo">
+        select `month`,
+        SUM(gross_profit) as totalGrossProfit,
+        SUM(advertising_fee)/SUM(sales_revenue) as advertisingFeeRate,
+        SUM(advertising_fee) as totalAdvertisingFee,
+        SUM(sales_revenue) as totalSalesRevenue,
+        SUM(compensation) as totalCompensation,
+        SUM(compensation)/SUM(sales_revenue) as compensationRate,
+        SUM(final_freight) as totalFinalFreight,
+        SUM(final_freight)/SUM(sales_revenue) as finalFreightRate,
+        ABS(SUM(packaging_fee)) as totalPackagingFee,
+        ABS(SUM(packaging_fee))/SUM(sales_revenue) as packagingRage,
+        ABS(SUM(promotion_fee)) as totalPromotionFee,
+        ABS(SUM(promotion_fee))/SUM(sales_revenue) as promotionFeeRate,
+        SUM(platform_refund) as totalPlatformRefund,
+        SUM(platform_refund)/SUM(sales_revenue) as platformRefundRate,
+        ABS(SUM(final_freight_return)) as totalFinalFreightReturn,
+        ABS(SUM(final_freight_return))/SUM(sales_revenue) as finalFreightReturn,
+        ABS(SUM(other_transaction_fee)) as totalOtherTransactionFee,
+        ABS(SUM(other_transaction_fee))/SUM(sales_revenue) as otherTransactionFeeRate,
+        ABS(SUM(selfdelivery_commission)) as totalSelfdeliveryCommission,
+        ABS(SUM(selfdelivery_commission))/SUM(sales_revenue) as selfdeliveryCommissionRate,
+        ABS(SUM(fba_sales_commission)) as totalFbaSalesCommission,
+        ABS(SUM(fba_sales_commission))/SUM(sales_revenue) as fbaSalesCommissionRate,
+        ABS(SUM(final_freight_return)) as totalFinalFreightReturn,
+        ABS(SUM(final_freight_return))/SUM(sales_revenue) as finalFreightReturnRate,
+        ABS(SUM(storage_fee)) as totalStorageFee,
+        ABS(SUM(storage_fee))/SUM(sales_revenue) as storageFeeRate,
+        ABS(SUM(shipping_label_fee)) as totalShippingLabelFee,
+        ABS(SUM(shipping_label_fee))/SUM(sales_revenue) as shippingLabelFeeRate,
+        ABS(SUM(platform_service_fee)) as totalPlaformServiceFee,
+        ABS(SUM(platform_service_fee))/SUM(sales_revenue) as plaformServiceFeeRate,
+        ABS(SUM(platform_refund_service_fee)) as totalPlatformRefundServiceFee,
+        ABS(SUM(platform_refund_service_fee))/SUM(sales_revenue) as platformRefundServiceFeeRate,
+        ABS(SUM(platform_service_adjustment_fee)) as totalPlatformServiceAdjustmentFee,
+        ABS(SUM(platform_service_adjustment_fee))/SUM(sales_revenue) as platformServiceAdjustmentFeeRate,
+        ABS(SUM(service_provider_fee)) as totalServiceProviderFee,
+        ABS(SUM(service_provider_fee))/SUM(sales_revenue) as serviceProviderFeeRate,
+        ABS(SUM(other_fee)) as totalOtherFee,
+        ABS(SUM(other_fee))/SUM(sales_revenue) as otherFeeRate,
+        SUM(mixed_vat) as tatalMixvat,
+        SUM(mixed_vat)/SUM(sales_revenue) as mixedVatRate,
+        SUM(mixed_vat2) as tatalMixvat2,
+        SUM(mixed_vat2)/SUM(sales_revenue) as mixedVatRate2,
+        SUM(clear_broker_fee) as tatalClearBrokerFee,
+        SUM(clear_broker_fee)/SUM(sales_revenue) as clearBrokerFeeRate,
+        SUM(asinking_num) as totalAsinkingNum,
+        SUM(yc_delivery_num) as tatalYcDeliveryNum,
+        SUM(sales_revenue)/SUM(asinking_num) as price
+        from cpd_finance
+        <where>
+            <if test="month != null  and month != ''"> and month = #{month}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+        GROUP BY `month`
+    </select>
+
+
+
+    <update id="updateFinanceByOnlyCondition" parameterType="Finance">
+        update cpd_finance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="month != null and month != ''">month = #{month},</if>
+            <if test="site != null">site = #{site},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="salesRevenue != null">sales_revenue = #{salesRevenue},</if>
+            <if test="compensation != null">compensation = #{compensation},</if>
+            <if test="finalFreight != null">final_freight = #{finalFreight},</if>
+            <if test="packagingFee != null">packaging_fee = #{packagingFee},</if>
+            <if test="promotionFee != null">promotion_fee = #{promotionFee},</if>
+            <if test="platformRefund != null">platform_refund = #{platformRefund},</if>
+            <if test="finalFreightReturn != null">final_freight_return = #{finalFreightReturn},</if>
+            <if test="selfdeliveryCommission != null">selfdelivery_commission = #{selfdeliveryCommission},</if>
+            <if test="fbaSalesCommission != null">fba_sales_commission = #{fbaSalesCommission},</if>
+            <if test="otherTransactionFee != null">other_transaction_fee = #{otherTransactionFee},</if>
+            <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="shippingLabelFee != null">shipping_label_fee = #{shippingLabelFee},</if>
+            <if test="platformServiceFee != null">platform_service_fee = #{platformServiceFee},</if>
+            <if test="platformRefundServiceFee != null">platform_refund_service_fee = #{platformRefundServiceFee},</if>
+            <if test="platformServiceAdjustmentFee != null">platform_service_adjustment_fee = #{platformServiceAdjustmentFee},</if>
+            <if test="advertisingFee != null">advertising_fee = #{advertisingFee},</if>
+            <if test="serviceProviderFee != null">service_provider_fee = #{serviceProviderFee},</if>
+            <if test="grossProfit != null">gross_profit = #{grossProfit},</if>
+            <if test="asinkingNum != null">asinking_num = #{asinkingNum},</if>
+            <if test="ycDeliveryNum != null">yc_delivery_num = #{ycDeliveryNum},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="mixedVat != null">mixed_vat = #{mixedVat},</if>
+            <if test="otherFee != null">other_fee = #{otherFee},</if>
+            <if test="mixedVat2 != null">mixed_vat2 = #{mixedVat2},</if>
+            <if test="clearBrokerFee != null">clear_broker_fee = #{clearBrokerFee},</if>
+        </trim>
+        <where>
+        <if test="month != null  and month != ''"> and month = #{month}</if>
+        <if test="site != null  and site != ''"> and site = #{site}</if>
+        <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+        <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </update>
+
+
+
+</mapper>

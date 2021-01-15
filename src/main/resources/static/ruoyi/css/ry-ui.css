@@ -1139,3 +1139,8 @@ table.rc-table-resizing thead > th > a {
 :-ms-input-placeholder {
 	color: #b3b3b3!important;
 }
+
+/* 设置区域不可见 */
+.noshow{
+	display: none;
+}

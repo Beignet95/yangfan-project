@@ -166,11 +166,6 @@
             };
             $.table.init(options);
 
-            $("#datetimepicker-month").datetimepicker({
-                format: "yyyy-mm-dd",
-                minView: "month",
-                autoclose: true
-            });
         });
     </script>
      <!-- 导入区域 -->
@@ -201,6 +196,7 @@
                  <select name="filetype" class="form-control" style="width: 200px;display: inline;" id="type">
                      <option value="advertisingOriginData">广告组数据源</option>
                      <option value="typeAsinRalationData" selected="selected">型号asin对照表</option>
+                     <option value="financeData" selected="selected">财务数据可视化分析报表-总表</option>
                  </select>
 
                  <div class="mt10 pt5">
@@ -212,6 +208,25 @@
                  </font>
              </div>
          </form>
+     </script>
+
+     <script type="text/javascript">
+         $(function() {
+             init_year();
+             init_month();
+
+
+         });
+         function init_year(){
+
+         }
+         function init_month(){
+             var date = new Date();
+             var month=date.getMonth()+1;
+             month =(month<10 ? "0"+month:month)+"月";
+             $("input[name='month']").val(month);
+         }
+
      </script>
 </body>
 </html>

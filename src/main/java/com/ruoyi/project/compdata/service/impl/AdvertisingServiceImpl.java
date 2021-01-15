@@ -162,7 +162,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
 
     @Override
     public List<AdvertisingAnalyVo> selectAdExposureClickVo(AdvertisingAnalyParamVo advertisingAnalyParamVo) {
-        return advertisingMapper.selectAdvertisingAnalyVo(advertisingAnalyParamVo);
+        return advertisingMapper.selectAdvertisingAnaly(advertisingAnalyParamVo);
     }
 
     @Override

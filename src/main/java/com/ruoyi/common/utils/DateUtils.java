@@ -3,7 +3,10 @@ package com.ruoyi.common.utils;
 import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -71,6 +74,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static final String parseDateToStr(final String format, final Date date)
     {
         return new SimpleDateFormat(format).format(date);
+    }
+
+    public static final String parseIntegerToDateStr(final String format, final Integer days)
+    {
+        Calendar calendar = new GregorianCalendar(1900,0,-1);
+        Date d = calendar.getTime();
+        Date dd = DateUtils.addDays(d,Integer.valueOf(days));
+        String dateStr = parseDateToStr(format,dd);
+        return dateStr;
     }
 
     public static final Date dateTime(final String format, final String ts)

@@ -67,7 +67,7 @@ public interface AdvertisingMapper
 
     Advertising selectAdvertisingByOnlyCondition(@Param("storeCode")String storeCode,@Param("asin")String asin,@Param("month") Date month);
 
-    List<AdvertisingAnalyVo> selectAdvertisingAnalyVo(AdvertisingAnalyParamVo advertisingAnalyParamVo);
+    List<AdvertisingAnalyVo> selectAdvertisingAnaly(AdvertisingAnalyParamVo advertisingAnalyParamVo);
 
     public int  updateAdvertisingByOnlyCondition(Advertising vo);
 

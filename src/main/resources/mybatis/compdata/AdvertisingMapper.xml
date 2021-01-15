@@ -198,7 +198,7 @@
     </select>
 
 
-    <select id="selectAdvertisingAnalyVo" resultMap="AdvertisingAnalyVoResult" parameterType="advertisingAnalyParamVo">
+    <select id="selectAdvertisingAnaly" resultMap="AdvertisingAnalyVoResult" parameterType="advertisingAnalyParamVo">
         select `month`,SUM(exposure) as totalExposure,
                SUM(click) as totalClick,
                SUM(click)/SUM(exposure) as methCtr,

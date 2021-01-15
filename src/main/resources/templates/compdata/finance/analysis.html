@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('财务分析')" />
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <form role="form">
+        <div class="form-group">
+            <label for="name" style="width: 100px;display: inline;">选择型号</label>
+            <select class="form-control" style="width: 100px;display: inline;" id="type">
+                <option value="">所有</option>
+<!--                <option th:each="item,itemStat : ${typeList}" th:text="${item}" th:value="${item}"></option>-->
+            </select>
+            <label for="name" style="width: 100px;display: inline;">选择站点</label>
+            <select class="form-control" style="width: 100px;display: inline;" id="store_code">
+                <option value="">所有</option>
+<!--                <option th:each="item,itemStat : ${typeList}" th:text="${item}" th:value="${item}"></option>-->
+            </select>
+            <label for="name" style="width: 100px;display: inline;">选择负责人</label>
+            <select class="form-control" style="width: 100px;display: inline;" id="asin">
+                <option value="">所有</option>
+                <!--                <option th:each="item,itemStat : ${typeList}" th:text="${item}" th:value="${item}"></option>-->
+            </select>
+            <button type="button" class="btn btn-w-m btn-success" onclick="resetConditionAndRefresh()">重置条件</button>
+        </div>
+    </form>
+
+    <!--row1-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalGrossProfit-bar"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="advertisingFeeRate-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- row2 -->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalAdvertisingFee-bar"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalSalesRevenues-totalCompensations"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- row3 -->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalSalesRevenues"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="price"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--row4-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalCompensations-compensationRates"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalFinalFreights-finalFreightRates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--row5-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalPackagingFees-packagingRages"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalPromotionFees-promotionFeeRates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--row6-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalPlatformRefunds-platformRefundRates"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalFinalFreightReturns-finalFreightReturns"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--row7-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalOtherFees-otherFeeRates"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalMixedVats-mixedVatRates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--row8-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalSelfdeliveryCommissions-selfdeliveryCommissionRates"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalFbaSalesCommissions-fbaSalesCommissionRates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--row9-->
+    <div class="row">
+        <!--1-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+
+                    <div class="echarts" id="totalSelfdeliveryCommissions-selfdeliveryCommissionRates1"></div>
+                </div>
+            </div>
+        </div>
+        <!--2-->
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="totalFbaSalesCommissions-fbaSalesCommissionRates1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: echarts-js" />
+<script type="text/javascript">
+    var analysis_url = "/compdata/finance/getAnalysisData";
+    var searchObj = {type:"",site:"",principal:""};//搜索条件对象
+    var changeSelect = "";
+    var bWidth = 30;//柱图宽度
+    $(function () {
+        init_echarts();
+        //init_searchArea();
+        //monitor_searchArea();
+
+    });
+    function monitor_searchArea(){
+        $("#type").change(function(){
+            //type = $("#type option:selected").val();
+            searchObj.type = $("#type option:selected").val();
+            changeSelect = this.id;
+            init_searchArea();
+            init_echarts();
+        });
+        $("#store_code").change(function(){
+            //type = $("#type option:selected").val();
+            searchObj.storeCode = $("#store_code option:selected").val();
+            changeSelect = this.id;
+            init_searchArea();
+            init_echarts();
+        });
+        $("#asin").change(function(){
+            //type = $("#type option:selected").val();
+            searchObj.asin = $("#asin option:selected").val();
+            changeSelect = this.id;
+
+            init_searchArea();
+            init_echarts();
+        });
+
+    }
+
+    //构建搜索参数
+    function buildCondition(){
+        searchObj = {type:"",site:"",principal:""};
+        searchObj.type = $("#type option:selected").val();
+        searchObj.site = $("#store_code option:selected").val();
+        searchObj.principal = $("#asin option:selected").val();
+    }
+
+    function buildCondition4InitSearchArea(){
+        searchObj = {type:"",site:"",principal:""};
+        searchObj.type = $("#type option:selected").val();
+        searchObj.site = $("#store_code option:selected").val();
+        searchObj.principal = $("#asin option:selected").val();
+    }
+
+    function init_searchArea(){
+        buildCondition4InitSearchArea();
+        console.log("searchObj:"+searchObj);
+        $.ajax({
+            url : "/compdata/advertising/getAdvertisingAnalySearch",
+            type : "GET",
+            dataType : "JSON",
+            data: searchObj,
+            success : function(res) {
+                var types = res.data.types;
+                var storeCodes = res.data.storeCodes;
+                var asins = res.data.asins;
+                var skus = res.data.skus;
+                var selectType = res.data.selectType;
+                var selectStoreCode = res.data.selectStoreCode;
+                var selectAsin = res.data.selectAsin;
+                var selectSku = res.data.selectSku;
+                //var changeSelect = res.data.changeSelect;
+                console.log("res.data:"+res.data);
+                if(changeSelect!="type"){
+                    $("#type").html('<option value="">所有</option>');
+                    $.each(types,function(index,value){
+                        var selectSatus = '';
+                        if(value==selectType) selectSatus = 'selected  =  "selected"';
+                        $("#type").append('<option '+selectSatus+' value="'+value+'">'+value+'</option>');
+                    });
+                 }
+
+                if(changeSelect!="store_code"){
+                    $("#store_code").html('<option value="">所有</option>');
+                    $.each(storeCodes,function(index,value){
+                        var selectSatus = '';
+                        if(value==selectStoreCode) selectSatus = 'selected  =  "selected"';
+                        $("#store_code").append('<option '+selectSatus+' value="'+value+'">'+value+'</option>');
+                    });
+                }
+
+                if(changeSelect!="asin"){
+                    $("#asin").html('<option value="">所有</option>');
+                    $.each(asins,function(index,value){
+                        var selectSatus = '';
+                        if(value==selectAsin) selectSatus = 'selected  =  "selected"';
+                        $("#asin").append('<option '+selectSatus+'  value="'+value+'">'+value+'</option>');
+                    });
+                }
+
+            },
+            error : function(errorMsg) {
+                layer.msg('服务器开了点小差，请稍后刷新页面!', {icon: 0});
+                myChart.hideLoading();
+            }
+        });
+    }
+
+    function init_echarts(){
+        buildCondition();
+        $.ajax({
+            url : analysis_url,
+            type : "GET",
+            dataType : "JSON",
+            // data: {
+            //     type: searchObj.type
+            // },
+            data:  searchObj,
+            success : function(res) {
+                var data = res.data;
+                var months = data.months;
+                init_totalGrossProfit_bar(data);
+                init_advertisingFeeRate_bar(data);
+                init_totalAdvertisingFee_bar(data);
+                //xData,yData,echartId,title,legend,color,echartType
+                init_chartWith2(months,[data.totalAsinkingNums,data.tatalYcDeliveryNums],"totalSalesRevenues-totalCompensations",
+                    "AsinKing数量和易仓出货量",["AsinKing数量","易仓出货量"],["#62d1de","#DC143C"],["bar","bar"]);
+                init_chart(months,data.totalSalesRevenues,"totalSalesRevenues","销售收入(含自配送）","","#62d1de","line",-1);
+                init_chart(months,data.prices,"price","单价","","#62d1de","line",1);
+                init_chartW2W2Y(months,[data.totalCompensations,data.compensationRates],"totalCompensations-compensationRates",
+                    "赔偿金和占比",["赔偿金","赔偿金占比"],["#62d1de","#DC143C"],["line","line"],[-1,0.1]);
+                init_chartW2W2Y(months,[data.totalFinalFreights,data.finalFreightRates],"totalFinalFreights-finalFreightRates",
+                    "尾程运费信用和占比",["尾程运费信用","尾程运费占比"],["#62d1de","#DC143C"],["line","line"],[-1,-1]);
+                init_chartW2W2Y(months,[data.totalPackagingFees,data.packagingRages],"totalPackagingFees-packagingRages",
+                    "包装费和占比",["包装费","包装费占比"],["#62d1de","#DC143C"],["line","line"],[-1,-1]);
+                init_chartW2W2Y(months,[data.totalPromotionFees,data.promotionFeeRates],"totalPromotionFees-promotionFeeRates",
+                    "促销费和占比",["促销费","促销费占比"],["#62d1de","#DC143C"],["bar","line"],[-1,0.01]);
+                init_chartW2W2Y(months,[data.totalPlatformRefunds,data.platformRefundRates],"totalPlatformRefunds-platformRefundRates",
+                    "平台退款和占比",["平台退款","平台退款占比"],["#62d1de","#DC143C"],["bar","line"],[-1,-1]);
+                init_chartW2W2Y(months,[data.totalFinalFreightReturns,data.finalFreightReturnRates],"totalFinalFreightReturns-finalFreightReturns",
+                    "尾程运费退回和占比",["尾程运费退回","尾程运费退回占比"],["#62d1de","#DC143C"],["bar","line"],[-1,-1]);
+                init_chartW2W2Y(months,[data.totalOtherFees,data.otherFeeRates],"totalOtherFees-otherFeeRates",
+                    "其他和占比",["其他","其他占比"],["#62d1de","#DC143C"],["bar","line"],[-1,0.01]);
+                init_chartW2W2Y(months,[data.totalMixedVats,data.mixedVatRates],"totalMixedVats-mixedVatRates",
+                    "17, 18 混合增值税和占比",["17, 18 混合增值税","17, 18 混合增值税占比"],["#62d1de","#DC143C"],["line","line"],[-1,-1])
+                init_chartW2W2Y(months,[data.totalSelfdeliveryCommissions,data.selfdeliveryCommissionRates],"totalSelfdeliveryCommissions-selfdeliveryCommissionRates",
+                    "自配送销售佣金和占比",["自配送销售佣金","自配送销售佣金占比"],["#62d1de","#DC143C"],["line","line"],[-1,-1]);
+                init_chartW2W2Y(months,[data.totalFbaSalesCommissions,data.fbaSalesCommissionRates],"totalFbaSalesCommissions-fbaSalesCommissionRates",
+                    "FBA销售佣金和占比",["FBA销售佣金","FBA销售佣金占比"],["#62d1de","#DC143C"],["line","line"],[-1,-1]);
+
+            },
+            error : function(errorMsg) {
+                console.log("errorMsg:"+errorMsg);
+                layer.msg('服务器开了点小差，请稍后刷新页面!', {icon: 0});
+                myChart.hideLoading();
+            }
+        });
+        //searchObj = {type:"",storeCode:"",asin:"",sku:"",changeSelect:""};
+    };
+
+    function resetConditionAndRefresh(){
+        // changeSelect = "";
+        // init_echarts();
+        // init_searchArea();
+        window.location.reload();
+    }
+
+    //totalExposure_TotalClick_bar渲染
+    function init_totalGrossProfit_bar(data){
+        var barChart = echarts.init(document.getElementById("totalGrossProfit-bar"));
+        var xData = data.months;
+        var yData = data.totalGrossProfits;
+        var baroption = {
+            title: {
+                text: '财务报表毛利和环比'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['财务报表毛利']
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function(params) {
+                    relVal = params.data + '，环比增长';
+                    relVal += params.dataIndex === 0 ? '未知' : ((params.data - yData[params.dataIndex - 1]) * 100 / yData[params.dataIndex - 1]).toFixed(2) + '%,增长';
+                    relVal +=params.data - yData[params.dataIndex - 1];
+                    return relVal;
+                }
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                //left: '10%'
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.months
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            color:['#62d1de'],
+            series: [
+                {
+                    name: '财务报表毛利',
+                    type: 'bar',
+                    barWidth : bWidth,//柱图宽度
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+                    data: data.totalGrossProfits,
+                    itemStyle : { normal: {label : {show: true}}},
+
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    },
+                    // markLine: {
+                    //     data: [
+                    //         {type: 'average', name: '平均值'}
+                    //     ]
+                    // }
+                }
+            ]
+        };
+        barChart.setOption(baroption);
+
+        window.onresize = barChart.resize;
+
+    }
+
+    //initMethCtrs
+    function init_advertisingFeeRate_bar(data){
+        var lineChart = echarts.init(document.getElementById("advertisingFeeRate-bar"));
+        var xData = data.months;
+        var yData = data.advertisingFeeRates;
+        var lineoption = {
+            title: {
+                text: '财务报表毛利和环比'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['财务报表毛利']
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function(params) {
+                    relVal = params.data + '，环比增长';
+                    relVal += params.dataIndex === 0 ? '未知' : ((params.data - yData[params.dataIndex - 1]) * 100 / yData[params.dataIndex - 1]).toFixed(2) + '%,增长';
+                    relVal +=params.data - yData[params.dataIndex - 1];
+                    return relVal;
+                }
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                //left: '10%'
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.months
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            color:['#62d1de'],
+            series: [
+                {
+                    name: '财务报表毛利',
+                    type: 'bar',
+                    barWidth: bWidth,//柱状图长度
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+                    data: data.advertisingFeeRates,
+                    itemStyle : { normal: {label : {show: true}}},
+
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    },
+                    // markLine: {
+                    //     data: [
+                    //         {type: 'average', name: '平均值'}
+                    //     ]
+                    // }
+                }
+            ]
+        };
+        lineChart.setOption(lineoption);
+        $(window).resize(lineChart.resize);
+    }
+
+    //totalClick-totalAdvertisingOrder-bar渲染
+    function  init_totalAdvertisingFee_bar(data){
+        var barChart = echarts.init(document.getElementById("totalAdvertisingFee-bar"));
+        var baroption = {
+            title: {
+                text: '广告花费'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['广告花费']
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.months
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            color:['#62d1de'],
+            series: [
+                {
+                    name: '广告花费',
+                    type: 'bar',
+                    data: data.totalAdvertisingFees,
+                    itemStyle : { normal: {label : {show: true}}},
+                    barWidth: bWidth,//柱状图长度
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    }
+
+                }
+            ]
+        };
+        barChart.setOption(baroption);
+
+        window.onresize = barChart.resize;
+
+    }
+    //methCvr_line渲染
+    function init_totalAsinkingNum_tatalYcDeliveryNum_bar(data){
+        var lineChart = echarts.init(document.getElementById("totalAsinkingNum-tatalYcDeliveryNums-bar"));
+        var lineoption = {
+            title: {
+                text: 'AsinKing数量和易仓出货量'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['AsinKing数量', '易仓出货量']
+            },
+            grid: {
+                x: 40,
+                x2: 40,
+                y2: 24
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: data.months
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value}'
+                    }
+                }
+            ],
+            color: ['#62d1de'],
+            series: [
+                {
+                    name: 'CVR',
+                    type: 'line',
+                    data: data.totalAsinkingNums,
+                    itemStyle : { normal: {label : {show: true}}},
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    },
+                    // markLine: {tatalYcDeliveryNums
+                    //     data: [
+                    //         {type: 'average', name: '平均值'}
+                    //     ]
+                    // }
+                },{
+                    name: 'CVR',
+                    type: 'line',
+                    data: data.totalAsinkingNums,
+                    itemStyle : { normal: {label : {show: true}}},
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最大值'},
+                            {type: 'min', name: '最小值'}
+                        ]
+                    },
+                    // markLine: {tatalYcDeliveryNums
+                    //     data: [
+                    //         {type: 'average', name: '平均值'}
+                    //     ]
+                    // }
+                },
+            ]
+        };
+        lineChart.setOption(lineoption);
+        $(window).resize(lineChart.resize);
+    }
+    function  init_chart(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum){
+        var barChart = echarts.init(document.getElementById(echartId));
+        var baroption = {
+            title: {
+                text: title
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: legend
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: xData
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    min: function(value) {
+                       return mixValue(value,rangeFloorNum);
+                    },
+                }
+            ],
+            color:color,
+            series: [
+                {
+                    name: legend,
+                    type: echartType,
+                    data: yData,
+                    itemStyle : { normal: {label : {show: true}}},
+                    barWidth: bWidth,//柱状图长度
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+
+                }
+            ]
+        };
+        barChart.setOption(baroption);
+
+        window.onresize = barChart.resize;
+
+    }
+
+    function  init_chartWith2(xData,yData,echartId,title,legend,color,echartType){
+        var barChart = echarts.init(document.getElementById(echartId));
+        var baroption = {
+            title: {
+                text: title
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: legend
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: xData
+                }
+            ],
+            yAxis: [
+                {
+                    name: legend,
+                    type: 'value'
+                }
+            ],
+            color:color,
+            series: [
+                {
+                    name: legend[0],
+                    type: echartType[0],
+                    data: yData[0],
+                    itemStyle : { normal: {label : {show: true}}},
+                    barWidth: bWidth,//柱状图长度
+                    yAxisIndex: 0,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+
+                }
+            ]
+        };
+        barChart.setOption(baroption);
+
+        window.onresize = barChart.resize;
+
+    }
+
+    function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum){
+        var barChart = echarts.init(document.getElementById(echartId));
+        var baroption = {
+            title: {
+                text: title
+            },
+            backgroundColor: 'white',
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: legend
+            },
+            grid: {
+                x: 30,
+                x2: 40,
+                y2: 24,
+                containLabel: true
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: xData
+                }
+            ],
+            yAxis: [
+                {
+                    //name: legend[0],
+                    type: 'value',
+                    min: function(value) {
+                        return mixValue(value,rangeFloorNum[0]);
+                    },
+                },
+                {
+                    //name: legend[1],
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} %'
+                    },
+                    min: function(value) {
+                        return mixValue(value,rangeFloorNum[1]);
+                    },
+                }
+            ],
+            color:color,
+            series: [
+                {
+                    name: legend[0],
+                    type: echartType[0],
+                    data: yData[0],
+                    itemStyle : { normal: {label : {show: true}}},
+                    barWidth: bWidth,//柱状图长度
+                    yAxisIndex: 0,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+
+                },{
+                    name: legend[1],
+                    type: echartType[1],
+                    data: yData[1],
+                    itemStyle : { normal: {label : {show: true}}},
+                    barWidth: bWidth,//柱状图长度
+                    yAxisIndex: 1,
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top',
+                            textStyle: {
+                                color: 'black'
+                            }
+                        }
+                    },
+
+                }
+            ]
+        };
+        barChart.setOption(baroption);
+
+        window.onresize = barChart.resize;
+
+    }
+
+    function mixValue(value,rangeFloorNum) {
+        //if(rangeFloorNum==2) alert(Math.floor(value.min));
+        if(rangeFloorNum==-1||rangeFloorNum==undefined||value.min==0) return 0;
+        else return value.min - rangeFloorNum;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改财务数据')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-finance-edit" th:object="${finance}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">站点：</label>
+                <div class="col-sm-8">
+                    <input name="site" th:field="*{site}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">负责人：</label>
+                <div class="col-sm-8">
+                    <input name="principal" th:field="*{principal}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">型号：</label>
+                <div class="col-sm-8">
+                    <select name="type" class="form-control m-b">
+                        <option value="">所有</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">销售收入(含自配送）：</label>
+                <div class="col-sm-8">
+                    <input name="salesRevenue" th:field="*{salesRevenue}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">赔偿金：</label>
+                <div class="col-sm-8">
+                    <input name="compensation" th:field="*{compensation}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">尾程运费信用：</label>
+                <div class="col-sm-8">
+                    <input name="finalFreight" th:field="*{finalFreight}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">包装费：</label>
+                <div class="col-sm-8">
+                    <input name="packagingFee" th:field="*{packagingFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">促销费：</label>
+                <div class="col-sm-8">
+                    <input name="promotionFee" th:field="*{promotionFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">平台退款：</label>
+                <div class="col-sm-8">
+                    <input name="platformRefund" th:field="*{platformRefund}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">尾程运费退回：</label>
+                <div class="col-sm-8">
+                    <input name="finalFreightReturn" th:field="*{finalFreightReturn}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">自配送销售佣金：</label>
+                <div class="col-sm-8">
+                    <input name="selfdeliveryCommission" th:field="*{selfdeliveryCommission}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">FBA销售佣金：</label>
+                <div class="col-sm-8">
+                    <input name="fbaSalesCommission" th:field="*{fbaSalesCommission}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">其他交易费：</label>
+                <div class="col-sm-8">
+                    <input name="otherTransactionFee" th:field="*{otherTransactionFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">仓储费：</label>
+                <div class="col-sm-8">
+                    <input name="storageFee" th:field="*{storageFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">运输标签费：</label>
+                <div class="col-sm-8">
+                    <input name="shippingLabelFee" th:field="*{shippingLabelFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">平台服务费：</label>
+                <div class="col-sm-8">
+                    <input name="platformServiceFee" th:field="*{platformServiceFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">平台退款服务费：</label>
+                <div class="col-sm-8">
+                    <input name="platformRefundServiceFee" th:field="*{platformRefundServiceFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">平台服务调整费：</label>
+                <div class="col-sm-8">
+                    <input name="platformServiceAdjustmentFee" th:field="*{platformServiceAdjustmentFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">广告费：</label>
+                <div class="col-sm-8">
+                    <input name="advertisingFee" th:field="*{advertisingFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">服务商费用：</label>
+                <div class="col-sm-8">
+                    <input name="serviceProviderFee" th:field="*{serviceProviderFee}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "compdata/finance";
+        $("#form-finance-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-finance-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>
