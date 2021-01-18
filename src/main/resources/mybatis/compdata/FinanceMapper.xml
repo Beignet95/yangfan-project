@@ -35,10 +35,16 @@
         <result property="otherFee"    column="other_fee"    />
         <result property="mixedVat2"    column="mixed_vat2"    />
         <result property="clearBrokerFee"    column="clear_broker_fee"    />
+        <result property="finalFreightReturn2"    column="final_freight_return2"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isdelete"    column="isdelete"    />
     </resultMap>
 
     <sql id="selectFinanceVo">
-        select id, month, site, principal, type, sales_revenue, compensation, final_freight, packaging_fee, promotion_fee, platform_refund, final_freight_return, selfdelivery_commission, fba_sales_commission, other_transaction_fee, storage_fee, shipping_label_fee, platform_service_fee, platform_refund_service_fee, platform_service_adjustment_fee, advertising_fee, service_provider_fee, gross_profit, asinking_num, yc_delivery_num, price, mixed_vat, other_fee, mixed_vat2, clear_broker_fee from cpd_finance
+        select id, month, site, principal, type, sales_revenue, compensation, final_freight, packaging_fee, promotion_fee, platform_refund, final_freight_return, selfdelivery_commission, fba_sales_commission, other_transaction_fee, storage_fee, shipping_label_fee, platform_service_fee, platform_refund_service_fee, platform_service_adjustment_fee, advertising_fee, service_provider_fee, gross_profit, asinking_num, yc_delivery_num, price, mixed_vat, other_fee, mixed_vat2, clear_broker_fee, final_freight_return2, create_by, create_time, update_by, update_time, isdelete from cpd_finance
     </sql>
 
     <select id="selectFinanceList" parameterType="Finance" resultMap="FinanceResult">
@@ -73,6 +79,8 @@
             <if test="otherFee != null "> and other_fee = #{otherFee}</if>
             <if test="mixedVat2 != null "> and mixed_vat2 = #{mixedVat2}</if>
             <if test="clearBrokerFee != null "> and clear_broker_fee = #{clearBrokerFee}</if>
+            <if test="finalFreightReturn2 != null "> and final_freight_return2 = #{finalFreightReturn2}</if>
+            <if test="isdelete != null "> and isdelete = #{isdelete}</if>
         </where>
     </select>
 
@@ -113,6 +121,12 @@
             <if test="otherFee != null">other_fee,</if>
             <if test="mixedVat2 != null">mixed_vat2,</if>
             <if test="clearBrokerFee != null">clear_broker_fee,</if>
+            <if test="finalFreightReturn2 != null">final_freight_return2,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isdelete != null">isdelete,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="month != null and month != ''">#{month},</if>
@@ -144,6 +158,12 @@
             <if test="otherFee != null">#{otherFee},</if>
             <if test="mixedVat2 != null">#{mixedVat2},</if>
             <if test="clearBrokerFee != null">#{clearBrokerFee},</if>
+            <if test="finalFreightReturn2 != null">#{finalFreightReturn2},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isdelete != null">#{isdelete},</if>
         </trim>
     </insert>
 
@@ -179,6 +199,12 @@
             <if test="otherFee != null">other_fee = #{otherFee},</if>
             <if test="mixedVat2 != null">mixed_vat2 = #{mixedVat2},</if>
             <if test="clearBrokerFee != null">clear_broker_fee = #{clearBrokerFee},</if>
+            <if test="finalFreightReturn2 != null">final_freight_return2 = #{finalFreightReturn2},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isdelete != null">isdelete = #{isdelete},</if>
         </trim>
         where id = #{id}
     </update>
@@ -207,13 +233,13 @@
     <select id="selectFinanceAgg" parameterType="Finance" resultType="com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo">
         select `month`,
         SUM(gross_profit) as totalGrossProfit,
-        SUM(advertising_fee)/SUM(sales_revenue) as advertisingFeeRate,
-        SUM(advertising_fee) as totalAdvertisingFee,
+        ABS(SUM(advertising_fee))/SUM(sales_revenue) as advertisingFeeRate,
+        ABS(SUM(advertising_fee)) as totalAdvertisingFee,
         SUM(sales_revenue) as totalSalesRevenue,
-        SUM(compensation) as totalCompensation,
-        SUM(compensation)/SUM(sales_revenue) as compensationRate,
-        SUM(final_freight) as totalFinalFreight,
-        SUM(final_freight)/SUM(sales_revenue) as finalFreightRate,
+        ABS(SUM(compensation)) as totalCompensation,
+        ABS(SUM(compensation))/SUM(sales_revenue) as compensationRate,
+        ABS(SUM(final_freight)) as totalFinalFreight,
+        ABS(SUM(final_freight))/SUM(sales_revenue) as finalFreightRate,
         ABS(SUM(packaging_fee)) as totalPackagingFee,
         ABS(SUM(packaging_fee))/SUM(sales_revenue) as packagingRage,
         ABS(SUM(promotion_fee)) as totalPromotionFee,
@@ -230,6 +256,8 @@
         ABS(SUM(fba_sales_commission))/SUM(sales_revenue) as fbaSalesCommissionRate,
         ABS(SUM(final_freight_return)) as totalFinalFreightReturn,
         ABS(SUM(final_freight_return))/SUM(sales_revenue) as finalFreightReturnRate,
+        ABS(SUM(final_freight_return)) as totalFinalFreightReturn2,
+        ABS(SUM(final_freight_return))/SUM(sales_revenue) as finalFreightReturn2Rate,
         ABS(SUM(storage_fee)) as totalStorageFee,
         ABS(SUM(storage_fee))/SUM(sales_revenue) as storageFeeRate,
         ABS(SUM(shipping_label_fee)) as totalShippingLabelFee,
@@ -305,6 +333,15 @@
         <if test="type != null  and type != ''"> and type = #{type}</if>
         </where>
     </update>
+
+    <select id="selectDistinctColumn" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT DISTINCT ${columnName} from cpd_finance
+        <where>
+            <if test="financeAnalyParamVo.type != null  and financeAnalyParamVo.type != ''"> and type = #{financeAnalyParamVo.type}</if>
+            <if test="financeAnalyParamVo.site != null  and financeAnalyParamVo.site != ''"> and site = #{financeAnalyParamVo.site}</if>
+            <if test="financeAnalyParamVo.principal != null  and financeAnalyParamVo.principal != ''"> and principal = #{financeAnalyParamVo.principal}</if>
+        </where>
+    </select>
 
 
 

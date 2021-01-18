@@ -1,7 +1,10 @@
 package com.ruoyi.project.compdata.finance.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
 
 /**
@@ -63,4 +66,6 @@ public interface IFinanceService
     String importFinance(List<Finance> financeList, boolean updateSupport);
 
     FinanceEchartsVo selectFinanceEchartsVo(Finance finance);
+
+    Map selectAnalySearch(FinanceAnalyParamVo financeAnalyParamVo);
 }

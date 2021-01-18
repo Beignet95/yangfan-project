@@ -84,5 +84,7 @@ public class FinanceAnalyVo {
     private Float mixedVat2Rate;
     private BigDecimal totalClearBrokerFee;
     private Float clearBrokerFeeRate;
+    private BigDecimal totalFinalFreightReturn2;//
+    private Float finalFreightReturn2Rate;
 
 }

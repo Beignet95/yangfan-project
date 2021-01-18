@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
@@ -19,6 +20,7 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Finance extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -83,7 +85,7 @@ public class Finance extends BaseEntity
     private BigDecimal otherTransactionFee;
 
     /** 仓储费 */
-    @Excel(name = "仓储费")
+    @Excel(name = "仓储费（0.79%）")
     private BigDecimal storageFee;
 
     /** 运输标签费 */
@@ -142,40 +144,9 @@ public class Finance extends BaseEntity
     @Excel(name = "清算经纪费")
     private BigDecimal clearBrokerFee;
 
+    /** 尾程运费退回（N6+T6+AG6,占销售比例14.5%） */
+    @Excel(name = "尾程运费退回")
+    private BigDecimal finalFreightReturn2;
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("month", getMonth())
-                .append("site", getSite())
-                .append("principal", getPrincipal())
-                .append("type", getType())
-                .append("salesRevenue", getSalesRevenue())
-                .append("compensation", getCompensation())
-                .append("finalFreight", getFinalFreight())
-                .append("packagingFee", getPackagingFee())
-                .append("promotionFee", getPromotionFee())
-                .append("platformRefund", getPlatformRefund())
-                .append("finalFreightReturn", getFinalFreightReturn())
-                .append("selfdeliveryCommission", getSelfdeliveryCommission())
-                .append("fbaSalesCommission", getFbaSalesCommission())
-                .append("otherTransactionFee", getOtherTransactionFee())
-                .append("storageFee", getStorageFee())
-                .append("shippingLabelFee", getShippingLabelFee())
-                .append("platformServiceFee", getPlatformServiceFee())
-                .append("platformRefundServiceFee", getPlatformRefundServiceFee())
-                .append("platformServiceAdjustmentFee", getPlatformServiceAdjustmentFee())
-                .append("advertisingFee", getAdvertisingFee())
-                .append("serviceProviderFee", getServiceProviderFee())
-                .append("grossProfit", getGrossProfit())
-                .append("asinkingNum", getAsinkingNum())
-                .append("ycDeliveryNum", getYcDeliveryNum())
-                .append("price", getPrice())
-                .append("mixedVat", getMixedVat())
-                .append("otherFee", getOtherFee())
-                .append("mixedVat2", getMixedVat2())
-                .append("clearBrokerFee", getClearBrokerFee())
-                .toString();
-    }
+    private Integer isdelete;
 }

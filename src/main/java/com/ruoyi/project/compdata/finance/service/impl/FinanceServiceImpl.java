@@ -1,13 +1,17 @@
 package com.ruoyi.project.compdata.finance.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.common.utils.uuid.MathUtil;
+import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
 import com.ruoyi.project.system.config.service.IConfigService;
@@ -130,28 +134,34 @@ public class FinanceServiceImpl implements IFinanceService
             {
                 // 验证是否存在这个用户
                 Finance f = financeMapper.selectUserByOnlyCondition(finance);
-                if (f==null)
+                if (f==null&&StringUtils.isNotEmpty(finance.getSite()))
                 {
+                    finance.setCreateBy(operName);
+                    finance.setCreateTime(new Date());
                     this.insertFinance(finance);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、负责人 " + finance.getPrincipal() + " 导入成功");
+                    successMsg.append("<br/>" + successNum + "、"+ finance.getPrincipal() +finance.getMonth()+finance.getSite()+finance.getType()+" 的数据导入成功");
                 }
                 else if (isUpdateSupport)
                 {
+                    finance.setUpdateBy(operName);
+                    finance.setUpdateTime(new Date());
                     financeMapper.updateFinanceByOnlyCondition(finance);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + finance.getPrincipal() + " 更新成功");
+                    successMsg.append("<br/>" + successNum + "、" + finance.getPrincipal() +finance.getMonth()+finance.getSite()+finance.getType()+" 的数据更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、账号 " + finance.getPrincipal() + " 已存在");
+                    failureMsg.append("<br/>" + failureNum + "、" + finance.getPrincipal() +finance.getMonth()+finance.getSite()+finance.getType()+" 的数据已存在");
                 }
             }
             catch (Exception e)
             {
+                if(StringUtils.isEmpty(finance.getPrincipal())&&StringUtils.isEmpty(finance.getMonth())&&
+                        StringUtils.isEmpty(finance.getType())&&StringUtils.isEmpty(finance.getSite())) continue;
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、账号 " + finance.getPrincipal() + " 导入失败：";
+                String msg = "<br/>" + failureNum + "、" + finance.getPrincipal() +finance.getMonth()+finance.getType() + " 的数据导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }
@@ -257,9 +267,19 @@ public class FinanceServiceImpl implements IFinanceService
         echartsVo.setTotalFinalFreightReturns(totalFinalFreightReturns.toArray(new BigDecimal[totalFinalFreightReturns.size()]));
 
         List<Float> finalFreightReturnRates = analyVoList.stream().map(domain->{
-            return domain.getFinalFreightReturnRate();
+            return MathUtil.float2PercentNum(domain.getFinalFreightReturnRate());
         }).collect(Collectors.toList());
         echartsVo.setFinalFreightReturnRates(finalFreightReturnRates.toArray(new Float[finalFreightReturnRates.size()]));
+
+        List<BigDecimal> totalFinalFreightReturn2s = analyVoList.stream().map(domain->{
+            return domain.getTotalFinalFreightReturn2();
+        }).collect(Collectors.toList());
+        echartsVo.setTotalFinalFreightReturn2s(totalFinalFreightReturn2s.toArray(new BigDecimal[totalFinalFreightReturn2s.size()]));
+
+        List<Float> finalFreightReturn2Rates = analyVoList.stream().map(domain->{
+            return MathUtil.float2PercentNum(domain.getFinalFreightReturn2Rate());
+        }).collect(Collectors.toList());
+        echartsVo.setFinalFreightReturn2Rates(finalFreightReturn2Rates.toArray(new Float[finalFreightReturn2Rates.size()]));
 
         List<BigDecimal> totalOtherTransactionFees = analyVoList.stream().map(domain->{
             return domain.getTotalOtherTransactionFee();
@@ -306,7 +326,7 @@ public class FinanceServiceImpl implements IFinanceService
         List<BigDecimal> totalShippingLabelFees = analyVoList.stream().map(domain->{
             return domain.getTotalShippingLabelFee();
         }).collect(Collectors.toList());
-        echartsVo.setTotalStorageFees(totalShippingLabelFees.toArray(new BigDecimal[totalShippingLabelFees.size()]));
+        echartsVo.setTotalShippingLabelFees(totalShippingLabelFees.toArray(new BigDecimal[totalShippingLabelFees.size()]));
         //shippingLabelFeeRates totalPlaformServiceFees plaformServiceFeeRates totalPlatformRefundServiceFees
         List<Float> shippingLabelFeeRates = analyVoList.stream().map(domain->{
             return MathUtil.float2PercentNum(domain.getShippingLabelFeeRate());
@@ -411,5 +431,21 @@ public class FinanceServiceImpl implements IFinanceService
 
 
         return echartsVo;
+    }
+
+    @Override
+    public Map selectAnalySearch(FinanceAnalyParamVo paramVo) {
+        Map paramMap = new HashMap();
+        paramMap.put("columnName","type");
+        List<String> types =  financeMapper.selectDistinctColumn("type",paramVo);
+        paramMap.put("types",types);
+        paramMap.put("columnName","site");
+        List<String> sites =  financeMapper.selectDistinctColumn("site",paramVo);
+        paramMap.put("sites",sites);
+        paramMap.put("columnName","principal");
+        List<String> principals =  financeMapper.selectDistinctColumn("principal",paramVo);
+        paramMap.put("principals",principals);
+
+        return paramMap;
     }
 }

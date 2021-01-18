@@ -1,10 +1,13 @@
 package com.ruoyi.project.compdata.finance.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
 import com.ruoyi.project.compdata.vo.AdvertisingAnalyParamVo;
+import com.ruoyi.project.compdata.vo.AdvertisingAnalySearchVo;
 import com.ruoyi.project.compdata.vo.AdvertisingEchartsVo;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -167,5 +170,18 @@ public class FinanceController extends BaseController
     {
         FinanceEchartsVo financeEchartsVo = financeService.selectFinanceEchartsVo(finance);
         return AjaxResult.success(financeEchartsVo);
+    }
+
+
+    /**
+     * 获取搜索的关键信息
+     */
+    @GetMapping("/getAnalySearch")
+    @ResponseBody
+    public AjaxResult getAnalySearch(FinanceAnalyParamVo financeAnalyParamVo, ModelMap mmap)
+    {
+          Map searchMap = financeService.selectAnalySearch(financeAnalyParamVo);
+//        return AjaxResult.success(advertisingAnalySearchVo);
+        return AjaxResult.success(searchMap);
     }
 }

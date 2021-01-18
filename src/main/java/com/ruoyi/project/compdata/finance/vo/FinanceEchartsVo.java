@@ -33,8 +33,8 @@ public class FinanceEchartsVo {
      *     otherTransactionFeeRate totalSelfdeliveryCommission selfdeliveryCommissionRate
      */
     private Float[] platformRefundRates;//平台退款占比
-    private BigDecimal[] totalFinalFreightReturns;//尾程运费退回
-    private Float[] finalFreightReturnRates;//尾程运费退回占比
+    private BigDecimal[] totalFinalFreightReturns;//尾程运费退回（N6+T6+AG6,占销售比例14.5%）
+    private Float[] finalFreightReturnRates;//尾程运费退回（N6+T6+AG6,占销售比例14.5%）占比
     private BigDecimal[] totalOtherTransactionFees;//其他交易费
     private Float[] otherTransactionFeeRates;//其他交易费占比
     private BigDecimal[] totalSelfdeliveryCommissions;//自配送销售佣金
@@ -45,27 +45,27 @@ public class FinanceEchartsVo {
      */
     private BigDecimal[] totalFbaSalesCommissions;//FBA销售佣金
     private Float[] fbaSalesCommissionRates;//FBA销售佣金占比
-    private BigDecimal[] totalStorageFees;
-    private Float[] storageFeeRates;
-    private BigDecimal[] totalShippingLabelFees;
+    private BigDecimal[] totalStorageFees;//仓储费
+    private Float[] storageFeeRates;//仓储费占比
+    private BigDecimal[] totalShippingLabelFees;//运输标签费
     /**
      * shippingLabelFeeRate totalPlaformServiceFee plaformServiceFeeRate totalPlatformRefundServiceFee
      *     platformRefundServiceFeeRate totalPlatformServiceAdjustmentFee platformServiceAdjustmentFeeRate
      */
-    private Float[] shippingLabelFeeRates;
-    private BigDecimal[] totalPlaformServiceFees;
-    private Float[] plaformServiceFeeRates;
-    private BigDecimal[] totalPlatformRefundServiceFees;
-    private Float[] platformRefundServiceFeeRates;
-    private BigDecimal[] totalPlatformServiceAdjustmentFees;
-    private Float[] platformServiceAdjustmentFeeRates;
+    private Float[] shippingLabelFeeRates;//运输标签费占比
+    private BigDecimal[] totalPlaformServiceFees;//平台服务费
+    private Float[] plaformServiceFeeRates;//平台服务费占比
+    private BigDecimal[] totalPlatformRefundServiceFees;//平台退款服务费
+    private Float[] platformRefundServiceFeeRates;//平台退款服务费占比
+    private BigDecimal[] totalPlatformServiceAdjustmentFees;//平台服务调整费
+    private Float[] platformServiceAdjustmentFeeRates;//平台服务调整费占比
 
     /**
      * totalServiceProviderFee serviceProviderFeeRate totalOtherFee otherFeeRate
      *     totalAsinkingNum tatalYcDeliveryNum price
      */
-    private BigDecimal[] totalServiceProviderFees;
-    private Float[] serviceProviderFeeRates;
+    private BigDecimal[] totalServiceProviderFees;//服务商费用
+    private Float[] serviceProviderFeeRates;//服务商费用占比
     private BigDecimal[] totalOtherFees;//其他
     private Float[] otherFeeRates;//其他占比
     private Integer[] totalAsinkingNums;
@@ -76,10 +76,13 @@ public class FinanceEchartsVo {
      */
     private BigDecimal[] totalMixedVats;//17, 18 混合增值税
     private Float[] mixedVatRates;//17, 18 混合增值税占比
-    private BigDecimal[] totalMixedVat2s;
-    private Float[] mixedVat2Rates;
-    private BigDecimal[] totalClearBrokerFees;
-    private Float[] clearBrokerFeeRates;
+    private BigDecimal[] totalMixedVat2s;//34 35 混合增值税
+    private Float[] mixedVat2Rates;//34 35 混合增值税占比
+    private BigDecimal[] totalClearBrokerFees;//清算经纪费
+    private Float[] clearBrokerFeeRates;//清算经纪费占比
+
+    private BigDecimal[] totalFinalFreightReturn2s;//尾程运费退回
+    private Float[] finalFreightReturn2Rates;//尾程运费退回占比
 
 
 }
