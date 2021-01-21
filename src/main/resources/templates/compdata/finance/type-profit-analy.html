@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('型号利润数据列表和分析图')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="gray-bg">
+<div class="container-div" th:width="3000px">
+    <div class="row" th:width="3000px">
+        <div class="col-sm-6 select-table " style="width: 500px;display: inline;float: left;">
+            <span style="float:left;font-size: 18px;">您可以选择需要做分析的月份：</span>
+            <input type="text" class="form-control" name="curMonthStr" id="form_date" placeholder="请选择分析月份："
+                   style="float:left;width: 100px;">
+            <button type="button" class="btn btn-info" style="float:left;width: 100px;" onclick="initPage()">分析</button>
+            <table id="bootstrap-table"></table>
+        </div>
+        <div class="col-sm-12" style="width:1150px;height:100%;display: inline;float: left;">
+            <div class="ibox float-e-margins" style="width:1100px;height:100%;display: inline;float: left;">
+                <div class="ibox-content" style="width:1100px;height:100%;">
+                    <div class="echarts" id="echarts" style="width:1100px;height:100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: echarts-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('compdata:finance:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('compdata:finance:remove')}]];
+        var prefix = ctx + "compdata/finance";
+        var totalCurMonthProfit = 0;
+        var profitGrowthRatios = new Array();;
+        $(function() {
+            init_month();
+            init_table();
+            init_echarts();
+
+        });
+        function init_table(){
+            var options = {
+                url: prefix + "/getTypeProfitAnalyVoList",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                importUrl: prefix + "/importData",
+                modalName: "型号利润数据",
+                pageSize: 100,
+                queryParams: function (params) {
+                    return {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                        offset: params.offset,
+                        limit: params.limit,
+                        curMonth: $("#form_date").val()
+                    }
+                },
+                columns: [
+                    {
+                        field: 'type',
+                        title: '型号'
+                    },
+                    {
+                        field: 'curMonthProfit',
+                        title: '本月毛利',
+                        formatter: function(value, row, index) {
+                            if(value==undefined||value=="") return value;
+                            return value.toFixed(0);
+                        }
+                    },
+                    {
+                        field: 'preMonthProfit',
+                        title: '上月毛利',
+                        formatter: function(value, row, index) {
+                            if(value==undefined||value=="") return value;
+                            return value.toFixed(0);
+                        },
+                        cellStyle: function (value, row, index) {
+                            if (value > 0) {
+                                return {css: {"background-color": "#afe2ab"}};
+                            }else if(value < 0){
+                                return {css: {"background-color": "#e7d2ea"}};
+                            }else{
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        field: 'profitGross',
+                        title: '毛利增长',
+                        formatter: function(value, row, index) {
+                            if(value==undefined||value=="") return value;
+                            return value.toFixed(0);
+                        }
+                    },
+                    {
+                        field: 'decliningProfitpercentage',
+                        title: '下滑利润占比',
+                        formatter: function(value, row, index) {
+                            var res = value*100;
+                            return res.toFixed(0)+"%";
+                        },
+                        cellStyle: function (value, row, index) {
+                            if (value > 0) {
+                                return {css: {"background-color": "#afe2ab"}};
+                            }else if(value < 0){
+                                return {css: {"background-color": "#e7d2ea"}};
+                            }else{
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        field: 'profitGrowthRatio',
+                        title: '毛利增长比例',
+                        formatter: function(value, row, index) {
+                            var res = value*100;
+                            return res.toFixed(0)+"%";
+                        }
+                    }]
+            };
+            $.table.init(options);
+        }
+
+        function initPage(){
+            $.table.search();
+            init_echarts();
+        }
+
+        var bWidth = 10;
+        function init_echarts(){
+            $.ajax({
+                url : prefix+"/getTypeProfitAnalysisData",
+                type : "GET",
+                dataType : "JSON",
+                // data: {
+                //     type: searchObj.type
+                // },
+                data:  {
+                    curMonth: $("#form_date").val()
+                },
+                success : function(res) {
+                    var data = res.data;
+                    var types = data.types;
+                    profitGrowthRatios = data.profitGrowthRatios;//获取本月总利润，用于计算展示柱形图上方数值
+                    init_chartWith2(types,[data.preMonthProfits,data.curMonthProfits],"echarts",
+                         "",[data.preMonth,data.curMonth],["#62d1de","#dc143c"],["bar","bar"],"",["",""]);
+                },
+                error : function(errorMsg) {
+                    console.log("errorMsg:"+errorMsg);
+                    layer.msg('服务器开了点小差，请稍后刷新页面!', {icon: 0});
+                    myChart.hideLoading();
+                }
+            });
+            //searchObj = {type:"",storeCode:"",asin:"",sku:"",changeSelect:""};
+        };
+
+        function  init_chartWith2(xData,yData,echartId,title,legend,color,echartType,xFmatter,yFmatter){
+            var barChart = echarts.init(document.getElementById(echartId));
+            var yFm = '{value}';
+            var xFm1 = '{c}';
+            var xFm2 = '{c}';
+            if(xFmatter!=undefined){
+                yFm = '{value}'+xFmatter;
+                xFm1 = '{c}'+yFmatter[0];
+                xFm2 = '{c}'+yFmatter[1];
+            }
+            var baroption = {
+                title: {
+                    text: title
+                },
+                backgroundColor: "#5f4242",
+                textStyle: {
+                    fontFamily: 'KaiTi',
+                    color: "#fff",
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: legend,
+                    textStyle: {
+                        fontFamily: 'KaiTi',
+                        color: "#fff",
+                    },
+                },
+                dataZoom: [
+                    {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 50
+                    },
+                    {
+                        type: 'inside',
+                        realtime: true,
+                        start: 0,
+                        end: 50
+                    }
+                ],
+                myFull: {
+                    show: true,
+                    title: '全屏查看',
+                    icon: `path://img/blue.png`,
+                    onclick: (e) => {
+                        const element = document.getElementById(e.option.value);
+                        if (element.requestFullScreen) { // HTML W3C 提议
+                            element.requestFullScreen();
+                        } else if (element.msRequestFullscreen) { // IE11
+                            element.msRequestFullScreen();
+                        } else if (element.webkitRequestFullScreen) { // Webkit (works in Safari5.1 and Chrome 15)
+                            element.webkitRequestFullScreen();
+                        } else if (element.mozRequestFullScreen) { // Firefox (works in nightly)
+                            element.mozRequestFullScreen();
+                        }
+                        // 退出全屏
+                        if (element.requestFullScreen) {
+                            document.exitFullscreen();
+                        } else if (element.msRequestFullScreen) {
+                            document.msExitFullscreen();
+                        } else if (element.webkitRequestFullScreen) {
+                            document.webkitCancelFullScreen();
+                        } else if (element.mozRequestFullScreen) {
+                            document.mozCancelFullScreen();
+                        }
+                    },
+                },
+
+                grid: {
+                    x: 15,
+                    x2: 20,
+                    y2: 12,
+                    containLabel: true
+                },
+                calculable: true,
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: xData,
+                        axisLabel: {
+                            interval: 0
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        //name: legend,
+                        type: 'value',
+                        axisLabel: {
+                            formatter: yFm,
+                            interval: 0
+                        }
+                    }
+                ],
+                color:color,
+                series: [
+                    {
+                        name: legend[0],
+                        type: echartType[0],
+                        data: yData[0],
+                        itemStyle : {
+                            normal: {
+                                label: {
+                                    //type: 'value'
+                                    show: true,
+                                    position: 'top',
+                                    //formatter: '{a}: {@score}',
+                                    formatter: '{c},({d}%)',
+                                }
+                            }
+                        },
+                        barWidth: bWidth,//柱状图长度
+                        yAxisIndex: 0,
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: 'white'
+                                }
+                            }
+                        },
+
+                    },{
+                        name: legend[1],
+                        type: echartType[1],
+                        data: yData[1],
+                        itemStyle : {
+                            normal: {
+                                label: {
+                                    show: false,
+                                    formatter: xFm2
+                                }
+                            }
+                        },
+                        barWidth: bWidth,//柱状图长度
+                        yAxisIndex: 0,
+                        label: {
+                            normal: {
+                                show: false,
+                                position: 'top',
+                                textStyle: {
+                                    color: 'black'
+                                }
+                            }
+                        },
+
+                    }
+                ]
+            };
+            baroption.series[0].itemStyle.normal.label.formatter=function(params){//重新计算柱形图上方的显示数值，数值为毛利增长比例
+                //return (params.value/totalCurMonthProfit*100).toFixed(3)+"%";▼
+                var profitGrowthRatio = profitGrowthRatios[params.dataIndex]*100
+                if(profitGrowthRatio<0){
+                    profitGrowthRatio='▼'+profitGrowthRatio.toFixed(0);//不保留小数;
+                }else{
+                    profitGrowthRatio='▲'+profitGrowthRatio.toFixed(0);//不保留小数;
+                    //profitGrowthRatio=+'▲';
+                }
+                return profitGrowthRatio+"%";
+            };
+            barChart.setOption(baroption);
+
+            window.onresize = barChart.resize;
+            setTimeout(function (){
+                window.onresize = function () {
+                    twChart.resize();
+                }
+            },200)
+
+        }
+
+        //设置时间选择器
+        $("#form_date").datetimepicker({
+            format: 'yyyy年mm月',
+            weekStart : 1,
+            todayBtn : true,
+            autoclose : 1,
+            startView : 'year',
+            maxView:'decade',
+            minView :'year',
+            forceParse : false,
+            pickerPosition: "bottom-left"
+
+        });
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+            //获取当前月
+            var month=myDate.getMonth()+1;
+            month = (month<10)?'0'+month:month;
+            //渲染页面上方输入月份的input
+            $("#form_date").val(year+"年"+month+"月");
+        }
+    </script>
+</body>
+</html>

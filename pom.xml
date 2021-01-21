@@ -58,6 +58,14 @@
             <scope>test</scope>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter</artifactId>-->
+<!--            <version>5.6.2</version>-->
+<!--            &lt;!&ndash;请注意这个scope的用法&ndash;&gt;-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
         <!-- SpringBoot 拦截器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

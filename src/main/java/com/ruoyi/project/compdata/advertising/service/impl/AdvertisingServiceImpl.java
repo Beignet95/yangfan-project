@@ -1,28 +1,29 @@
-package com.ruoyi.project.compdata.service.impl;
-
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+package com.ruoyi.project.compdata.advertising.service.impl;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
-import com.ruoyi.project.compdata.domain.Advertising;
-import com.ruoyi.project.compdata.mapper.AdvertisingMapper;
-import com.ruoyi.project.compdata.service.IAdvertisingService;
-import com.ruoyi.project.compdata.vo.*;
+import com.ruoyi.common.utils.text.Convert;
+import com.ruoyi.project.compdata.advertising.domain.Advertising;
+import com.ruoyi.project.compdata.advertising.mapper.AdvertisingMapper;
+import com.ruoyi.project.compdata.advertising.service.IAdvertisingService;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
 import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.utils.text.Convert;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 【请填写功能名称】Service业务层处理
@@ -113,29 +114,22 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         return advertisingMapper.deleteAdvertisingById(id);
     }
 
-    @Override
-    public String importData4AdVo(List<AdVo> list, Boolean isUpdateSupport) {
-        List<Advertising> adList = list.stream().map(vo->{
-            Advertising advertising = new Advertising();
-            BeanUtils.copyProperties(vo,advertising);
-            DateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
-            Date date = null;
-            try {
-                date = format.parse("2020年"+vo.getMonthStr()+"01日");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            advertising.setMonth(date);
-            advertising.setCtr(percentText2Float(vo.getCtrStr()));
-            advertising.setCvr(percentText2Float(vo.getCvrStr()));
-            advertising.setAcos(percentText2Float(vo.getAcosStr()));
-            advertising.setAdvertisingOrderPercentage(percentText2Float(vo.getAdvertisingOrderPercentageStr()));
-            advertising.setAcoas(percentText2Float(vo.getAcoasStr()));
-            advertising.setRefundRate(percentText2Float(vo.getRefundRateStr()));
-            return advertising;
-        }).collect(Collectors.toList());
-        return importData4Advertising(adList,isUpdateSupport);
-    }
+//    @Override
+//    public String importData4AdVo(List<Advertising> list, Boolean isUpdateSupport) {
+//        List<Advertising> adList = list.stream().map(vo->{
+//            Advertising advertising = new Advertising();
+//            BeanUtils.copyProperties(vo,advertising);
+//            advertising.setMonth(vo.getMonth());
+//            advertising.setCtr(percentText2Float(vo.getCtrStr()));
+//            advertising.setCvr(percentText2Float(vo.getCvrStr()));
+//            advertising.setAcos(percentText2Float(vo.getAcosStr()));
+//            advertising.setAdvertisingOrderPercentage(percentText2Float(vo.getAdvertisingOrderPercentageStr()));
+//            advertising.setAcoas(percentText2Float(vo.getAcoasStr()));
+//            advertising.setRefundRate(percentText2Float(vo.getRefundRateStr()));
+//            return advertising;
+//        }).collect(Collectors.toList());
+//        return importData4Advertising(adList,isUpdateSupport);
+//    }
 
 
     /**
@@ -171,12 +165,9 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         AdvertisingEchartsVo advertisingEchartsVo =  new AdvertisingEchartsVo();
 
         List<String> months = adExposureClickVoList.stream().map(vo->{
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = formatter.format(vo.getMonth());
-            String monthStr = dateString.substring(0,7);
-            return monthStr;
+            return vo.getMonth();
         }).collect(Collectors.toList());
-        advertisingEchartsVo.setMonthStrs(months.toArray(new String[months.size()]));
+        advertisingEchartsVo.setMonths(months.toArray(new String[months.size()]));
 
         List<Long> exposures = adExposureClickVoList.stream().map(vo->{
             return vo.getTotalExposure();
@@ -289,7 +280,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
     }
 
     @Override
-    public String importData4Advertising(List<Advertising> list, Boolean isUpdateSupport) {
+    public String importData(List<Advertising> list, Boolean isUpdateSupport) {
         if (StringUtils.isNull(list) || list.size() == 0)
         {
             throw new BusinessException("导入广告数据不能为空！");
@@ -299,39 +290,45 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
         String operName = ShiroUtils.getLoginName();
-        for (Advertising vo : list)
+        Date operTime = new Date();
+        for (Advertising advertising : list)
         {
             try
             {
                 // 验证是否存在这个广告数据
-                Advertising advertisingList = advertisingMapper.selectAdvertisingByOnlyCondition(vo.getStoreCode(),vo.getAsin(),vo.getMonth());
-                if (advertisingList==null)
+                Advertising advertisingList = advertisingMapper.selectAdvertisingByOnlyCondition(advertising.getStoreCode(),advertising.getAsin(),advertising.getMonth());
+                if (advertisingList==null&&StringUtils.isNotEmpty(advertising.getMonth()))
                 {
-                    this.insertAdvertising(vo);
+                    advertising.setCreateBy(operName);
+                    advertising.setCreateTime(operTime);
+                    this.insertAdvertising(advertising);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + vo.getStoreCode()+"商店"+vo.getMonth()+"月的"+vo.getSku() + " sku广告导入成功");
+                    successMsg.append("<br/>" + successNum + "、账号 " + advertising.getStoreCode()+"商店"+advertising.getMonth()+"月的"+advertising.getSku() + " sku广告导入成功");
                 }
                 else if (isUpdateSupport)
                 {
-                    vo.setUpdateBy(operName);
-                    this.updateAdvertisingByOnlyCondition(vo);
+                    advertising.setUpdateBy(operName);
+                    advertising.setUpdateTime(operTime);
+                    this.updateAdvertisingByOnlyCondition(advertising);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + vo.getStoreCode()+"商店"+vo.getMonth()+"月的"+vo.getSku() + " sku广告更新成功");
+                    successMsg.append("<br/>" + successNum + "、账号 " + advertising.getStoreCode()+"商店"+advertising.getMonth()+"月的"+advertising.getSku() + " sku广告更新成功");
                 }
                 else
                 {
+                    if (StringUtils.isEmpty(advertising.getMonth())) continue;
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、账号 " + vo.getStoreCode()+"商店"+vo.getMonth()+"月的"+vo.getSku() + " sku广告已存在");
+                    failureMsg.append("<br/>" + failureNum + "、账号 " + advertising.getStoreCode()+"商店"+advertising.getMonth()+"月的"+advertising.getSku() + " sku广告已存在");
                 }
             }
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、账号 " + vo.getStoreCode()+"商店"+vo.getMonth()+"月的"+vo.getSku() + " sku广告导入失败：";
+                String msg = "<br/>" + failureNum + "、账号 " + advertising.getStoreCode()+"商店"+advertising.getMonth()+"月的"+advertising.getSku() + " sku广告导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }
         }
+
         if (failureNum > 0)
         {
             failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");

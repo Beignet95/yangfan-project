@@ -1,11 +1,13 @@
 package com.ruoyi.project.compdata.finance.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo;
+import com.ruoyi.project.compdata.finance.vo.TypeProfitAnalyVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -70,4 +72,8 @@ public interface FinanceMapper
 
     int updateFinanceByOnlyCondition(Finance finance);
     List<String> selectDistinctColumn(@Param("columnName")String columnName, FinanceAnalyParamVo financeAnalyParamVo);
+
+    List<TypeProfitAnalyVo> selectTypeProfitAnalyVoList(Map params);
+
+    BigDecimal selectTotalProfitByMonth(String s);
 }

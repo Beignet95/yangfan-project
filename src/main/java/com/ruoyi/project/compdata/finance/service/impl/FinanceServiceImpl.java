@@ -1,24 +1,23 @@
 package com.ruoyi.project.compdata.finance.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.exception.BusinessException;
+import com.ruoyi.common.utils.Arith;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
-import com.ruoyi.common.utils.uuid.MathUtil;
-import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
-import com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo;
-import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
+import com.ruoyi.common.utils.math.MathUtil;
+import com.ruoyi.project.compdata.finance.vo.*;
 import com.ruoyi.project.system.config.service.IConfigService;
-import com.ruoyi.project.system.user.domain.User;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.compdata.finance.mapper.FinanceMapper;
@@ -182,9 +181,10 @@ public class FinanceServiceImpl implements IFinanceService
     /**
      * 获取财务echarts分析数据
      */
-    public FinanceEchartsVo selectFinanceEchartsVo(Finance finance) {
+    public FinanceEchartsVo selectFinanceEchartsVo(Finance finance) throws IllegalAccessException {
         List<FinanceAnalyVo> analyVoList = financeMapper.selectFinanceAgg(finance);
         FinanceEchartsVo echartsVo = new FinanceEchartsVo();
+
 
         List<String> months = analyVoList.stream().map(domain->{
             return domain.getMonth();
@@ -195,6 +195,19 @@ public class FinanceServiceImpl implements IFinanceService
             return domain.getTotalGrossProfit();
         }).collect(Collectors.toList());
         echartsVo.setTotalGrossProfits(grossProfits.toArray(new BigDecimal[grossProfits.size()]));
+
+        /**计算财务毛利环比 start**/
+        Float[] grossProfitGRs = new Float[analyVoList.size()];
+        for(int i=0;i<analyVoList.size();i++){
+            if(i==0){
+                grossProfitGRs[i]=null;
+            }else{
+               BigDecimal range =  analyVoList.get(i).getTotalGrossProfit().subtract(analyVoList.get(i-1).getTotalGrossProfit());
+                grossProfitGRs[i] =  MathUtil.float2PercentNum(Arith.div(range,analyVoList.get(i-1).getTotalGrossProfit(),0),0);
+            }
+        }
+        echartsVo.setGrossProfitGRs(grossProfitGRs);
+        /**计算财务毛利环比 end**/
 
         List<BigDecimal> totalAdvertisingFees = analyVoList.stream().map(domain->{
             return domain.getTotalAdvertisingFee();
@@ -448,4 +461,82 @@ public class FinanceServiceImpl implements IFinanceService
 
         return paramMap;
     }
+
+    @Override
+    public List<TypeProfitAnalyVo> selectTypeProfitAnalyVoList(String  curMonthStr) {
+        /**参数设置 start**/
+        if(StringUtils.isEmpty(curMonthStr)){
+            curMonthStr = DateUtils.getCurrentMonthStr("yyyy年MM月");
+        }
+        String preMonthStr = DateUtils.getPreviousMonthStr(curMonthStr,"yyyy年MM月");
+        Map params = new HashMap();
+        params.put("curMonth",curMonthStr);
+        params.put("preMonth",preMonthStr);
+        /**参数设置 end**/
+        List<TypeProfitAnalyVo> typeProfitAnalyVoList =
+                financeMapper.selectTypeProfitAnalyVoList(params);
+        BigDecimal totalProfit = financeMapper.selectTotalProfitByMonth(curMonthStr);
+        /**下滑利润占比 的计算与设置 **/
+        String finalCurMonthStr = curMonthStr;//我也不清楚为什么必须要这样赋值
+        typeProfitAnalyVoList = typeProfitAnalyVoList.stream().map(vo->{
+            TypeProfitAnalyVo typeProfitAnaly = new TypeProfitAnalyVo();
+            BeanUtils.copyProperties(vo,typeProfitAnaly);
+            Float decliningProfitpercentage = null;
+            try {
+                decliningProfitpercentage = Arith.div(vo.getProfitGross(),totalProfit,4);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            typeProfitAnaly.setDecliningProfitpercentage(decliningProfitpercentage);
+            typeProfitAnaly.setCurMonth(finalCurMonthStr);
+            typeProfitAnaly.setPreMonth(preMonthStr);
+            return typeProfitAnaly;
+        }).collect(Collectors.toList());
+        return  typeProfitAnalyVoList;
+    }
+
+    @Override
+    public TypeProfitEchartsVo selectTypeProfitEchartsVo(String curMonthStr) {
+        List<TypeProfitAnalyVo> typeProfitAnalyVoList = this.selectTypeProfitAnalyVoList(curMonthStr);
+        TypeProfitEchartsVo echartsVo = new TypeProfitEchartsVo();
+
+        List<String> types = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getType();
+        }).collect(Collectors.toList());
+        echartsVo.setTypes(types.toArray(new String[types.size()]));
+
+        List<BigDecimal> curMonthProfits = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getCurMonthProfit();
+        }).collect(Collectors.toList());
+        echartsVo.setCurMonthProfits(curMonthProfits.toArray(new BigDecimal[curMonthProfits.size()]));
+
+        List<BigDecimal> preMonthProfits = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getPreMonthProfit();
+        }).collect(Collectors.toList());
+        echartsVo.setPreMonthProfits(preMonthProfits.toArray(new BigDecimal[preMonthProfits.size()]));
+
+        List<BigDecimal> profitGrosses = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getProfitGross();
+        }).collect(Collectors.toList());
+        echartsVo.setProfitGrosses(profitGrosses.toArray(new BigDecimal[profitGrosses.size()]));
+
+        List<Float> decliningProfitpercentages = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getDecliningProfitpercentage();
+        }).collect(Collectors.toList());
+        echartsVo.setDecliningProfitpercentages(decliningProfitpercentages.toArray(new Float[decliningProfitpercentages.size()]));
+
+        List<Float> profitGrowthRatios = typeProfitAnalyVoList.stream().map(vo->{
+            return vo.getProfitGrowthRatio();
+        }).collect(Collectors.toList());
+        echartsVo.setProfitGrowthRatios(profitGrowthRatios.toArray(new Float[profitGrowthRatios.size()]));
+
+        /** 有数据的时，获取第一列的月份信息 **/
+        if(typeProfitAnalyVoList.size()>0){
+            echartsVo.setCurMonth(typeProfitAnalyVoList.get(0).getCurMonth());
+            echartsVo.setPreMonth(typeProfitAnalyVoList.get(0).getPreMonth());
+        }
+
+        return echartsVo;
+    }
+
 }

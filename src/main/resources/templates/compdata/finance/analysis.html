@@ -353,6 +353,7 @@
         searchObj.type = $("#type option:selected").val();
         searchObj.site = $("#site option:selected").val();
         searchObj.principal = $("#principal option:selected").val();
+        console.log("param:"+searchObj);
     }
 
     function init_searchArea(){
@@ -367,10 +368,6 @@
                 var types = res.data.types;
                 var sites = res.data.sites;
                 var principals = res.data.principals;;
-                var selectType = res.data.type;
-                var selectSite = res.data.site;
-                var selectPrincipal = res.data.principal;
-                //var changeSelect = res.data.changeSelect;
                 console.log("res.data:"+res.data);
 
                     $("#type").html('<option value="">所有</option>');
@@ -416,7 +413,9 @@
             success : function(res) {
                 var data = res.data;
                 var months = data.months;
-                init_chart(months,data.totalGrossProfits,"totalGrossProfits", "财务报表毛利",'',"#62d1de","bar");
+                //init_chart(months,data.totalGrossProfits,"totalGrossProfits", "财务报表毛利和环比",'',"#62d1de","bar");
+                init_chartW2W2Y(months,[data.totalGrossProfits,data.grossProfitGRs],"totalGrossProfits",
+                    "财务报表毛利和环比",["财务报表毛利","环比"],["#62d1de","#DC143C"],["bar","line"],[-1,0.1],["","%"]);
                 init_chart(months,data.advertisingFeeRates,"advertisingFeeRates", "广告费占比(ACoAS)和环比",'',"#62d1de","bar");
                 init_chart(months,data.totalAdvertisingFees,"totalAdvertisingFees", "广告花费",'',"#62d1de","bar");
                 //xData,yData,echartId,title,legend,color,echartType
@@ -624,7 +623,10 @@
 
     }
 
-    function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum){
+    function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum,yFm){
+        yFm = yFm==undefined?["",""]:yFm;
+        yFm[0] = yFm[0]==undefined?"":yFm[0];
+        yFm[1] = yFm[1]==undefined?"":yFm[1];
         var barChart = echarts.init(document.getElementById(echartId));
         var baroption = {
             title: {
@@ -692,7 +694,14 @@
                     name: legend[1],
                     type: echartType[1],
                     data: yData[1],
-                    itemStyle : { normal: {label : {show: true}}},
+                    itemStyle : {
+                        normal: {
+                            label : {
+                                show: true,
+                                formatter: '{c}'+yFm[1],
+                            }
+                        }
+                        },
                     barWidth: bWidth,//柱状图长度
                     yAxisIndex: 1,
                     label: {

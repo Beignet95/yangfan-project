@@ -1,4 +1,4 @@
-package com.ruoyi.project.compdata.vo;
+package com.ruoyi.project.compdata.advertising.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,15 +1,15 @@
 package com.ruoyi.project.compdata.finance.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
-import com.ruoyi.project.compdata.vo.AdvertisingAnalyParamVo;
-import com.ruoyi.project.compdata.vo.AdvertisingAnalySearchVo;
-import com.ruoyi.project.compdata.vo.AdvertisingEchartsVo;
-import com.ruoyi.project.system.user.domain.User;
+import com.ruoyi.project.compdata.finance.vo.TypeProfitAnalyVo;
+import com.ruoyi.project.compdata.finance.vo.TypeProfitEchartsVo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,8 +46,11 @@ public class FinanceController extends BaseController
 
     @RequiresPermissions("compdata:finance:view")
     @GetMapping()
-    public String finance()
+    public String finance(ModelMap mmap)
     {
+        FinanceAnalyParamVo financeAnalyParamVo = new FinanceAnalyParamVo();
+        Map searchMap = financeService.selectAnalySearch(financeAnalyParamVo);
+        mmap.put("searchMap",searchMap);
         return prefix + "/finance";
     }
 
@@ -134,7 +137,7 @@ public class FinanceController extends BaseController
         return toAjax(financeService.deleteFinanceByIds(ids));
     }
 
-    @Log(title = "用户管理", businessType = BusinessType.IMPORT)
+    @Log(title = "财务数据导入", businessType = BusinessType.IMPORT)
     @RequiresPermissions("compdata:finance:import")
     @PostMapping("/importData")
     @ResponseBody
@@ -143,10 +146,6 @@ public class FinanceController extends BaseController
         ExcelUtil<Finance> util = new ExcelUtil<Finance>(Finance.class);
         //List<Finance> financeList = null;
         List<Finance> financeList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),16);
-        List<Finance> financeList2 = util.importExcel(StringUtils.EMPTY,file.getInputStream(),16);
-        List<Finance> financeList3 = util.importExcel(StringUtils.EMPTY,file.getInputStream(),17);
-        List<Finance> financeList4 = util.importExcel(StringUtils.EMPTY,file.getInputStream(),18);
-        List<Finance> financeList5 = util.importExcel(StringUtils.EMPTY,file.getInputStream(),14);
         String message = financeService.importFinance(financeList, updateSupport);
         return AjaxResult.success(message);
     }
@@ -161,10 +160,9 @@ public class FinanceController extends BaseController
         return prefix + "/analysis";
     }
 
-    @Log(title = "财务分析数据", businessType = BusinessType.IMPORT)
     //@RequiresPermissions("compData:importCompTemplate")
     @GetMapping("/getAnalysisData")
-    //@RequiresPermissions("compdata:finance:analysis")
+    @RequiresPermissions("compdata:finance:analysis")
     @ResponseBody
     public AjaxResult getAnalysisData(Finance finance) throws Exception
     {
@@ -177,11 +175,48 @@ public class FinanceController extends BaseController
      * 获取搜索的关键信息
      */
     @GetMapping("/getAnalySearch")
+    @RequiresPermissions("compdata:finance:analysis")
     @ResponseBody
     public AjaxResult getAnalySearch(FinanceAnalyParamVo financeAnalyParamVo, ModelMap mmap)
     {
           Map searchMap = financeService.selectAnalySearch(financeAnalyParamVo);
 //        return AjaxResult.success(advertisingAnalySearchVo);
         return AjaxResult.success(searchMap);
+    }
+
+
+
+    /**
+     * 获取型号利润数据
+     */
+    @PostMapping("/getTypeProfitAnalyVoList")
+    @RequiresPermissions("compdata:finance:analysis")
+    @ResponseBody
+    public TableDataInfo getTypeProfitAnalyVoList(String curMonth)
+    {
+        List<TypeProfitAnalyVo> typeProfitAnalyVoList = financeService.selectTypeProfitAnalyVoList(curMonth);
+        TableDataInfo tableDataInfo = getDataTable(typeProfitAnalyVoList);
+        tableDataInfo.setTotal(typeProfitAnalyVoList.size());
+        return tableDataInfo;
+    }
+
+    /**
+     * 获取型号利润数据
+     */
+    @GetMapping("/typeProfitAnaly")
+    @RequiresPermissions("compdata:finance:analysis")
+    public String getTypeProfitAnalyVoList()
+    {
+        return prefix+"/type-profit-analy";
+    }
+
+    @GetMapping("/getTypeProfitAnalysisData")
+    @RequiresPermissions("compdata:finance:analysis")
+    @ResponseBody
+    public AjaxResult getTypeProfitAnalysisData(String curMonth) throws Exception
+    {
+
+        TypeProfitEchartsVo echartsVo = financeService.selectTypeProfitEchartsVo(curMonth);
+        return AjaxResult.success(echartsVo);
     }
 }

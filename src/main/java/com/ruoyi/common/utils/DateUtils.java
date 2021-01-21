@@ -172,4 +172,47 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         // long sec = diff % nd % nh % nm / ns;
         return day + "天" + hour + "小时" + min + "分钟";
     }
+
+    /**
+     * 获取本月月份字符串
+     * @return
+     */
+    public static String  getCurrentMonthStr(String formatStr){
+        SimpleDateFormat format = new SimpleDateFormat(formatStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        Date m = c.getTime();
+        String curMonthStr = format.format(m);
+        return curMonthStr;
+//        c.add(Calendar.MONTH, -1);
+//        m = c.getTime();
+//        String preMonthStr = format.format(m);
+//        System.out.println("本月为："+curMonthStr+",上月为："+preMonthStr);
+    }
+
+    /**
+     *
+     * @param currentMonthStr
+     * @return
+     */
+    public static String  getPreviousMonthStr(String currentMonthStr,String formatStr){
+        SimpleDateFormat format = new SimpleDateFormat(formatStr);
+        Calendar c = Calendar.getInstance();
+        Date date = null;
+        try {
+            // 注意格式需要与上面一致，不然会出现异常
+            date = format.parse(currentMonthStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        c.setTime(date);
+        c.add(Calendar.MONTH, -1);
+        Date m = c.getTime();
+        String preMonthStr = format.format(m);
+        return preMonthStr;
+//        c.add(Calendar.MONTH, -1);
+//        m = c.getTime();
+//        String preMonthStr = format.format(m);
+//        System.out.println("本月为："+curMonthStr+",上月为："+preMonthStr);
+    }
 }

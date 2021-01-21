@@ -6,6 +6,8 @@ import java.util.Map;
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.compdata.finance.vo.FinanceAnalyParamVo;
 import com.ruoyi.project.compdata.finance.vo.FinanceEchartsVo;
+import com.ruoyi.project.compdata.finance.vo.TypeProfitAnalyVo;
+import com.ruoyi.project.compdata.finance.vo.TypeProfitEchartsVo;
 
 /**
  * 财务数据Service接口
@@ -65,7 +67,11 @@ public interface IFinanceService
 
     String importFinance(List<Finance> financeList, boolean updateSupport);
 
-    FinanceEchartsVo selectFinanceEchartsVo(Finance finance);
+    FinanceEchartsVo selectFinanceEchartsVo(Finance finance) throws IllegalAccessException;
 
     Map selectAnalySearch(FinanceAnalyParamVo financeAnalyParamVo);
+
+    List<TypeProfitAnalyVo> selectTypeProfitAnalyVoList(String curMonthStr);
+
+    TypeProfitEchartsVo selectTypeProfitEchartsVo(String curMonthStr);
 }

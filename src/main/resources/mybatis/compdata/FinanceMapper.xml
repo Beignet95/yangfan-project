@@ -343,6 +343,22 @@
         </where>
     </select>
 
+    <select id="selectTypeProfitAnalyVoList" resultType="com.ruoyi.project.compdata.finance.vo.TypeProfitAnalyVo">
+        select cur.type,
+               cur.profit as curMonthProfit,
+               pre.profit as preMonthprofit ,
+               (cur.profit-pre.profit) as profitGross,
+               (cur.profit-pre.profit)/pre.profit as profitGrowthRatio
+        from
+        (select type,`month`,SUM(gross_profit) as profit from cpd_finance where `month`=#{curMonth} GROUP BY type,`month`) cur LEFT JOIN
+        (select type,`month`,SUM(gross_profit) as profit from cpd_finance where `month`=#{preMonth} GROUP BY type,`month`) pre
+            on cur.type=pre.type order by curMonthProfit desc
+    </select>
+
+    <select id="selectTotalProfitByMonth" resultType="java.math.BigDecimal" parameterType="String">
+        SELECT SUM(gross_profit) from  cpd_finance where `month`=#{month}
+    </select>
+
 
 
 </mapper>

@@ -1,4 +1,4 @@
-package com.ruoyi.project.compdata.vo;
+package com.ruoyi.project.compdata.advertising.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,8 +11,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdvertisingAnalyVo {
-    private Date month;
-    private String monthStr;
+    private String month;
+    //private String monthStr;
     private Long totalExposure;
     private Long totalClick;
     private Float methCtr;

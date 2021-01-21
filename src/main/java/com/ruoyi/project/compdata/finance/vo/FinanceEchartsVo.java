@@ -12,8 +12,10 @@ import java.math.BigDecimal;
 public class FinanceEchartsVo {
     private String[] months;
     private BigDecimal[] totalGrossProfits;//财务报表毛利
+    private Float[] grossProfitGRs;//GR=Growrh rate 意为增长率 财务报表毛利环比
     private Float[] advertisingFeeRates;
     private BigDecimal[] totalAdvertisingFees;
+    private Float[] advertisingFeeGRs;//GR=Growrh rate 意为增长率 广告费环比
     /**
      *  totalSalesRevenue totalCompensation compensationRate totalFinalFreight finalFreightRate
      *             totalPackagingFee packagingRage totalPromotionFee promotionFeeRate totalPlatformRefund

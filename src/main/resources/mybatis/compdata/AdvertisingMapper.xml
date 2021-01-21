@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.compdata.mapper.AdvertisingMapper">
+<mapper namespace="com.ruoyi.project.compdata.advertising.mapper.AdvertisingMapper">
 
 
 
@@ -55,12 +55,17 @@
         <result property="advertisingSales"    column="advertising_sales"    />
         <result property="sales"    column="sales"    />
         <result property="refund"    column="refund"    />
-        <result property="salesNum"    column="sales_num"    />
         <result property="orderNum"    column="order_num"    />
+        <result property="salesNum"    column="sales_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isdelete"    column="isdelete"    />
     </resultMap>
 
     <sql id="selectAdvertisingVo">
-        select id, store_code, country, type, asin, sku, click, exposure, month, ctr, cvr, advertising_order, advertising_spend, acos, cpc, advertising_order_percentage, acoas, refund_rate, sessions, advertising_sales, sales, refund, sales_num, order_num from cpd_advertising
+        select id, store_code, country, type, asin, sku, click, exposure, month, ctr, cvr, advertising_order, advertising_spend, acos, cpc, advertising_order_percentage, acoas, refund_rate, sessions, advertising_sales, sales, refund, order_num, sales_num, create_by, create_time, update_by, update_time, isdelete from cpd_advertising
     </sql>
 
     <select id="selectAdvertisingList" parameterType="Advertising" resultMap="AdvertisingResult">
@@ -73,7 +78,7 @@
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
             <if test="click != null "> and click = #{click}</if>
             <if test="exposure != null "> and exposure = #{exposure}</if>
-            <if test="month != null "> and month = #{month}</if>
+            <if test="month != null  and month != ''"> and month = #{month}</if>
             <if test="ctr != null "> and ctr = #{ctr}</if>
             <if test="cvr != null "> and cvr = #{cvr}</if>
             <if test="advertisingOrder != null "> and advertising_order = #{advertisingOrder}</if>
@@ -87,8 +92,9 @@
             <if test="advertisingSales != null "> and advertising_sales = #{advertisingSales}</if>
             <if test="sales != null "> and sales = #{sales}</if>
             <if test="refund != null "> and refund = #{refund}</if>
-            <if test="salesNum != null "> and sales_num = #{salesNum}</if>
             <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="salesNum != null "> and sales_num = #{salesNum}</if>
+            <if test="isdelete != null "> and isdelete = #{isdelete}</if>
         </where>
     </select>
 
@@ -121,8 +127,13 @@
             <if test="advertisingSales != null">advertising_sales,</if>
             <if test="sales != null">sales,</if>
             <if test="refund != null">refund,</if>
-            <if test="salesNum != null">sales_num,</if>
             <if test="orderNum != null">order_num,</if>
+            <if test="salesNum != null">sales_num,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isdelete != null">isdelete,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="storeCode != null">#{storeCode},</if>
@@ -146,8 +157,13 @@
             <if test="advertisingSales != null">#{advertisingSales},</if>
             <if test="sales != null">#{sales},</if>
             <if test="refund != null">#{refund},</if>
-            <if test="salesNum != null">#{salesNum},</if>
             <if test="orderNum != null">#{orderNum},</if>
+            <if test="salesNum != null">#{salesNum},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isdelete != null">#{isdelete},</if>
         </trim>
     </insert>
 
@@ -175,8 +191,13 @@
             <if test="advertisingSales != null">advertising_sales = #{advertisingSales},</if>
             <if test="sales != null">sales = #{sales},</if>
             <if test="refund != null">refund = #{refund},</if>
-            <if test="salesNum != null">sales_num = #{salesNum},</if>
             <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="salesNum != null">sales_num = #{salesNum},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isdelete != null">isdelete = #{isdelete},</if>
         </trim>
         where id = #{id}
     </update>
@@ -264,5 +285,102 @@
             <if test="advertisingAnalyParamVo.sku != null  and advertisingAnalyParamVo.sku != ''"> and sku = #{advertisingAnalyParamVo.sku}</if>
         </where>
     </select>
+
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        <foreach collection ="insertList" item="advertising" separator=";">
+        insert into cpd_advertising
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="advertising.storeCode != null">store_code,</if>
+            <if test="advertising.country != null">country,</if>
+            <if test="advertising.type != null">type,</if>
+            <if test="advertising.asin != null">asin,</if>
+            <if test="advertising.sku != null">sku,</if>
+            <if test="advertising.click != null">click,</if>
+            <if test="advertising.exposure != null">exposure,</if>
+            <if test="advertising.month != null">month,</if>
+            <if test="advertising.ctr != null">ctr,</if>
+            <if test="advertising.cvr != null">cvr,</if>
+            <if test="advertising.advertisingOrder != null">advertising_order,</if>
+            <if test="advertising.advertisingSpend != null">advertising_spend,</if>
+            <if test="advertising.acos != null">acos,</if>
+            <if test="advertising.cpc != null">cpc,</if>
+            <if test="advertising.advertisingOrderPercentage != null">advertising_order_percentage,</if>
+            <if test="advertising.acoas != null">acoas,</if>
+            <if test="advertising.refundRate != null">refund_rate,</if>
+            <if test="advertising.sessions != null">sessions,</if>
+            <if test="advertising.advertisingSales != null">advertising_sales,</if>
+            <if test="advertising.sales != null">sales,</if>
+            <if test="advertising.refund != null">refund,</if>
+            <if test="advertising.orderNum != null">order_num,</if>
+            <if test="advertising.salesNum != null">sales_num,</if>
+            <if test="advertising.createBy != null">create_by,</if>
+            <if test="advertising.createTime != null">create_time,</if>
+            <if test="advertising.updateBy != null">update_by,</if>
+            <if test="advertising.updateTime != null">update_time,</if>
+            <if test="advertising.isdelete != null">isdelete,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="advertising.storeCode != null">#{advertising.storeCode},</if>
+            <if test="advertising.country != null">#{advertising.country},</if>
+            <if test="advertising.type != null">#{advertising.type},</if>
+            <if test="advertising.asin != null">#{advertising.asin},</if>
+            <if test="advertising.sku != null">#{advertising.sku},</if>
+            <if test="advertising.click != null">#{advertising.click},</if>
+            <if test="advertising.exposure != null">#{advertising.exposure},</if>
+            <if test="advertising.month != null">#{advertising.month},</if>
+            <if test="advertising.ctr != null">#{advertising.ctr},</if>
+            <if test="advertising.cvr != null">#{advertising.cvr},</if>
+            <if test="advertising.advertisingOrder != null">#{advertising.advertisingOrder},</if>
+            <if test="advertising.advertisingSpend != null">#{advertising.advertisingSpend},</if>
+            <if test="advertising.acos != null">#{advertising.acos},</if>
+            <if test="advertising.cpc != null">#{advertising.cpc},</if>
+            <if test="advertising.advertisingOrderPercentage != null">#{advertising.advertisingOrderPercentage},</if>
+            <if test="advertising.acoas != null">#{advertising.acoas},</if>
+            <if test="advertising.refundRate != null">#{advertising.refundRate},</if>
+            <if test="advertising.sessions != null">#{advertising.sessions},</if>
+            <if test="advertising.advertisingSales != null">#{advertising.advertisingSales},</if>
+            <if test="advertising.sales != null">#{advertising.sales},</if>
+            <if test="advertising.refund != null">#{advertising.refund},</if>
+            <if test="advertising.orderNum != null">#{advertising.orderNum},</if>
+            <if test="advertising.salesNum != null">#{advertising.salesNum},</if>
+            <if test="advertising.createBy != null">#{advertising.createBy},</if>
+            <if test="advertising.createTime != null">#{advertising.createTime},</if>
+            <if test="advertising.updateBy != null">#{advertising.updateBy},</if>
+            <if test="advertising.updateTime != null">#{advertising.updateTime},</if>
+            <if test="advertising.isdelete != null">#{advertising.isdelete},</if>
+
+        </trim>
+        </foreach>
+    </insert>
+
+    <update id="batchUpdateByOnlyCondition" parameterType="Advertising">
+        update cpd_advertising
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="click != null">click = #{click},</if>
+            <if test="exposure != null">exposure = #{exposure},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="ctr != null">ctr = #{ctr},</if>
+            <if test="cvr != null">cvr = #{cvr},</if>
+            <if test="advertisingOrder != null">advertising_order = #{advertisingOrder},</if>
+            <if test="advertisingSpend != null">advertising_spend = #{advertisingSpend},</if>
+            <if test="acos != null">acos = #{acos},</if>
+            <if test="cpc != null">cpc = #{cpc},</if>
+            <if test="advertisingOrderPercentage != null">advertising_order_percentage = #{advertisingOrderPercentage},</if>
+            <if test="acoas != null">acoas = #{acoas},</if>
+            <if test="refundRate != null">refund_rate = #{refundRate},</if>
+            <if test="sessions != null">sessions = #{sessions},</if>
+            <if test="advertisingSales != null">advertising_sales = #{advertisingSales},</if>
+            <if test="sales != null">sales = #{sales},</if>
+            <if test="refund != null">refund = #{refund},</if>
+            <if test="salesNum != null">sales_num = #{salesNum},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+        </trim>
+        where store_code = #{storeCode} and asin = #{asin} and month = #{month}
+    </update>
 
 </mapper>

@@ -1,8 +1,12 @@
-package com.ruoyi.project.compdata.service;
+package com.ruoyi.project.compdata.advertising.service;
+
+import com.ruoyi.project.compdata.advertising.domain.Advertising;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
 
 import java.util.List;
-import com.ruoyi.project.compdata.domain.Advertising;
-import com.ruoyi.project.compdata.vo.*;
 
 /**
  * 【请填写功能名称】Service接口
@@ -60,9 +64,7 @@ public interface IAdvertisingService
      */
     public int deleteAdvertisingById(Long id);
 
-    String importData4Advertising(List<Advertising> list, Boolean isUpdateSupport);
-
-    String importData4AdVo(List<AdVo> list,Boolean isUpdateSupport);
+    String importData(List<Advertising> list,Boolean isUpdateSupport);
 
     List<AdvertisingAnalyVo> selectAdExposureClickVo(AdvertisingAnalyParamVo advertisingAnalyParamVo);
 

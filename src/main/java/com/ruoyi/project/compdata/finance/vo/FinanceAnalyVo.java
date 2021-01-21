@@ -15,8 +15,10 @@ import java.math.BigDecimal;
 public class FinanceAnalyVo {
     private String month;//增长率
     private BigDecimal totalGrossProfit;//财务报表毛利
+    //private Float grossProfitGR;//GR=Growrh rate 意为增长率 财务报表毛利环比
     private Float advertisingFeeRate;
     private BigDecimal totalAdvertisingFee;
+    //private Float advertisingFeeGR;//GR=Growrh rate 意为增长率 广告费环比
     /**
      *  totalSalesRevenue totalCompensation compensationRate totalFinalFreight finalFreightRate
      *             totalPackagingFee packagingRage totalPromotionFee promotionFeeRate totalPlatformRefund

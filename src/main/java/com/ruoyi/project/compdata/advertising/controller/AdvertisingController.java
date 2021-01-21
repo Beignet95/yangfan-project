@@ -1,24 +1,26 @@
-package com.ruoyi.project.compdata.controller;
+package com.ruoyi.project.compdata.advertising.controller;
 
-import java.util.List;
-
-import com.ruoyi.project.compdata.domain.Advertising;
-import com.ruoyi.project.compdata.service.IAdvertisingService;
-import com.ruoyi.project.compdata.vo.AdVo;
-import com.ruoyi.project.compdata.vo.AdvertisingAnalyParamVo;
-import com.ruoyi.project.compdata.vo.AdvertisingAnalySearchVo;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.framework.aspectj.lang.annotation.Log;
+import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
+import com.ruoyi.framework.web.controller.BaseController;
+import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.framework.web.page.TableDataInfo;
+import com.ruoyi.project.compdata.advertising.domain.Advertising;
+import com.ruoyi.project.compdata.advertising.service.IAdvertisingService;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
+import com.ruoyi.project.compdata.finance.domain.Finance;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import com.ruoyi.framework.aspectj.lang.annotation.Log;
-import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
-import com.ruoyi.framework.web.controller.BaseController;
-import com.ruoyi.framework.web.domain.AjaxResult;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.framework.web.page.TableDataInfo;
-import org.springframework.web.servlet.tags.Param;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 【请填写功能名称】Controller
@@ -37,8 +39,11 @@ public class AdvertisingController extends BaseController
 
     @RequiresPermissions("compdata:advertising:view")
     @GetMapping()
-    public String advertising()
+    public String advertising(ModelMap mmap)
     {
+        AdvertisingAnalyParamVo advertisingAnalyParamVo = new AdvertisingAnalyParamVo();
+        AdvertisingAnalySearchVo advertisingAnalySearchVo = advertisingService.selectAdvertisingAnalySearchVo(advertisingAnalyParamVo);
+        mmap.put("searchMap",advertisingAnalySearchVo);
         return prefix + "/advertising";
     }
 
@@ -129,10 +134,49 @@ public class AdvertisingController extends BaseController
      * 修改【请填写功能名称】
      */
     @GetMapping("/getAdvertisingAnalySearch")
+    @RequiresPermissions("compdata:advertising:analysis")
     @ResponseBody
     public AjaxResult getAdvertisingAnalySearch(AdvertisingAnalyParamVo advertisingAnalyParamVo, ModelMap mmap)
     {
           AdvertisingAnalySearchVo advertisingAnalySearchVo = advertisingService.selectAdvertisingAnalySearchVo(advertisingAnalyParamVo);
           return AjaxResult.success(advertisingAnalySearchVo);
     }
+
+    /**
+     * 广告分析页面
+     */
+    @GetMapping("/analysis")
+    @RequiresPermissions("compdata:advertising:analysis")
+    public String analysis(ModelMap mmap)
+    {
+        return prefix + "/analysis";
+    }
+
+    @Log(title = "广告数据导入", businessType = BusinessType.IMPORT)
+    @RequiresPermissions("compdata:advertising:import")
+    @PostMapping("/importData")
+    @ResponseBody
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<Advertising> util = new ExcelUtil<Advertising>(Advertising.class);
+        List<Advertising> AdvertisingList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),0);
+        String message = advertisingService.importData(AdvertisingList, updateSupport);
+        return AjaxResult.success(message);
+    }
+
+    /**
+     * 获取广告分析数据
+     * @param advertisingAnalyParamVo
+     * @param mmap
+     * @return
+     */
+    @GetMapping("/getAnalysisData")
+    @RequiresPermissions("compdata:advertising:analysis")
+    @ResponseBody
+    public AjaxResult getAnalysisData(AdvertisingAnalyParamVo advertisingAnalyParamVo, ModelMap mmap)
+    {
+        AdvertisingEchartsVo advertisingEchartsVo = advertisingService.selectAdvertisingEchartsVo(advertisingAnalyParamVo);
+        return AjaxResult.success(advertisingEchartsVo);
+    }
+
 }

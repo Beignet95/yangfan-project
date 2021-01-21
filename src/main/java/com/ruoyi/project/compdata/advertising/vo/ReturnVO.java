@@ -1,4 +1,4 @@
-package com.ruoyi.project.compdata.vo;
+package com.ruoyi.project.compdata.advertising.vo;
 
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import lombok.AllArgsConstructor;

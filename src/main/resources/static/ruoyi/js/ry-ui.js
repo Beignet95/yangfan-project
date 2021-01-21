@@ -409,7 +409,7 @@ var table = {
                     btn1: function(index, layero){
                         var file = layero.find('#file').val();
                         if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx')&& !$.common.endWith(file, '.xlsm'))){
-                            $.modal.msgWarning("请选择后缀为 “xls”或“xlsx”的文件。");
+                            $.modal.msgWarning("请选择后缀为 “xls” “xlsm”或“xlsx”的文件。");
                             return false;
                         }
                         var index = layer.load(2, {shade: false});
@@ -461,8 +461,8 @@ var table = {
                     shadeClose: true,
                     btn1: function(index, layero){
                         var file = layero.find('#file').val();
-                        if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx'))){
-                            $.modal.msgWarning("请选择后缀为 “xls”或“xlsx”的文件。");
+                        if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx')&& !$.common.endWith(file, '.xlsm'))){
+                            $.modal.msgWarning("请选择后缀为 “xls”,“xlsm”或“xlsx”的文件。");
                             return false;
                         }
                         var index = layer.load(2, {shade: false});

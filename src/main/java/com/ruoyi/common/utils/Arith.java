@@ -111,4 +111,15 @@ public class Arith
         BigDecimal one = new BigDecimal("1");
         return b.divide(one, scale, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static Float div(BigDecimal value1,BigDecimal value2,int scale) throws IllegalAccessException{
+        //如果精确范围小于0，抛出异常信息
+        if(scale<0){
+            throw new IllegalAccessException("精确度不能小于0");
+        }
+        if(value1==null||value2==null){
+            return 0f;
+        }
+        return value1.divide(value2, scale).floatValue();
+    }
 }

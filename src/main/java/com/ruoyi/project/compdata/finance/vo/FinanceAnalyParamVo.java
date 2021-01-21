@@ -4,7 +4,7 @@ import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 
 public class FinanceAnalyParamVo {
     /** 月份 */
-    private String month;
+    //private String month;
 
     /** 站点 */
     private String site;

@@ -512,6 +512,7 @@ public class Convert
         }
         try
         {
+            if(valueStr.contains("%")) return Float.parseFloat(valueStr.replace("%",""))/100;
             return Float.parseFloat(valueStr.trim());
         }
         catch (Exception e)

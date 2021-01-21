@@ -1,4 +1,4 @@
-package com.ruoyi.project.compdata.vo;
+package com.ruoyi.project.compdata.advertising.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdvertisingEchartsVo {
-    private String[] monthStrs;
+    private String[] months;
     private Long[] totalExposures;
     private Long[] totalClicks;
     private Float[] methCtrs;
