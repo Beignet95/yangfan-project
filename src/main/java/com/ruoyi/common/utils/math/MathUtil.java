@@ -26,4 +26,16 @@ public class MathUtil {
         float   f   =  b.setScale(decimalNum, BigDecimal.ROUND_HALF_UP).floatValue();
         return f;
     }
+
+    /**
+     * Float数据保留小数方法
+     * @param floatNum
+     * @return
+     */
+    public static Float keepDecimals(Float floatNum,int decimalNum){
+        if(floatNum==null) return 0f;
+        BigDecimal b  =   new BigDecimal(floatNum);
+        float   f   =  b.setScale(decimalNum, BigDecimal.ROUND_HALF_UP).floatValue();
+        return f;
+    }
 }

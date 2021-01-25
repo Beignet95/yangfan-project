@@ -5,6 +5,7 @@ import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
+import com.ruoyi.project.pms.relation.domain.AsinTypeRelation;
 
 import java.util.List;
 
@@ -73,4 +74,8 @@ public interface IAdvertisingService
     void updateAdvertisingByOnlyCondition(Advertising vo);
 
     AdvertisingAnalySearchVo selectAdvertisingAnalySearchVo(AdvertisingAnalyParamVo advertisingAnalyParamVo);
+
+    int updateAdvertisingByAsinTypeRelation(List<AsinTypeRelation> relations);
+
+    List<Advertising> selectAdvertisingWhenTypeIsNull();
 }

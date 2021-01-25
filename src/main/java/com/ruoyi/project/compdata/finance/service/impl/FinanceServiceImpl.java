@@ -196,18 +196,24 @@ public class FinanceServiceImpl implements IFinanceService
         }).collect(Collectors.toList());
         echartsVo.setTotalGrossProfits(grossProfits.toArray(new BigDecimal[grossProfits.size()]));
 
-        /**计算财务毛利环比 start**/
+        /**计算财务毛利环比,广告费环比 start**/
         Float[] grossProfitGRs = new Float[analyVoList.size()];
+        Float[] advertisingFeeRateGRs = new Float[analyVoList.size()];
         for(int i=0;i<analyVoList.size();i++){
             if(i==0){
                 grossProfitGRs[i]=null;
+                advertisingFeeRateGRs[i]=null;
             }else{
-               BigDecimal range =  analyVoList.get(i).getTotalGrossProfit().subtract(analyVoList.get(i-1).getTotalGrossProfit());
+                //计算财务毛利环比
+                BigDecimal range =  analyVoList.get(i).getTotalGrossProfit().subtract(analyVoList.get(i-1).getTotalGrossProfit());
                 grossProfitGRs[i] =  MathUtil.float2PercentNum(Arith.div(range,analyVoList.get(i-1).getTotalGrossProfit(),0),0);
+                //计算广告费环比
+                advertisingFeeRateGRs[i] =  MathUtil.float2PercentNum(analyVoList.get(i).getAdvertisingFeeRate()-analyVoList.get(i-1).getAdvertisingFeeRate(),2);
             }
         }
         echartsVo.setGrossProfitGRs(grossProfitGRs);
-        /**计算财务毛利环比 end**/
+        echartsVo.setAdvertisingFeeRateGRs(advertisingFeeRateGRs);
+        /**计算财务毛利环比,广告费环比 end**/
 
         List<BigDecimal> totalAdvertisingFees = analyVoList.stream().map(domain->{
             return domain.getTotalAdvertisingFee();

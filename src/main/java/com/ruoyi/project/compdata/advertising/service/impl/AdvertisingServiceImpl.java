@@ -2,6 +2,7 @@ package com.ruoyi.project.compdata.advertising.service.impl;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.math.MathUtil;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.common.utils.text.Convert;
 import com.ruoyi.project.compdata.advertising.domain.Advertising;
@@ -11,8 +12,11 @@ import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
+import com.ruoyi.project.pms.relation.domain.AsinTypeRelation;
+import com.ruoyi.project.pms.relation.service.IAsinTypeRelationService;
 import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
+import org.apache.commons.math3.util.MathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,9 @@ public class AdvertisingServiceImpl implements IAdvertisingService
 
     @Autowired
     private IConfigService configService;
+
+    @Autowired
+    private IAsinTypeRelationService asinTypeRelationService;
 
     /**
      * 查询【请填写功能名称】列表
@@ -180,8 +187,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         advertisingEchartsVo.setTotalClicks(clicks.toArray(new Long[clicks.size()]));
 
         List<Float> methCtrs = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethCtr()==null) return 0f;
-            return vo.getMethCtr()*100;
+            return MathUtil.float2PercentNum(vo.getMethCtr(),2);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethCtrs(methCtrs.toArray(new Float[methCtrs.size()]));
 
@@ -191,8 +197,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         advertisingEchartsVo.setTotalAdvertisingOrders(totalAdvertisingOrders.toArray(new Integer[totalAdvertisingOrders.size()]));
 
         List<Float> methCvrs = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethCvr()==null) return 0f;
-            return vo.getMethCvr()*100;
+            return MathUtil.float2PercentNum(vo.getMethCvr(),0);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethCvrs(methCvrs.toArray(new Float[methCvrs.size()]));
 
@@ -202,8 +207,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         advertisingEchartsVo.setMaxSessionses(maxSessionses.toArray(new Integer[maxSessionses.size()]));
 
         List<Float> maxCvrs = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMaxCvr()==null) return 0f;
-            return vo.getMaxCvr()*100;
+           return  MathUtil.float2PercentNum(vo.getMaxCvr(),0);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMaxCvrs(maxCvrs.toArray(new Float[maxCvrs.size()]));
 
@@ -213,42 +217,38 @@ public class AdvertisingServiceImpl implements IAdvertisingService
         advertisingEchartsVo.setTotalAdvertisingSpends(totalAdvertisingSpends.toArray(new Integer[totalAdvertisingSpends.size()]));
 
         List<BigDecimal> totalSaleses = adExposureClickVoList.stream().map(vo->{
-            return vo.getTotalSales();
+            return vo.getTotalSales().setScale(0, BigDecimal.ROUND_HALF_UP);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setTotalSaleses(totalSaleses.toArray(new BigDecimal[totalSaleses.size()]));
 
         List<BigDecimal> totalAdvertisingSaleses = adExposureClickVoList.stream().map(vo->{
-            return vo.getTotalAdvertisingSales();
+            return vo.getTotalAdvertisingSales().setScale(0, BigDecimal.ROUND_HALF_UP);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setTotalAdvertisingSaleses(totalAdvertisingSaleses.toArray(new BigDecimal[totalAdvertisingSaleses.size()]));
 
         List<Float> methAcoses = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethAcos()==null) return 0f;
-            return vo.getMethAcos()*100;
+            return MathUtil.float2PercentNum(vo.getMethAcos(),0);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethAcoses(methAcoses.toArray(new Float[methAcoses.size()]));
 
         List<Float> methCpcs = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethCpc()==null) return 0f;
-            return vo.getMethCpc();
+            return MathUtil.keepDecimals(vo.getMethCpc(),2);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethCpcs(methCpcs.toArray(new Float[methCpcs.size()]));
 
         List<Float> methAcoases = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethAcoas()==null) return 0f;
-            return vo.getMethAcoas()*100;
+            return MathUtil.float2PercentNum(vo.getMethAcoas(),0);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethAcoases(methAcoases.toArray(new Float[methAcoases.size()]));
 
         List<Float> methRefundRates = adExposureClickVoList.stream().map(vo->{
-            if(vo.getMethRefundRate()==null) return 0f;
-            return vo.getMethRefundRate()*100;
+            return MathUtil.float2PercentNum(vo.getMethRefundRate(),1);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethRefundRates(methRefundRates.toArray(new Float[methRefundRates.size()]));
 
         List<Float> methAdvertisingOrderPercentages = adExposureClickVoList.stream().map(vo->{
             if(vo.getMethAdvertisingOrderPercentage()==null) return 0f;
-            return vo.getMethAdvertisingOrderPercentage()*100;
+            return MathUtil.float2PercentNum(vo.getMethAdvertisingOrderPercentage(),0);
         }).collect(Collectors.toList());
         advertisingEchartsVo.setMethAdvertisingOrderPercentages(methAdvertisingOrderPercentages.toArray(new Float[methAdvertisingOrderPercentages.size()]));
 
@@ -280,6 +280,16 @@ public class AdvertisingServiceImpl implements IAdvertisingService
     }
 
     @Override
+    public int updateAdvertisingByAsinTypeRelation(List<AsinTypeRelation> relations) {
+        return advertisingMapper.updateAdvertisingByAsinTypeRelation(relations);
+    }
+
+    @Override
+    public List<Advertising> selectAdvertisingWhenTypeIsNull() {
+        return advertisingMapper.selectAdvertisingWhenTypeIsNull();
+    }
+
+    @Override
     public String importData(List<Advertising> list, Boolean isUpdateSupport) {
         if (StringUtils.isNull(list) || list.size() == 0)
         {
@@ -299,6 +309,13 @@ public class AdvertisingServiceImpl implements IAdvertisingService
                 Advertising advertisingList = advertisingMapper.selectAdvertisingByOnlyCondition(advertising.getStoreCode(),advertising.getAsin(),advertising.getMonth());
                 if (advertisingList==null&&StringUtils.isNotEmpty(advertising.getMonth()))
                 {
+                    /** 自动填充type start **/
+                    if(StringUtils.isEmpty(advertising.getType())){
+                        AsinTypeRelation relation = asinTypeRelationService.selectAsinTypeRelationByAsin(advertising.getAsin());
+                        String type = relation.getType();
+                        advertising.setType(type);
+                    }
+                    /** 自动填充type end **/
                     advertising.setCreateBy(operName);
                     advertising.setCreateTime(operTime);
                     this.insertAdvertising(advertising);
@@ -307,6 +324,14 @@ public class AdvertisingServiceImpl implements IAdvertisingService
                 }
                 else if (isUpdateSupport)
                 {
+
+                    /** 自动填充type start **/
+                    if(StringUtils.isEmpty(advertising.getType())){
+                        AsinTypeRelation relation = asinTypeRelationService.selectAsinTypeRelationByAsin(advertising.getAsin());
+                        String type = relation.getType();
+                        advertising.setType(type);
+                    }
+                    /** 自动填充type end **/
                     advertising.setUpdateBy(operName);
                     advertising.setUpdateTime(operTime);
                     this.updateAdvertisingByOnlyCondition(advertising);

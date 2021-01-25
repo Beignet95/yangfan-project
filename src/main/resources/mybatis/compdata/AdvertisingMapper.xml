@@ -383,4 +383,29 @@
         where store_code = #{storeCode} and asin = #{asin} and month = #{month}
     </update>
 
+<!--    <update id="updateAdvertisingByAsinTypeRelation" parameterType="AsinTypeRelation">-->
+<!--        update  cpd_advertising set type=#{type} where type is NULL and asin=#{asin}-->
+<!--    </update>-->
+
+    <!-- 批量更新第二种方法，通过 case when语句变相的进行批量更新 -->
+    <update id="updateAdvertisingByAsinTypeRelation" parameterType="java.util.List" >
+        <foreach collection="list" item="item" index="index" separator=";">
+            update cpd_advertising
+        <trim prefix="set" suffixOverrides=",">
+                 type=#{item.type}
+        </trim>
+        where type is null and asin=#{item.asin}
+        </foreach>
+    </update>
+
+
+    <!-- 防止数据量大的时候查询速度变慢，这里使用了union all -->
+    <select id="selectAdvertisingWhenTypeIsNull" resultMap="AdvertisingResult">
+        <include refid="selectAdvertisingVo"/>
+        where type is null
+        union all
+        <include refid="selectAdvertisingVo"/>
+        where type =''
+    </select>
+
 </mapper>

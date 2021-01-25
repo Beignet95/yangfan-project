@@ -295,8 +295,8 @@
             success : function(res) {
                 var data = res.data;
                 //init_totalExposure_totalClick_bar(data);totalExposure_TotalClick_bar
-                init_chartWith2(data.months,[data.totalExposures,data.totalClicks],"totalExposure_TotalClick_bar", "曝光和点击维度分析",['曝光','点击'],
-                    ["#62d1de","#dc143c"],["bar","bar"]);
+                init_chartW2W2Y(data.months,[data.totalExposures,data.totalClicks],"totalExposure_TotalClick_bar", "曝光和点击维度分析",['曝光','点击'],
+                    ["#62d1de","#dc143c"],["bar","line"],[-1,-1]);
                 //init_methCtrs_line(data); methCtrs_line
                 init_chart(data.months,data.methCtrs,"methCtrs_line","点击率(CTR)趋势分析","","#62d1de","line",-1,"%");
                 //init_totalClick_totalAdvertisingOrder_bar(data);
@@ -310,10 +310,10 @@
                 init_chart(data.months,data.maxCvrs,"maxCvr-line","CVR(订单量/流量)趋势分析","","#62d1de","line",-1,"%");
                 //init_totalAdvertisingSpends_totalAdvertisingSaleses_bar(data); totalAdvertisingSpends-totalAdvertisingSaleses-bar
                 init_chartWith2(data.months,[data.totalAdvertisingSpends,data.totalAdvertisingSaleses],"totalAdvertisingSpends-totalAdvertisingSaleses-bar",
-                    "广告花费和广告销售额维度分析",['广告花费','广告销售额'], ["#62d1de","#dc143c"],["bar","bar"]);
+                    "广告花费和广告销售额维度分析",['广告花费','广告销售额'], ["#62d1de","#dc143c"],["bar","line"]);
                 //init_totalAdvertisingSpends_totalSaleses_bar(data);
                 init_chartWith2(data.months,[data.totalAdvertisingSpends,data.totalSaleses],"totalAdvertisingSpends-totalSaleses-bar",
-                    "广告花费和总销售额维度分析",['广告花费','总销售额'], ["#62d1de","#dc143c"],["bar","bar"]);
+                    "广告花费和总销售额维度分析",['广告花费','总销售额'], ["#62d1de","#dc143c"],["bar","line"]);
                 //init_methAcos_line(data);
                 init_chart(data.months,data.methAcoses,"methAcos-line","ACOS(广告花费/广告销售额)分析","","#62d1de","line",-1,"%");
                 //init_methCpc_line(data);

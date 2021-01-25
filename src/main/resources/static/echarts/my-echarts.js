@@ -182,7 +182,13 @@ function  init_chartWith2(xData,yData,echartId,title,legend,color,echartType,xFm
 
 }
 
-function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum){
+function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,rangeFloorNum,xFm,yFm){
+    yFm = yFm==undefined?["",""]:yFm;
+    yFm[0] = yFm[0]==undefined?"":yFm[0];
+    yFm[1] = yFm[1]==undefined?"":yFm[1];
+    xFm = xFm==undefined?["",""]:xFm;
+    xFm[0] = xFm[0]==undefined?"":xFm[0];
+    xFm[1] = xFm[1]==undefined?"":xFm[1];
     var barChart = echarts.init(document.getElementById(echartId));
     var baroption = {
         title: {
@@ -212,6 +218,9 @@ function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,ran
             {
                 //name: legend[0],
                 type: 'value',
+                axisLabel: {
+                    formatter: '{value}'+xFm[0]
+                },
                 min: function(value) {
                     return mixValue(value,rangeFloorNum[0]);
                 },
@@ -220,7 +229,7 @@ function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,ran
                 //name: legend[1],
                 type: 'value',
                 axisLabel: {
-                    formatter: '{value} %'
+                    formatter: '{value}'+xFm[1]
                 },
                 min: function(value) {
                     return mixValue(value,rangeFloorNum[1]);
@@ -233,7 +242,14 @@ function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,ran
                 name: legend[0],
                 type: echartType[0],
                 data: yData[0],
-                itemStyle : { normal: {label : {show: true}}},
+                itemStyle : {
+                    normal: {
+                        label : {
+                            show: true,
+                            formatter: '{c}'+yFm[0],
+                        }
+                    }
+                },
                 barWidth: bWidth,//柱状图长度
                 yAxisIndex: 0,
                 label: {
@@ -250,7 +266,14 @@ function  init_chartW2W2Y(xData,yData,echartId,title,legend,color,echartType,ran
                 name: legend[1],
                 type: echartType[1],
                 data: yData[1],
-                itemStyle : { normal: {label : {show: true}}},
+                itemStyle : {
+                    normal: {
+                        label : {
+                            show: true,
+                            formatter: '{c}'+yFm[1],
+                        }
+                    }
+                },
                 barWidth: bWidth,//柱状图长度
                 yAxisIndex: 1,
                 label: {

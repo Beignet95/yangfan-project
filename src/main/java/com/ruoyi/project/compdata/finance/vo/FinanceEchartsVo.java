@@ -15,7 +15,7 @@ public class FinanceEchartsVo {
     private Float[] grossProfitGRs;//GR=Growrh rate 意为增长率 财务报表毛利环比
     private Float[] advertisingFeeRates;
     private BigDecimal[] totalAdvertisingFees;
-    private Float[] advertisingFeeGRs;//GR=Growrh rate 意为增长率 广告费环比
+    private Float[] advertisingFeeRateGRs;//GR=Growrh rate 意为增长率 广告费环比
     /**
      *  totalSalesRevenue totalCompensation compensationRate totalFinalFreight finalFreightRate
      *             totalPackagingFee packagingRage totalPromotionFee promotionFeeRate totalPlatformRefund

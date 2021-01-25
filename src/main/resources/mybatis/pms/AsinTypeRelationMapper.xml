@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.relation.mapper.AsinTypeRelationMapper">
+    
+    <resultMap type="AsinTypeRelation" id="AsinTypeRelationResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="asin"    column="asin"    />
+        <result property="isdelete"    column="isdelete"    />
+    </resultMap>
+
+    <sql id="selectAsinTypeRelationVo">
+        select id, type, asin, isdelete from pms_asin_type_relation
+    </sql>
+
+    <select id="selectAsinTypeRelationList" parameterType="AsinTypeRelation" resultMap="AsinTypeRelationResult">
+        <include refid="selectAsinTypeRelationVo"/>
+        <where>  
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="isdelete != null "> and isdelete = #{isdelete}</if>
+        </where>
+    </select>
+    
+    <select id="selectAsinTypeRelationById" parameterType="Long" resultMap="AsinTypeRelationResult">
+        <include refid="selectAsinTypeRelationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAsinTypeRelation" parameterType="AsinTypeRelation" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_asin_type_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">type,</if>
+            <if test="asin != null">asin,</if>
+            <if test="isdelete != null">isdelete,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">#{type},</if>
+            <if test="asin != null">#{asin},</if>
+            <if test="isdelete != null">#{isdelete},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAsinTypeRelation" parameterType="AsinTypeRelation">
+        update pms_asin_type_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="isdelete != null">isdelete = #{isdelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAsinTypeRelationById" parameterType="Long">
+        delete from pms_asin_type_relation where id = #{id}
+    </delete>
+
+    <delete id="deleteAsinTypeRelationByIds" parameterType="String">
+        delete from pms_asin_type_relation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectAsinTypeRelationByAsin" parameterType="String" resultMap="AsinTypeRelationResult">
+        <include refid="selectAsinTypeRelationVo"/>
+        where asin = #{asin}
+    </select>
+
+
+    <update id="updateAsinTypeRelationByAsin" parameterType="AsinTypeRelation">
+        update pms_asin_type_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="isdelete != null">isdelete = #{isdelete},</if>
+        </trim>
+        where asin = #{asin}
+    </update>
+
+
+
+
+</mapper>
