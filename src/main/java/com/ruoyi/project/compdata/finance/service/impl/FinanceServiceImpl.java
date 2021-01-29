@@ -12,6 +12,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.common.utils.math.MathUtil;
+import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
 import com.ruoyi.project.compdata.finance.vo.*;
 import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
@@ -35,7 +36,7 @@ import com.ruoyi.common.utils.text.Convert;
 public class FinanceServiceImpl implements IFinanceService
 {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(FinanceServiceImpl.class);
 
     @Autowired
     private IConfigService configService;

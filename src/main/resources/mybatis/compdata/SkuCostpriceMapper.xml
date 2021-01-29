@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.costprice.mapper.SkuCostpriceMapper">
+    
+    <resultMap type="SkuCostprice" id="SkuCostpriceResult">
+        <result property="id"    column="id"    />
+        <result property="sku"    column="sku"    />
+        <result property="costprice"    column="costprice"    />
+    </resultMap>
+
+    <sql id="selectSkuCostpriceVo">
+        select id, sku, costprice from cpd_sku_costprice
+    </sql>
+
+    <select id="selectSkuCostpriceList" parameterType="SkuCostprice" resultMap="SkuCostpriceResult">
+        <include refid="selectSkuCostpriceVo"/>
+        <where>  
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="params.beginCostprice != null and params.beginCostprice != '' and params.endCostprice != null and params.endCostprice != ''"> and costprice between #{params.beginCostprice} and #{params.endCostprice}</if>
+        </where>
+    </select>
+    
+    <select id="selectSkuCostpriceById" parameterType="Long" resultMap="SkuCostpriceResult">
+        <include refid="selectSkuCostpriceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSkuCostprice" parameterType="SkuCostprice" useGeneratedKeys="true" keyProperty="id">
+        insert into cpd_sku_costprice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sku != null">sku,</if>
+            <if test="costprice != null">costprice,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sku != null">#{sku},</if>
+            <if test="costprice != null">#{costprice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSkuCostprice" parameterType="SkuCostprice">
+        update cpd_sku_costprice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="costprice != null">costprice = #{costprice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSkuCostpriceById" parameterType="Long">
+        delete from cpd_sku_costprice where id = #{id}
+    </delete>
+
+    <delete id="deleteSkuCostpriceByIds" parameterType="String">
+        delete from cpd_sku_costprice where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectSkuCostpriceByOnlyCondition" parameterType="SkuCostprice" resultMap="SkuCostpriceResult">
+        <include refid="selectSkuCostpriceVo"/>
+        where sku = #{sku}
+    </select>
+
+
+    <update id="updateSkuCostpriceByOnlyCondition" parameterType="SkuCostprice">
+        update cpd_sku_costprice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="costprice != null">costprice = #{costprice},</if>
+        </trim>
+        where sku = #{sku}
+    </update>
+
+</mapper>

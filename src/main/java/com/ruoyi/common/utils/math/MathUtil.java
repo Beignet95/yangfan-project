@@ -9,7 +9,7 @@ public class MathUtil {
      * @return
      */
     public static Float float2PercentNum(Float floatNum){
-        if(floatNum==null) return 0f;
+        if(floatNum==null) return null;
         BigDecimal b  =   new BigDecimal(floatNum*100);
         float   f   =  b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
         return f;
@@ -21,7 +21,7 @@ public class MathUtil {
      * @return
      */
     public static Float float2PercentNum(Float floatNum,int decimalNum){
-        if(floatNum==null) return 0f;
+        if(floatNum==null) return null;
         BigDecimal b  =   new BigDecimal(floatNum*100);
         float   f   =  b.setScale(decimalNum, BigDecimal.ROUND_HALF_UP).floatValue();
         return f;

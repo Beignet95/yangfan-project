@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('商品关键信息关联列表')" />
+    <th:block th:include="include :: header('成本列表')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -11,16 +11,12 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>型号：</label>
-                                <input type="text" name="type"/>
-                            </li>
-                            <li>
                                 <label>SKU：</label>
                                 <input type="text" name="sku"/>
                             </li>
                             <li>
-                                <label>ASIN：</label>
-                                <input type="text" name="asin"/>
+                                <label>成本价：</label>
+                                <input type="text" name="costprice"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -32,16 +28,16 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="compdata:relation:add">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="compdata:costprice:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="compdata:relation:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="compdata:costprice:edit">
                     <i class="fa fa-edit"></i> 修改
                 </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="compdata:relation:remove">
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="compdata:costprice:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="compdata:relation:export">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="compdata:costprice:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
                 <a class="btn btn-info" onclick="$.table.importExcel()">
@@ -55,9 +51,9 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('compdata:relation:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('compdata:relation:remove')}]];
-        var prefix = ctx + "compdata/relation";
+        var editFlag = [[${@permission.hasPermi('compdata:costprice:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('compdata:costprice:remove')}]];
+        var prefix = ctx + "compdata/costprice";
 
         $(function() {
             var options = {
@@ -67,7 +63,7 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
-                modalName: "商品关键信息关联",
+                modalName: "成本",
                 columns: [{
                     checkbox: true
                 },
@@ -77,16 +73,13 @@
                     visible: false
                 },
                 {
-                    field: 'type',
-                    title: '型号'
-                },
-                {
                     field: 'sku',
                     title: '标准SKU'
                 },
                 {
-                    field: 'asin',
-                    title: 'ASIN'
+                    field: 'costprice',
+                    title: '成本价(不含平台费，广告，不良等费用）',
+                    sortable: true
                 },
                 {
                     title: '操作',

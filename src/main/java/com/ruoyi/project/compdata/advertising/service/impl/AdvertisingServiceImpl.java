@@ -312,8 +312,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
                     /** 自动填充type start **/
                     if(StringUtils.isEmpty(advertising.getType())){
                         AsinTypeRelation relation = asinTypeRelationService.selectAsinTypeRelationByAsin(advertising.getAsin());
-                        String type = relation.getType();
-                        advertising.setType(type);
+                        advertising.setType(relation==null?null:relation.getType());
                     }
                     /** 自动填充type end **/
                     advertising.setCreateBy(operName);

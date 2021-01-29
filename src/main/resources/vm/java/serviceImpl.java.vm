@@ -33,6 +33,8 @@ import com.ruoyi.common.utils.text.Convert;
 @Service
 public class ${ClassName}ServiceImpl implements I${ClassName}Service 
 {
+    private static final Logger log = LoggerFactory.getLogger(${className}.class);
+
     @Autowired
     private ${ClassName}Mapper ${className}Mapper;
 

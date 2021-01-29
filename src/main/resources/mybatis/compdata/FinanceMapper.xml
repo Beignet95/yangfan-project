@@ -81,7 +81,10 @@
             <if test="clearBrokerFee != null "> and clear_broker_fee = #{clearBrokerFee}</if>
             <if test="finalFreightReturn2 != null "> and final_freight_return2 = #{finalFreightReturn2}</if>
             <if test="isdelete != null "> and isdelete = #{isdelete}</if>
+            <if test="params.dataScope != null ">
+            </if>
         </where>
+
     </select>
 
     <select id="selectFinanceById" parameterType="Long" resultMap="FinanceResult">

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.advertisingactivity.mapper.AdvertisingActivityMapper">
+    
+    <resultMap type="AdvertisingActivity" id="AdvertisingActivityResult">
+        <result property="id"    column="id"    />
+        <result property="activity"    column="activity"    />
+        <result property="asin"    column="asin"    />
+        <result property="sku"    column="sku"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="commissioner"    column="commissioner"    />
+    </resultMap>
+
+    <sql id="selectAdvertisingActivityVo">
+        select id, activity, asin, sku, store_code, commissioner from cpd_advertising_activity
+    </sql>
+
+    <select id="selectAdvertisingActivityList" parameterType="AdvertisingActivity" resultMap="AdvertisingActivityResult">
+        <include refid="selectAdvertisingActivityVo"/>
+        <where>  
+            <if test="activity != null  and activity != ''"> and activity like concat('%', #{activity}, '%')</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="commissioner != null  and commissioner != ''"> and commissioner = #{commissioner}</if>
+        </where>
+    </select>
+    
+    <select id="selectAdvertisingActivityById" parameterType="Long" resultMap="AdvertisingActivityResult">
+        <include refid="selectAdvertisingActivityVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAdvertisingActivity" parameterType="AdvertisingActivity" useGeneratedKeys="true" keyProperty="id">
+        insert into cpd_advertising_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activity != null">activity,</if>
+            <if test="asin != null">asin,</if>
+            <if test="sku != null">sku,</if>
+            <if test="storeCode != null">store_code,</if>
+            <if test="commissioner != null">commissioner,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activity != null">#{activity},</if>
+            <if test="asin != null">#{asin},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="commissioner != null">#{commissioner},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAdvertisingActivity" parameterType="AdvertisingActivity">
+        update cpd_advertising_activity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activity != null">activity = #{activity},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="commissioner != null">commissioner = #{commissioner},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdvertisingActivityById" parameterType="Long">
+        delete from cpd_advertising_activity where id = #{id}
+    </delete>
+
+    <delete id="deleteAdvertisingActivityByIds" parameterType="String">
+        delete from cpd_advertising_activity where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectAdvertisingActivityByOnlyCondition" parameterType="AdvertisingActivity" resultMap="AdvertisingActivityResult">
+        <include refid="selectAdvertisingActivityVo"/>
+       where activity = #{activity}
+    </select>
+
+
+    <update id="updateAdvertisingActivityByOnlyCondition" parameterType="AdvertisingActivity">
+        update cpd_advertising_activity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activity != null">activity = #{activity},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="commissioner != null">commissioner = #{commissioner},</if>
+        </trim>
+            where activity=#{activity}
+    </update>
+
+</mapper>
