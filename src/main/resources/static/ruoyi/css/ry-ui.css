@@ -1144,3 +1144,27 @@ table.rc-table-resizing thead > th > a {
 .noshow{
 	display: none;
 }
+/* 自定义宽度样式，用于搜索table列 */
+.W120 .th-inner {
+	width:120px !important;
+}
+.W80 .th-inner {
+	width:80px !important;
+}
+.W60 .th-inner {
+	width:60px !important;
+}
+
+.W150 .th-inner {
+	width:150px !important;
+}
+.W200 .th-inner {
+	width:200px !important;
+}
+/** bootstrap table column width **/
+.adaptive{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 150px;
+}

@@ -375,6 +375,28 @@ var table = {
                     });
                 });
             },
+            // 自定义导出数据，可在其他页面导出指定模块的数据
+            exportCustomExcel: function(url,formId) {
+                table.set();
+                $.modal.confirm("确定导出所有" + table.options.modalName + "吗？", function() {
+                    var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
+                    var params = $("#" + table.options.id).bootstrapTable('getOptions');
+                    var dataParam = $("#" + currentId).serializeArray();
+                    dataParam.push({ "name": "orderByColumn", "value": params.sortName });
+                    dataParam.push({ "name": "isAsc", "value": params.sortOrder });
+                    $.modal.loading("正在导出数据，请稍后...");
+                    $.post(table.options.exportUrl, dataParam, function(result) {
+                        if (result.code == web_status.SUCCESS) {
+                            window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                        } else if (result.code == web_status.WARNING) {
+                            $.modal.alertWarning(result.msg)
+                        } else {
+                            $.modal.alertError(result.msg);
+                        }
+                        $.modal.closeLoading();
+                    });
+                });
+            },
             // 下载模板
             importTemplate: function() {
                 table.set();
@@ -1709,6 +1731,14 @@ var table = {
         }
     });
 })(jQuery);
+
+//表格超出宽度鼠标悬停显示td内容
+function paramsMatter(value,row,index, field) {
+    var span=document.createElement('span');
+    span.setAttribute('title',value);
+    span.innerHTML = value;
+    return span.outerHTML;
+}
 
 /** 表格类型 */
 table_type = {

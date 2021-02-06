@@ -88,10 +88,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ctr != null "> and ctr = #{ctr}</if>
             <if test="cpc != null "> and cpc = #{cpc}</if>
             <if test="spend != null "> and spend = #{spend}</if>
+            <if test="params.beginSpend != null and params.beginSpend != ''"> and spend &gt;= #{params.beginSpend}</if>
+            <if test="params.endSpend != null and params.endSpend != ''"> and spend &lt;= #{params.endSpend}</if>
             <if test="totalSales != null "> and total_sales = #{totalSales}</if>
             <if test="acos != null "> and acos = #{acos}</if>
             <if test="roas != null "> and roas = #{roas}</if>
             <if test="totalOrders != null "> and total_orders = #{totalOrders}</if>
+            <if test="params.beginTotalOrders != null and params.beginTotalOrders != ''"> and total_orders &gt;= #{params.beginTotalOrders}</if>
+            <if test="params.endTotalOrders != null and params.endTotalOrders != ''"> and total_orders &lt;= #{params.endTotalOrders}</if>
             <if test="totalUnits != null "> and total_units = #{totalUnits}</if>
             <if test="cvr != null "> and cvr = #{cvr}</if>
             <if test="advertisedSkuUnits != null "> and advertised_sku_units = #{advertisedSkuUnits}</if>
@@ -100,6 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherSkuSales != null "> and other_sku_sales = #{otherSkuSales}</if>
             <if test="costprice != null "> and costprice = #{costprice}</if>
         </where>
+        order by id desc
     </select>
 
     <select id="selectStadvertisingById" parameterType="Long" resultMap="StadvertisingResult">

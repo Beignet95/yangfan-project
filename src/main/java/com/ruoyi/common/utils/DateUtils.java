@@ -126,6 +126,10 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         }
         try
         {
+            //2020-12-12T22:31:24+00:00 在面对这种弱智格式时，手动把不必要的字符去除
+            String dateStr = (String)str;
+            if(dateStr.contains("T")&&dateStr.contains("+00:00"))
+                return parseDate(str.toString().replaceAll("T"," ").replace("+00:00",""), parsePatterns);
             return parseDate(str.toString(), parsePatterns);
         }
         catch (ParseException e)

@@ -200,4 +200,18 @@ public class FileUtils extends org.apache.commons.io.FileUtils
         String encode = URLEncoder.encode(s, StandardCharsets.UTF_8.toString());
         return encode.replaceAll("\\+", "%20");
     }
+
+    /**
+     * 通过文件名获取文件后缀
+     *
+     * @param originalFilename 文件名
+     * @return 文件后缀
+     */
+    public static String getExtByFileName(String originalFilename)
+    {
+        //获取最后一个.的位置
+        int lastIndexOf = originalFilename.lastIndexOf(".");
+        //获取文件的后缀名 .jpg
+        return originalFilename.substring(lastIndexOf);
+    }
 }

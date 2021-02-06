@@ -71,6 +71,7 @@ public interface FinanceMapper
     List<FinanceAnalyVo> selectFinanceAgg(Finance finance);
 
     int updateFinanceByOnlyCondition(Finance finance);
+
     List<String> selectDistinctColumn(@Param("columnName")String columnName, FinanceAnalyParamVo financeAnalyParamVo);
 
     List<TypeProfitAnalyVo> selectTypeProfitAnalyVoList(Map params);

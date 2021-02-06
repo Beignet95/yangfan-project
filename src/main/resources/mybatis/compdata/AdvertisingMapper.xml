@@ -96,6 +96,7 @@
             <if test="salesNum != null "> and sales_num = #{salesNum}</if>
             <if test="isdelete != null "> and isdelete = #{isdelete}</if>
         </where>
+        order by id desc
     </select>
 
     <select id="selectAdvertisingById" parameterType="Long" resultMap="AdvertisingResult">

@@ -18,29 +18,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPicture;
+import org.apache.poi.hssf.usermodel.HSSFShape;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.exception.BusinessException;
@@ -351,6 +338,16 @@ public class ExcelUtil<T>
         }
 
         int rows = sheet.getPhysicalNumberOfRows();
+
+        //TODO
+        List<? extends PictureData> pics =  wb.getAllPictures();
+        for(PictureData p :pics){
+            System.out.println("ppppic:"+p);
+            byte[] input =  p.getData();p.suggestFileExtension();
+            FileOutputStream out = new FileOutputStream("D:\\pic" + 1 + ".jpg");
+            out.write(input);
+            out.close();
+        }
 
         if (rows > 0)
         {
@@ -1219,10 +1216,14 @@ public class ExcelUtil<T>
         try
         {
             Cell cell = row.getCell(column);
-            if (StringUtils.isNotNull(cell))
+            if (cell != null)
             {
                 if (cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
                 {
+
+                    //TODO
+                    String formaula = cell.getCellFormula();
+                    //TODO
                     val = cell.getNumericCellValue();
                     if (DateUtil.isCellDateFormatted(cell))
                     {
@@ -1230,6 +1231,10 @@ public class ExcelUtil<T>
                     }
                     else
                     {
+                        CellStyle cellStyle = cell.getCellStyle();
+                        short currenyStyleNum = cellStyle.getDataFormat();
+                        if(currenyStyleNum==176) return val = "€"+ val;
+
                         if ((Double) val % 1 > 0)
                         {
                             val = new BigDecimal(val.toString());
@@ -1242,7 +1247,7 @@ public class ExcelUtil<T>
                 }
                 else if (cell.getCellType() == CellType.STRING)
                 {
-                    val = cell.getStringCellValue();
+                     if (StringUtils.isNotNull(cell)) val = cell.getStringCellValue();
                 }
                 else if (cell.getCellType() == CellType.BOOLEAN)
                 {

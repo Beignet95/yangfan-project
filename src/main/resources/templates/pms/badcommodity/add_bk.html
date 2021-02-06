@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增不良记录')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-badcommodity-add"  enctype="multipart/form-data" >
+            <div class="form-group">
+                <label class="col-sm-3 control-label">订单号或无订单号：</label>
+                <div class="col-sm-4">
+                    <input name="oderId" id="orderId" class="form-control" type="text" onchange="getAndFillOrderData();" required>
+                </div>
+                <div class="col-sm-4">
+                    <input value="查看该订单的退货和退款记录" class="btn btn-w-m btn-info" type="button" onclick="alert('功能还在开发中');">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">账户站点：</label>
+                <div class="col-sm-8">
+                    <input name="storeCode" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">销售负责人：</label>
+                <div class="col-sm-8">
+                    <input name="principal" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="orderDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">处理日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="dealDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">型号：</label>
+                <div class="col-sm-8">
+                    <input name="type" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标准SKU：</label>
+                <div class="col-sm-8">
+                    <input name="sku" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良总数            ：</label>
+                <div class="col-sm-8">
+                    <input name="badNum" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="reissueNum" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundNum" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">追溯码：</label>
+                <div class="col-sm-8">
+                    <input name="tracebackCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良原因：</label>
+                <div class="col-sm-8">
+                    <input name="badReason" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remarks" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">产品不良解决方式：</label>
+                <div class="col-sm-8">
+                    <select name="solution" class="form-control m-b" >
+                        <option value="">--请选择--</option>
+                        <option value="1.退货/退款解决">1.退货/退款解决</option>
+                        <option value="2.补发解决">2.补发解决</option>
+                        <option value="3.指导客户调试解决">3.指导客户调试解决</option>
+                        <option value="4.正在沟通暂未解决">4.正在沟通暂未解决</option>
+                    </select>
+                </div>
+            </div>
+            <!--1.站内信 2.feedback  3.差评 4.站外邮件 5.ebay纠纷 6.ebay退换货-->
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良来源：</label>
+                <div class="col-sm-8">
+                    <select name="badSource" class="form-control m-b" >
+                        <option value="">--请选择--</option>
+                        <option value="1.站内信">1.站内信</option>
+                        <option value="2.feedback">2.feedback</option>
+                        <option value="3.差评">3.差评</option>
+                        <option value="4.站外邮件">4.站外邮件</option>
+                        <option value="5.ebay纠纷">5.ebay纠纷</option>
+                        <option value="6.ebay退换货">6.ebay退换货</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group has-success">
+                <label class="col-sm-3 control-label">FBA SKU：</label>
+                <div class="col-sm-8">
+                    <input name="fbaSku" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group has-success">
+                <label class="col-sm-3 control-label">return-date：</label>
+                <div class="col-sm-8">
+                    <input name="returnDate" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group has-success">
+                <label class="col-sm-3 control-label">型号2：</label>
+                <div class="col-sm-8">
+                    <input name="tye2" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group has-success">
+                <label class="col-sm-3 control-label">每套个数：</label>
+                <div class="col-sm-8">
+                    <input name="eachsetNum" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group has-success">
+                <label class="col-sm-3 control-label">不良总个数：</label>
+                <div class="col-sm-8">
+                    <input name="badNum2" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发或退款            易仓SKU：</label>
+                <div class="col-sm-8">
+                    <input name="ycSku" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="reissue2" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发跟踪号：</label>
+                <div class="col-sm-8">
+                    <input name="reissueTrackingId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发是否送达：</label>
+                <div class="col-sm-8">
+                    <select name="isdelivered" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundNum2" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款金额            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundAmount" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">邮件主动            跟进次数：</label>
+                <div class="col-sm-8">
+                    <input name="mailFollowTimes" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后跟进时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="lastFollowTime" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否完成：</label>
+                <div class="col-sm-8">
+                    <input name="isdone" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Feedback            Case ID：</label>
+                <div class="col-sm-8">
+                    <input name="feedbackCaseId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remarks2" class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label class="col-sm-3 control-label">图片一：</label>
+                <div class="col-sm-8">
+                    <input name="pic" class="form-control" type="file">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">图片二：</label>
+                <div class="col-sm-8">
+                    <input name="pic" class="form-control" type="file">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">图片三：</label>
+                <div class="col-sm-8">
+                    <input name="pic" class="form-control" type="file">
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 font-noraml">不良图片上传</label>
+                <div class="col-sm-8 file-loading">
+                    <input id="pic" name="pic" type="file" multiple>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-fileinput-js" />
+    <script th:inline="javascript">
+        //;
+        var prefix = ctx + "pms/badcommodity"
+        $("#form-badcommodity-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                //$.operate.save(prefix + "/add", $('#form-badcommodity-add').serialize(),savePicture());
+                save();
+            }
+        }
+        // function savePicture(data){
+        //
+        //     $("#pic").fileinput("upload")
+        // }
+
+        $("input[name='orderDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='dealDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='lastFollowTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $(document).ready(function () {
+            $("#pic").fileinput({
+                'theme': 'explorer-fas',
+                'uploadUrl': prefix+"/saveBadRecordPicture",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                uploadAsync: false,
+                showUpload: false, //是否显示上传按钮
+                layoutTemplates:{
+                    actionUpload: '',//去除上传预览缩略图中的上传图片
+                }
+            });
+
+            $("#pic").on("fileuploaded", function(event, data, proviewId, index) {
+                console.info(event);
+                console.info(data);
+                console.info(proviewId);
+                console.info(index);
+            });
+
+        });
+        function save() {
+           //var formdata = $('#form-badcommodity-add').serialize();
+            var formData = new FormData($( "#form-badcommodity-add" )[0]);
+            $.ajax({
+                url: prefix + "/add",
+                data: formData,
+                type: "post",
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    $.operate.saveSuccess(result);
+                }
+            })
+
+        }
+    </script>
+</body>
+<script>
+    function getAndFillOrderData(){
+        var orderId = $("#orderId").val();
+        $.get(prefix+"/getOrderReturnVo/"+orderId,function(result){
+            if(result.code==0){
+                $("input[name='storeCode']").val(result.data.storeCode);
+                $("input[name='sku']").val(result.data.sku);
+                //reasonForcn
+                $("input[name='badReason']").val(result.data.reasonForcn);
+            }else{
+                layer.msg(result.msg, {icon: 2});
+            }
+        });
+    }
+</script>
+</html>

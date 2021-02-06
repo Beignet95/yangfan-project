@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.oms.orderReturnRepeat.mapper.OrderReturnRepeatMapper">
+    
+    <resultMap type="OrderReturnRepeat" id="OrderReturnRepeatResult">
+        <result property="id"    column="id"    />
+        <result property="repeatId"    column="repeat_id"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="sku"    column="sku"    />
+        <result property="asin"    column="asin"    />
+        <result property="fnsku"    column="fnsku"    />
+        <result property="productName"    column="product_name"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="fulfillmentCenterId"    column="fulfillment_center_id"    />
+        <result property="detailedDisposition"    column="detailed_disposition"    />
+        <result property="reason"    column="reason"    />
+        <result property="status"    column="status"    />
+        <result property="licensePlateNumber"    column="license_plate_number"    />
+        <result property="customerComments"    column="customer_comments"    />
+        <result property="detailedDispositionForcn"    column="detailed_disposition_forcn"    />
+        <result property="reasonForcn"    column="reason_forcn"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOrderReturnRepeatVo">
+        select id, repeat_id, store_code, return_date, order_id, sku, asin, fnsku, product_name, quantity, fulfillment_center_id, detailed_disposition, reason, status, license_plate_number, customer_comments, detailed_disposition_forcn, reason_forcn, create_by, create_time, update_by, update_time from oms_order_return_repeat
+    </sql>
+
+    <select id="selectOrderReturnRepeatList" parameterType="OrderReturnRepeat" resultMap="OrderReturnRepeatResult">
+        <include refid="selectOrderReturnRepeatVo"/>
+        <where>  
+            <if test="repeatId != null  and repeatId != ''"> and repeat_id = #{repeatId}</if>
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="returnDate != null "> and return_date = #{returnDate}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="fnsku != null  and fnsku != ''"> and fnsku = #{fnsku}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="fulfillmentCenterId != null  and fulfillmentCenterId != ''"> and fulfillment_center_id = #{fulfillmentCenterId}</if>
+            <if test="detailedDisposition != null  and detailedDisposition != ''"> and detailed_disposition = #{detailedDisposition}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="licensePlateNumber != null  and licensePlateNumber != ''"> and license_plate_number = #{licensePlateNumber}</if>
+            <if test="customerComments != null  and customerComments != ''"> and customer_comments = #{customerComments}</if>
+            <if test="detailedDispositionForcn != null  and detailedDispositionForcn != ''"> and detailed_disposition_forcn = #{detailedDispositionForcn}</if>
+            <if test="reasonForcn != null  and reasonForcn != ''"> and reason_forcn = #{reasonForcn}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectOrderReturnRepeatById" parameterType="Long" resultMap="OrderReturnRepeatResult">
+        <include refid="selectOrderReturnRepeatVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOrderReturnRepeat" parameterType="OrderReturnRepeat" useGeneratedKeys="true" keyProperty="id">
+        insert into oms_order_return_repeat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repeatId != null">repeat_id,</if>
+            <if test="storeCode != null">store_code,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="sku != null">sku,</if>
+            <if test="asin != null">asin,</if>
+            <if test="fnsku != null">fnsku,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="fulfillmentCenterId != null">fulfillment_center_id,</if>
+            <if test="detailedDisposition != null">detailed_disposition,</if>
+            <if test="reason != null">reason,</if>
+            <if test="status != null">status,</if>
+            <if test="licensePlateNumber != null">license_plate_number,</if>
+            <if test="customerComments != null">customer_comments,</if>
+            <if test="detailedDispositionForcn != null">detailed_disposition_forcn,</if>
+            <if test="reasonForcn != null">reason_forcn,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repeatId != null">#{repeatId},</if>
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="asin != null">#{asin},</if>
+            <if test="fnsku != null">#{fnsku},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="fulfillmentCenterId != null">#{fulfillmentCenterId},</if>
+            <if test="detailedDisposition != null">#{detailedDisposition},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="status != null">#{status},</if>
+            <if test="licensePlateNumber != null">#{licensePlateNumber},</if>
+            <if test="customerComments != null">#{customerComments},</if>
+            <if test="detailedDispositionForcn != null">#{detailedDispositionForcn},</if>
+            <if test="reasonForcn != null">#{reasonForcn},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderReturnRepeat" parameterType="OrderReturnRepeat">
+        update oms_order_return_repeat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repeatId != null">repeat_id = #{repeatId},</if>
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="fnsku != null">fnsku = #{fnsku},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="fulfillmentCenterId != null">fulfillment_center_id = #{fulfillmentCenterId},</if>
+            <if test="detailedDisposition != null">detailed_disposition = #{detailedDisposition},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="licensePlateNumber != null">license_plate_number = #{licensePlateNumber},</if>
+            <if test="customerComments != null">customer_comments = #{customerComments},</if>
+            <if test="detailedDispositionForcn != null">detailed_disposition_forcn = #{detailedDispositionForcn},</if>
+            <if test="reasonForcn != null">reason_forcn = #{reasonForcn},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderReturnRepeatById" parameterType="Long">
+        delete from oms_order_return_repeat where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderReturnRepeatByIds" parameterType="String">
+        delete from oms_order_return_repeat where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectOrderReturnRepeatByOnlyCondition" parameterType="OrderReturnRepeat" resultMap="OrderReturnRepeatResult">
+        <include refid="selectOrderReturnRepeatVo"/>
+        where
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateOrderReturnRepeatByOnlyCondition" parameterType="OrderReturnRepeat">
+        update oms_order_return_repeat
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="repeatId != null">repeat_id = #{repeatId},</if>
+                                                                <if test="storeCode != null">store_code = #{storeCode},</if>
+                                                                <if test="returnDate != null">return_date = #{returnDate},</if>
+                                                                <if test="orderId != null">order_id = #{orderId},</if>
+                                                                <if test="sku != null">sku = #{sku},</if>
+                                                                <if test="asin != null">asin = #{asin},</if>
+                                                                <if test="fnsku != null">fnsku = #{fnsku},</if>
+                                                                <if test="productName != null">product_name = #{productName},</if>
+                                                                <if test="quantity != null">quantity = #{quantity},</if>
+                                                                <if test="fulfillmentCenterId != null">fulfillment_center_id = #{fulfillmentCenterId},</if>
+                                                                <if test="detailedDisposition != null">detailed_disposition = #{detailedDisposition},</if>
+                                                                <if test="reason != null">reason = #{reason},</if>
+                                                                <if test="status != null">status = #{status},</if>
+                                                                <if test="licensePlateNumber != null">license_plate_number = #{licensePlateNumber},</if>
+                                                                <if test="customerComments != null">customer_comments = #{customerComments},</if>
+                                                                <if test="detailedDispositionForcn != null">detailed_disposition_forcn = #{detailedDispositionForcn},</if>
+                                                                <if test="reasonForcn != null">reason_forcn = #{reasonForcn},</if>
+                                                                <if test="createBy != null">create_by = #{createBy},</if>
+                                                                <if test="createTime != null">create_time = #{createTime},</if>
+                                                                <if test="updateBy != null">update_by = #{updateBy},</if>
+                                                                <if test="updateTime != null">update_time = #{updateTime},</if>
+                                    </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

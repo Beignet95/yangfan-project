@@ -84,7 +84,7 @@
             <if test="params.dataScope != null ">
             </if>
         </where>
-
+        order by id desc
     </select>
 
     <select id="selectFinanceById" parameterType="Long" resultMap="FinanceResult">

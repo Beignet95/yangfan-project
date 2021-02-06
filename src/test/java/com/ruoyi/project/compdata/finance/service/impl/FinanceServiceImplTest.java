@@ -5,6 +5,8 @@ import com.ruoyi.common.utils.Arith;
 import com.ruoyi.project.compdata.finance.mapper.FinanceMapper;
 import com.ruoyi.project.compdata.finance.service.IFinanceService;
 import com.ruoyi.project.compdata.finance.vo.TypeProfitAnalyVo;
+import com.ruoyi.project.system.net.zwIpFiter.domain.SysZwIpFilter;
+import com.ruoyi.project.system.net.zwIpFiter.mapper.SysZwIpFilterMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeanUtils;
@@ -72,5 +74,18 @@ class FinanceServiceImplTest {
         Date m = c.getTime();
         String preMonthStr = format.format(m);
         System.out.println("上月月份为："+preMonthStr);
+    }
+
+    @Autowired
+    SysZwIpFilterMapper sysZwIpFilterMapper;
+
+    @Test
+    public void addWihteIp(){
+        SysZwIpFilter sysZwIpFilter = new SysZwIpFilter();
+        sysZwIpFilter.setMoudle("测试");
+        sysZwIpFilter.setMark(1);
+        sysZwIpFilter.setIp("0:0:0:0:0:0:0:1");
+        sysZwIpFilterMapper.insertSysZwIpFilter(sysZwIpFilter);
+
     }
 }

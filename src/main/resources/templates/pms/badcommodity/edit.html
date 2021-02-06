@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改不良记录')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+    <th:block th:include="include :: jasny-bootstrap-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-badcommodity-edit" th:object="${badCommodity}" enctype="multipart/form-data">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">账户站点：</label>
+                <div class="col-sm-8">
+                    <input name="storeCode" th:field="*{storeCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">销售负责人：</label>
+                <div class="col-sm-8">
+                    <input name="principal" th:field="*{principal}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="orderDate" th:value="${#dates.format(badCommodity.orderDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">处理日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="dealDate" th:value="${#dates.format(badCommodity.dealDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单号或无订单号：</label>
+                <div class="col-sm-8">
+                    <input name="oderId" th:field="*{oderId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">型号：</label>
+                <div class="col-sm-8">
+                    <input name="type" th:field="*{type}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标准SKU：</label>
+                <div class="col-sm-8">
+                    <input name="sku" th:field="*{sku}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良总数            ：</label>
+                <div class="col-sm-8">
+                    <input name="badNum" th:field="*{badNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="reissueNum" th:field="*{reissueNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundNum" th:field="*{refundNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">追溯码：</label>
+                <div class="col-sm-8">
+                    <input name="tracebackCode" th:field="*{tracebackCode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良原因：</label>
+                <div class="col-sm-8">
+                    <input name="badReason" th:field="*{badReason}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remarks" th:field="*{remarks}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">产品不良解决方式：</label>
+                <div class="col-sm-8">
+                    <input name="solution" th:field="*{solution}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良来源：</label>
+                <div class="col-sm-8">
+                    <input name="badSource" th:field="*{badSource}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">FBA SKU：</label>
+                <div class="col-sm-8">
+                    <input name="fbaSku" th:field="*{fbaSku}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">return-date：</label>
+                <div class="col-sm-8">
+                    <input name="returnDate" th:field="*{returnDate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">型号2：</label>
+                <div class="col-sm-8">
+                    <input name="tye2" th:field="*{tye2}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">每套个数：</label>
+                <div class="col-sm-8">
+                    <input name="eachsetNum" th:field="*{eachsetNum}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良总个数：</label>
+                <div class="col-sm-8">
+                    <input name="badNum2" th:field="*{badNum2}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发或退款            易仓SKU：</label>
+                <div class="col-sm-8">
+                    <input name="ycSku" th:field="*{ycSku}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="reissue2" th:field="*{reissue2}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发跟踪号：</label>
+                <div class="col-sm-8">
+                    <input name="reissueTrackingId" th:field="*{reissueTrackingId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">补发是否送达：</label>
+                <div class="col-sm-8">
+                    <select name="isdelivered" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdelivered}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款数量            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundNum2" th:field="*{refundNum2}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">退款金额            ：</label>
+                <div class="col-sm-8">
+                    <input name="refundAmount" th:field="*{refundAmount}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">邮件主动            跟进次数：</label>
+                <div class="col-sm-8">
+                    <input name="mailFollowTimes" th:field="*{mailFollowTimes}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">最后跟进时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="lastFollowTime" th:value="${#dates.format(badCommodity.lastFollowTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否完成：</label>
+                <div class="col-sm-8">
+                    <select name="isdone" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdone}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Feedback            Case ID：</label>
+                <div class="col-sm-8">
+                    <input name="feedbackCaseId" th:field="*{feedbackCaseId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remarks2" th:field="*{remarks2}" class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label class="col-sm-3 control-label">不良图片一：</label>
+                <div class="col-sm-8">
+                    <input name="picUrl1" th:field="*{picUrl1}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良图片二：</label>
+                <div class="col-sm-8">
+                    <input name="picUrl2" th:field="*{picUrl2}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">不良图片三：</label>
+                <div class="col-sm-8">
+                    <input name="picUrl3" th:field="*{picUrl3}" class="form-control" type="text">
+                </div>
+            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label class="col-sm-3 font-noraml">不良图片上传</label>-->
+<!--                <div class="col-sm-8 file-loading">-->
+<!--                    <input id="pic" name="pic" type="file" multiple>-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">不良图片：</label>
+                <div class="fileinput fileinput-new input-group col-sm-8" data-provides="fileinput">
+                    <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                    <span class="input-group-addon btn btn-white btn-file"><span class="fileinput-new">选择文件</span><span class="fileinput-exists">更改</span><input type="file" name="pic"></span>
+                    <a href="#" class="input-group-addon btn btn-white fileinput-exists" data-dismiss="fileinput">清除</a>
+                </div>
+            </div>
+            <div class="form-group">
+<!--                <label class="col-sm-3 control-label">备注：</label>-->
+                    <div class="col-sm-11" id="picArea">
+                        <div class="" style="float: left;margin: 10px;" th:each="item,stat:*{badCommodityPicturebList}" th:id="${item.picNo}">
+                            <div class="thumbnail" style="width: 190px;height: 190px;">
+                                <img name="badImage" th:src="${item.path}"
+                                     alt="通用的占位符缩略图" style="width: 190px;height: 190px;">
+                            </div>
+                            <a class="btn btn-danger" th:onclick="javascript:deletePic([[${item.picNo}]])">
+                                <i class="fa fa-remove"></i> 删除
+                            </a>
+                            <a class="btn btn-success" onclick="$.operate.add()" th:onclick="window.open([[${item.path}]])"><!--th:onclick="javascript:lookPic([[${item.picNo}]])"-->
+                                <i class="fa fa-plus"></i> 查看
+                            </a>
+                        </div>
+                    </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-fileinput-js" />
+    <th:block th:include="include :: jasny-bootstrap-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "pms/badcommodity";
+        $("#form-badcommodity-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-badcommodity-edit').serialize());
+                //save();
+            }
+        }
+
+        $("input[name='orderDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='dealDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='lastFollowTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        var badCommodityPicturebList = [[${badCommodity.badCommodityPicturebList}]];
+        $(document).ready(function () {
+
+            /** " <img src='api/ylzjyj/${appraInfo.id}' width='500' class='file-preview-image kv-preview-data rotate-38827 is-portrait-gt4' alt='' title='#' style=' height: auto; max-width: 100%; max-height: 100%; margin-top: 0px;'>"**/
+            var picUrlArray = new Array();
+            var picNoArray = new Array();
+            var imageArray = new Array();
+            if(badCommodityPicturebList!=null){
+                for(var i = 0;i<badCommodityPicturebList.length;i++){
+                    var path = badCommodityPicturebList[i].path;
+                    var picNo = badCommodityPicturebList[i].picNo;
+                    picUrlArray.push(path);
+                }
+                //imageArray = $.parseJSON(badCommodityPicturebList);
+            }
+
+            $("#pic").fileinput({
+                'theme': 'explorer-fas',
+                'uploadUrl': prefix+"/uploadBadRecordPicture",
+                deleteUrl: prefix+"/deleteBadRecordPicture",
+                deleteExtraData: "",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                uploadAsync: false,
+                showUpload: true, //是否显示上传按钮
+                allowedFileTypes: ['png','jpg','gif','jpeg'],
+                layoutTemplates:{
+                    actionUpload: '',//去除上传预览缩略图中的上传图片
+                },
+                initialPreview: picUrlArray,
+                initialPreviewConfig: badCommodityPicturebList
+            });
+
+            $("#pic").on("fileuploaded", function(event, data, proviewId, index) {
+                console.info(event);
+                console.info(data);
+                console.info(proviewId);
+                console.info(index);
+            });
+            //$("#pic").fileinput('_initFileActions');//这行代码就是调用绑定删除事件的
+
+            $("#pic").on("filebatchselected", function(event, files) {
+                alert("filebatchselected");
+            });
+
+            $("#pic").on('filedeleted', function (event, key) {
+                //预览
+                alert("delete");
+                //先重新组装input的id
+                console.log($("#fileIds").val());
+                console.log('1filedeleted--Key = ' + key);
+                $("#fileIds").val($("#fileIds").val().replace("#" + key + "#", ""));
+                console.log("---result----" + $("#fileIds").val());
+            });
+        });
+
+        //初始化图片区域
+        //badCommodity.badCommodityPicturebList
+        var badCommodityPicturebList = [[${badCommodity.badCommodityPicturebList}]];
+        function initPicArea(){
+            if(badCommodityPicturebList!=null&&badCommodityPicturebList.length>0){
+                badCommodityPicturebList.forEach(function(item,index,input) {
+                    console.log("badCommodityPicturebList:"+item.path);
+                    $('img[name="badImage"]').attr("src",item.path);
+                    //document.getElementsByName("badImage")[index].src=item.path;
+                });
+            }
+        }
+
+        //保存数据
+        function save() {
+            //var formdata = $('#form-badcommodity-add').serialize();
+            var formData = new FormData($( "#form-badcommodity-add" )[0]);
+            $.ajax({
+                url: prefix + "/edit",
+                data: formData,
+                type: "post",
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    $.operate.saveSuccess(result);
+                }
+            })
+
+        }
+
+        //
+        $('input[name="pic"]').on('change.bs.fileinput ', function (e) {
+            alert("upload");
+            var formData = new FormData($( "#form-badcommodity-edit" )[0]);
+            $.ajax({
+                url: prefix + "/uploadBadRecordPicture",
+                data: formData,
+                type: "post",
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    if(result.code==0){
+                        $("#picArea").append('<div class="" style="float: left;margin: 20px;" id="'+result.data.picNo+'">\n' +
+                            '                            <div class="thumbnail" style="width: 200px;height: 200px;">\n' +
+                            '                                <img name="badImage" src="'+result.data.path+'"\n' +
+                            '                                     alt="通用的占位符缩略图" style="width: 200px;height: 200px;">\n' +
+                            '                            </div>\n' +
+                            '                            <a class="btn btn-danger" onclick="javascript:deletePic('+result.data.picNo+')">\n' +
+                            '                                <i class="fa fa-remove"></i> 删除\n' +
+                            '                            </a>\n' +
+                            '                            <a class="btn btn-success" onclick="$.operate.add()" onclick="javascript:lookPic('+result.data.path+')">\n' +
+                            '                                <i class="fa fa-plus"></i> 查看\n' +
+                            '                            </a>' +
+                            '                        </div>')
+                    }
+                    //$.operate.saveSuccess(result);
+                }
+            })
+        });
+
+        //删除图片
+        function deletePic(picNo){
+            $.post(prefix+"/deleteBadRecordPicture",{id:$("input[name='id']").val(),picNo:picNo},function (result) {
+                if(result.code==0){
+                    alert("删除成功:"+picNo);
+                    $("#"+picNo).remove();
+                }else{
+                    alert("删除失败");
+                }
+            });
+        }
+
+        //查看图片
+        function lookPic(){
+            alert("开发中");
+        }
+    </script>
+</body>
+</html>

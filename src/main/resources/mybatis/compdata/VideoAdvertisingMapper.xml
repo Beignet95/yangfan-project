@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.videoadvertising.mapper.VideoAdvertisingMapper">
+    
+    <resultMap type="VideoAdvertising" id="VideoAdvertisingResult">
+        <result property="id"    column="id"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="asin"    column="asin"    />
+        <result property="sku"    column="sku"    />
+        <result property="commissioner"    column="commissioner"    />
+        <result property="type"    column="type"    />
+        <result property="link"    column="link"    />
+        <result property="profit"    column="profit"    />
+        <result property="cpa"    column="cpa"    />
+        <result property="cpaProfit"    column="cpa_profit"    />
+        <result property="cpaProfitLevel"    column="cpa_profit_level"    />
+        <result property="ctrLevel"    column="ctr_level"    />
+        <result property="cvrLevel"    column="cvr_level"    />
+        <result property="acosLevel"    column="acos_level"    />
+        <result property="operationFeedback"    column="operation_feedback"    />
+        <result property="identificationCode"    column="identification_code"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="portfolioName"    column="portfolio_name"    />
+        <result property="currency"    column="currency"    />
+        <result property="campaignName"    column="campaign_name"    />
+        <result property="adGroupName"    column="ad_group_name"    />
+        <result property="targeting"    column="targeting"    />
+        <result property="matchType"    column="match_type"    />
+        <result property="customerSearchTerm"    column="customer_search_term"    />
+        <result property="impressions"    column="impressions"    />
+        <result property="clicks"    column="clicks"    />
+        <result property="ctr"    column="ctr"    />
+        <result property="cpc"    column="cpc"    />
+        <result property="spend"    column="spend"    />
+        <result property="totalSales"    column="total_sales"    />
+        <result property="acos"    column="acos"    />
+        <result property="roas"    column="roas"    />
+        <result property="totalOrders"    column="total_orders"    />
+        <result property="totalUnits"    column="total_units"    />
+        <result property="cvr"    column="cvr"    />
+        <result property="costprice"    column="costprice"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectVideoAdvertisingVo">
+        select id, store_code, asin, sku, commissioner, type, link, profit, cpa, cpa_profit, cpa_profit_level, ctr_level, cvr_level, acos_level, operation_feedback, identification_code, start_date, end_date, portfolio_name, currency, campaign_name, ad_group_name, targeting, match_type, customer_search_term, impressions, clicks, ctr, cpc, spend, total_sales, acos, roas, total_orders, total_units, cvr, costprice, create_by, create_time, update_by, update_time from cpd_video_advertising
+    </sql>
+
+    <select id="selectVideoAdvertisingList" parameterType="VideoAdvertising" resultMap="VideoAdvertisingResult">
+        <include refid="selectVideoAdvertisingVo"/>
+        <where>  
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="commissioner != null  and commissioner != ''"> and commissioner = #{commissioner}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="link != null  and link != ''"> and link = #{link}</if>
+            <if test="profit != null "> and profit = #{profit}</if>
+            <if test="cpa != null "> and cpa = #{cpa}</if>
+            <if test="cpaProfit != null "> and cpa_profit = #{cpaProfit}</if>
+            <if test="cpaProfitLevel != null "> and cpa_profit_level = #{cpaProfitLevel}</if>
+            <if test="ctrLevel != null "> and ctr_level = #{ctrLevel}</if>
+            <if test="cvrLevel != null "> and cvr_level = #{cvrLevel}</if>
+            <if test="acosLevel != null "> and acos_level = #{acosLevel}</if>
+            <if test="operationFeedback != null  and operationFeedback != ''"> and operation_feedback = #{operationFeedback}</if>
+            <if test="identificationCode != null  and identificationCode != ''"> and identification_code = #{identificationCode}</if>
+            <if test="startDate != null "> and start_date = #{startDate}</if>
+            <if test="endDate != null "> and end_date = #{endDate}</if>
+            <if test="portfolioName != null  and portfolioName != ''"> and portfolio_name like concat('%', #{portfolioName}, '%')</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="campaignName != null  and campaignName != ''"> and campaign_name like concat('%', #{campaignName}, '%')</if>
+            <if test="adGroupName != null  and adGroupName != ''"> and ad_group_name like concat('%', #{adGroupName}, '%')</if>
+            <if test="targeting != null  and targeting != ''"> and targeting = #{targeting}</if>
+            <if test="matchType != null  and matchType != ''"> and match_type = #{matchType}</if>
+            <if test="customerSearchTerm != null  and customerSearchTerm != ''"> and customer_search_term = #{customerSearchTerm}</if>
+            <if test="impressions != null "> and impressions = #{impressions}</if>
+            <if test="clicks != null "> and clicks = #{clicks}</if>
+            <if test="ctr != null "> and ctr = #{ctr}</if>
+            <if test="cpc != null "> and cpc = #{cpc}</if>
+            <if test="spend != null "> and spend = #{spend}</if>
+            <if test="params.beginSpend != null and params.beginSpend != ''"> and spend &gt;= #{params.beginSpend}</if>
+            <if test="params.endSpend != null and params.endSpend != ''"> and spend &lt;= #{params.endSpend}</if>
+            <if test="totalSales != null "> and total_sales = #{totalSales}</if>
+            <if test="acos != null "> and acos = #{acos}</if>
+            <if test="roas != null "> and roas = #{roas}</if>
+            <if test="totalOrders != null "> and total_orders = #{totalOrders}</if>
+            <if test="params.beginTotalOrders != null and params.beginTotalOrders != ''"> and total_orders &gt;= #{params.beginTotalOrders}</if>
+            <if test="params.endTotalOrders != null and params.endTotalOrders != ''"> and total_orders &lt;= #{params.endTotalOrders}</if>
+            <if test="totalUnits != null "> and total_units = #{totalUnits}</if>
+            <if test="cvr != null "> and cvr = #{cvr}</if>
+            <if test="costprice != null "> and costprice = #{costprice}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectVideoAdvertisingById" parameterType="Long" resultMap="VideoAdvertisingResult">
+        <include refid="selectVideoAdvertisingVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertVideoAdvertising" parameterType="VideoAdvertising" useGeneratedKeys="true" keyProperty="id">
+        insert into cpd_video_advertising
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">store_code,</if>
+            <if test="asin != null">asin,</if>
+            <if test="sku != null">sku,</if>
+            <if test="commissioner != null">commissioner,</if>
+            <if test="type != null">type,</if>
+            <if test="link != null">link,</if>
+            <if test="profit != null">profit,</if>
+            <if test="cpa != null">cpa,</if>
+            <if test="cpaProfit != null">cpa_profit,</if>
+            <if test="cpaProfitLevel != null">cpa_profit_level,</if>
+            <if test="ctrLevel != null">ctr_level,</if>
+            <if test="cvrLevel != null">cvr_level,</if>
+            <if test="acosLevel != null">acos_level,</if>
+            <if test="operationFeedback != null">operation_feedback,</if>
+            <if test="identificationCode != null">identification_code,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="portfolioName != null">portfolio_name,</if>
+            <if test="currency != null">currency,</if>
+            <if test="campaignName != null">campaign_name,</if>
+            <if test="adGroupName != null">ad_group_name,</if>
+            <if test="targeting != null">targeting,</if>
+            <if test="matchType != null">match_type,</if>
+            <if test="customerSearchTerm != null">customer_search_term,</if>
+            <if test="impressions != null">impressions,</if>
+            <if test="clicks != null">clicks,</if>
+            <if test="ctr != null">ctr,</if>
+            <if test="cpc != null">cpc,</if>
+            <if test="spend != null">spend,</if>
+            <if test="totalSales != null">total_sales,</if>
+            <if test="acos != null">acos,</if>
+            <if test="roas != null">roas,</if>
+            <if test="totalOrders != null">total_orders,</if>
+            <if test="totalUnits != null">total_units,</if>
+            <if test="cvr != null">cvr,</if>
+            <if test="costprice != null">costprice,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="asin != null">#{asin},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="commissioner != null">#{commissioner},</if>
+            <if test="type != null">#{type},</if>
+            <if test="link != null">#{link},</if>
+            <if test="profit != null">#{profit},</if>
+            <if test="cpa != null">#{cpa},</if>
+            <if test="cpaProfit != null">#{cpaProfit},</if>
+            <if test="cpaProfitLevel != null">#{cpaProfitLevel},</if>
+            <if test="ctrLevel != null">#{ctrLevel},</if>
+            <if test="cvrLevel != null">#{cvrLevel},</if>
+            <if test="acosLevel != null">#{acosLevel},</if>
+            <if test="operationFeedback != null">#{operationFeedback},</if>
+            <if test="identificationCode != null">#{identificationCode},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="portfolioName != null">#{portfolioName},</if>
+            <if test="currency != null">#{currency},</if>
+            <if test="campaignName != null">#{campaignName},</if>
+            <if test="adGroupName != null">#{adGroupName},</if>
+            <if test="targeting != null">#{targeting},</if>
+            <if test="matchType != null">#{matchType},</if>
+            <if test="customerSearchTerm != null">#{customerSearchTerm},</if>
+            <if test="impressions != null">#{impressions},</if>
+            <if test="clicks != null">#{clicks},</if>
+            <if test="ctr != null">#{ctr},</if>
+            <if test="cpc != null">#{cpc},</if>
+            <if test="spend != null">#{spend},</if>
+            <if test="totalSales != null">#{totalSales},</if>
+            <if test="acos != null">#{acos},</if>
+            <if test="roas != null">#{roas},</if>
+            <if test="totalOrders != null">#{totalOrders},</if>
+            <if test="totalUnits != null">#{totalUnits},</if>
+            <if test="cvr != null">#{cvr},</if>
+            <if test="costprice != null">#{costprice},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVideoAdvertising" parameterType="VideoAdvertising">
+        update cpd_video_advertising
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="commissioner != null">commissioner = #{commissioner},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="profit != null">profit = #{profit},</if>
+            <if test="cpa != null">cpa = #{cpa},</if>
+            <if test="cpaProfit != null">cpa_profit = #{cpaProfit},</if>
+            <if test="cpaProfitLevel != null">cpa_profit_level = #{cpaProfitLevel},</if>
+            <if test="ctrLevel != null">ctr_level = #{ctrLevel},</if>
+            <if test="cvrLevel != null">cvr_level = #{cvrLevel},</if>
+            <if test="acosLevel != null">acos_level = #{acosLevel},</if>
+            <if test="operationFeedback != null">operation_feedback = #{operationFeedback},</if>
+            <if test="identificationCode != null">identification_code = #{identificationCode},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="portfolioName != null">portfolio_name = #{portfolioName},</if>
+            <if test="currency != null">currency = #{currency},</if>
+            <if test="campaignName != null">campaign_name = #{campaignName},</if>
+            <if test="adGroupName != null">ad_group_name = #{adGroupName},</if>
+            <if test="targeting != null">targeting = #{targeting},</if>
+            <if test="matchType != null">match_type = #{matchType},</if>
+            <if test="customerSearchTerm != null">customer_search_term = #{customerSearchTerm},</if>
+            <if test="impressions != null">impressions = #{impressions},</if>
+            <if test="clicks != null">clicks = #{clicks},</if>
+            <if test="ctr != null">ctr = #{ctr},</if>
+            <if test="cpc != null">cpc = #{cpc},</if>
+            <if test="spend != null">spend = #{spend},</if>
+            <if test="totalSales != null">total_sales = #{totalSales},</if>
+            <if test="acos != null">acos = #{acos},</if>
+            <if test="roas != null">roas = #{roas},</if>
+            <if test="totalOrders != null">total_orders = #{totalOrders},</if>
+            <if test="totalUnits != null">total_units = #{totalUnits},</if>
+            <if test="cvr != null">cvr = #{cvr},</if>
+            <if test="costprice != null">costprice = #{costprice},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVideoAdvertisingById" parameterType="Long">
+        delete from cpd_video_advertising where id = #{id}
+    </delete>
+
+    <delete id="deleteVideoAdvertisingByIds" parameterType="String">
+        delete from cpd_video_advertising where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectVideoAdvertisingByOnlyCondition" parameterType="VideoAdvertising" resultMap="VideoAdvertisingResult">
+        <include refid="selectVideoAdvertisingVo"/>
+        where store_code = #{storeCode} and start_date = #{startDate} and end_date = #{endDate} and portfolio_name = #{portfolioName}
+        and currency = #{currency} and campaign_name = #{campaignName} and ad_group_name = #{adGroupName} and targeting = #{targeting}
+        and match_type = #{matchType} and customer_search_term = #{customerSearchTerm}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateVideoAdvertisingByOnlyCondition" parameterType="VideoAdvertising">
+        update cpd_video_advertising
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="asin != null">asin = #{asin},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="commissioner != null">commissioner = #{commissioner},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="link != null">link = #{link},</if>
+            <if test="profit != null">profit = #{profit},</if>
+            <if test="cpa != null">cpa = #{cpa},</if>
+            <if test="cpaProfit != null">cpa_profit = #{cpaProfit},</if>
+            <if test="cpaProfitLevel != null">cpa_profit_level = #{cpaProfitLevel},</if>
+            <if test="ctrLevel != null">ctr_level = #{ctrLevel},</if>
+            <if test="cvrLevel != null">cvr_level = #{cvrLevel},</if>
+            <if test="acosLevel != null">acos_level = #{acosLevel},</if>
+            <if test="operationFeedback != null">operation_feedback = #{operationFeedback},</if>
+            <if test="identificationCode != null">identification_code = #{identificationCode},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="portfolioName != null">portfolio_name = #{portfolioName},</if>
+            <if test="currency != null">currency = #{currency},</if>
+            <if test="campaignName != null">campaign_name = #{campaignName},</if>
+            <if test="adGroupName != null">ad_group_name = #{adGroupName},</if>
+            <if test="targeting != null">targeting = #{targeting},</if>
+            <if test="matchType != null">match_type = #{matchType},</if>
+            <if test="customerSearchTerm != null">customer_search_term = #{customerSearchTerm},</if>
+            <if test="impressions != null">impressions = #{impressions},</if>
+            <if test="clicks != null">clicks = #{clicks},</if>
+            <if test="ctr != null">ctr = #{ctr},</if>
+            <if test="cpc != null">cpc = #{cpc},</if>
+            <if test="spend != null">spend = #{spend},</if>
+            <if test="totalSales != null">total_sales = #{totalSales},</if>
+            <if test="acos != null">acos = #{acos},</if>
+            <if test="roas != null">roas = #{roas},</if>
+            <if test="totalOrders != null">total_orders = #{totalOrders},</if>
+            <if test="totalUnits != null">total_units = #{totalUnits},</if>
+            <if test="cvr != null">cvr = #{cvr},</if>
+            <if test="costprice != null">costprice = #{costprice},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where store_code = #{storeCode} and start_date = #{startDate} and end_date = #{endDate} and portfolio_name = #{portfolioName}
+        and currency = #{currency} and campaign_name = #{campaignName} and ad_group_name = #{adGroupName} and targeting = #{targeting}
+        and match_type = #{matchType} and customer_search_term = #{customerSearchTerm}
+    </update>
+
+</mapper>

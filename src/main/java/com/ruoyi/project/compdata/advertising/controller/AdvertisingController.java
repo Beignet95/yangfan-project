@@ -13,6 +13,7 @@ import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
 import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.system.user.domain.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -177,6 +178,16 @@ public class AdvertisingController extends BaseController
     {
         AdvertisingEchartsVo advertisingEchartsVo = advertisingService.selectAdvertisingEchartsVo(advertisingAnalyParamVo);
         return AjaxResult.success(advertisingEchartsVo);
+    }
+
+    //导出 导入模板
+    @RequiresPermissions("system:user:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<Advertising> util = new ExcelUtil<Advertising>(Advertising.class);
+        return util.importTemplateExcel("广告源数据");
     }
 
 }

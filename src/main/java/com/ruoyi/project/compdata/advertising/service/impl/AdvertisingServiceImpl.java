@@ -348,7 +348,7 @@ public class AdvertisingServiceImpl implements IAdvertisingService
             {
                 failureNum++;
                 String msg = "<br/>" + failureNum + "、账号 " + advertising.getStoreCode()+"商店"+advertising.getMonth()+"月的"+advertising.getSku() + " sku广告导入失败：";
-                failureMsg.append(msg + e.getMessage());
+                failureMsg.append(msg + e.getMessage()+",请检查数据格式是否正确！");
                 log.error(msg, e);
             }
         }

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.oms.orderRefund.mapper.OrderRefundMapper">
+    
+    <resultMap type="OrderRefund" id="OrderRefundResult">
+        <result property="id"    column="id"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="date"    column="date"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="sku"    column="sku"    />
+        <result property="transactionType"    column="transaction_type"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="paymentDetail"    column="payment_detail"    />
+        <result property="amount"    column="amount"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="productTitle"    column="product_title"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectOrderRefundVo">
+        select id, store_code, date, order_id, sku, transaction_type, payment_type, payment_detail, amount, quantity, product_title, create_by, create_time, update_by, update_time from oms_order_refund
+    </sql>
+
+    <select id="selectOrderRefundList" parameterType="OrderRefund" resultMap="OrderRefundResult">
+        <include refid="selectOrderRefundVo"/>
+        <where>  
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="transactionType != null  and transactionType != ''"> and transaction_type = #{transactionType}</if>
+            <if test="paymentType != null  and paymentType != ''"> and payment_type = #{paymentType}</if>
+            <if test="paymentDetail != null  and paymentDetail != ''"> and payment_detail = #{paymentDetail}</if>
+            <if test="amount != null  and amount != ''"> and amount = #{amount}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="productTitle != null  and productTitle != ''"> and product_title = #{productTitle}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectOrderRefundById" parameterType="Long" resultMap="OrderRefundResult">
+        <include refid="selectOrderRefundVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOrderRefund" parameterType="OrderRefund" useGeneratedKeys="true" keyProperty="id">
+        insert into oms_order_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">store_code,</if>
+            <if test="date != null">date,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="sku != null">sku,</if>
+            <if test="transactionType != null">transaction_type,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="paymentDetail != null">payment_detail,</if>
+            <if test="amount != null">amount,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="productTitle != null">product_title,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="date != null">#{date},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="transactionType != null">#{transactionType},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="paymentDetail != null">#{paymentDetail},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="productTitle != null">#{productTitle},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderRefund" parameterType="OrderRefund">
+        update oms_order_refund
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="transactionType != null">transaction_type = #{transactionType},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="paymentDetail != null">payment_detail = #{paymentDetail},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="productTitle != null">product_title = #{productTitle},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderRefundById" parameterType="Long">
+        delete from oms_order_refund where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderRefundByIds" parameterType="String">
+        delete from oms_order_refund where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，设置onlyCondition -->
+    <select id="selectOrderRefundByOnlyCondition" parameterType="OrderRefund" resultMap="OrderRefundResult">
+        <include refid="selectOrderRefundVo"/>
+        where  order_id = #{orderId} and sku=#{sku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，设置onlyCondition -->
+    <update id="updateOrderRefundByOnlyCondition" parameterType="OrderRefund">
+        update oms_order_refund
+                <trim prefix="SET" suffixOverrides=",">
+                <if test="storeCode != null">store_code = #{storeCode},</if>
+                <if test="date != null">date = #{date},</if>
+                <if test="orderId != null">order_id = #{orderId},</if>
+                <if test="sku != null">sku = #{sku},</if>
+                <if test="transactionType != null">transaction_type = #{transactionType},</if>
+                <if test="paymentType != null">payment_type = #{paymentType},</if>
+                <if test="paymentDetail != null">payment_detail = #{paymentDetail},</if>
+                <if test="amount != null">amount = #{amount},</if>
+                <if test="quantity != null">quantity = #{quantity},</if>
+                <if test="productTitle != null">product_title = #{productTitle},</if>
+                <if test="createBy != null">create_by = #{createBy},</if>
+                <if test="createTime != null">create_time = #{createTime},</if>
+                <if test="updateBy != null">update_by = #{updateBy},</if>
+                <if test="updateTime != null">update_time = #{updateTime},</if>
+                </trim>
+        where  order_id = #{orderId} and sku=#{sku}
+    </update>
+
+</mapper>

@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
             <if test="commissioner != null  and commissioner != ''"> and commissioner = #{commissioner}</if>
         </where>
+        order by id desc
     </select>
     
     <select id="selectAdvertisingActivityById" parameterType="Long" resultMap="AdvertisingActivityResult">

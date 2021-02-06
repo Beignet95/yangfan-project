@@ -70,4 +70,14 @@ public interface I${ClassName}Service
      */
     public List<Ztree> select${ClassName}Tree();
 #end
+
+    /**
+     * 导入${functionName}
+     *
+     * @param ids 需要导入的数据List
+     * @return 结果
+     */
+    public String import${ClassName}(List<${ClassName}> ${className}List, boolean isUpdateSupport);
+
+
 }

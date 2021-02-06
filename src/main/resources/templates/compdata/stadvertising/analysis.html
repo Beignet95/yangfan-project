@@ -30,15 +30,15 @@
                         <ul>
                             <li>
                                 <label>账号简称：</label>
-                                <input type="text" name="storeCode"/>
+                                <input type="text" name="storeCode" style="width: 100px;"/>
                             </li>
                             <li>
                                 <label>广告专员：</label>
-                                <input type="text" name="commissioner"/>
+                                <input type="text" name="commissioner" style="width: 100px;"/>
                             </li>
                             <li>
                                 <label>ASIN：</label>
-                                <input type="text" name="asin"/>
+                                <input type="text" name="asin" style="width: 100px;"/>
                             </li>
                             <li>
                                 <label>sku：</label>
@@ -46,11 +46,11 @@
                             </li>
                             <li>
                                 <label>时间：</label>
-                                <input type="text" class="time-input" placeholder="请选择Start Date" name="startDate"/>
+                                <input type="text" class="time-input" placeholder="请选择时间" name="startDate" style="width: 90px;"/>
                             </li>
                             <li>
                                 <label>CTR：</label>
-                                <select name="ctrLevel">
+                                <select name="ctrLevel" style="width: 50px;">
                                     <option value="">所有</option>
                                     <option value="1">优秀</option>
                                     <option value="2">良</option>
@@ -60,7 +60,7 @@
                             </li>
                             <li>
                                 <label>CVR：</label>
-                                <select name="cvrLevel">
+                                <select name="cvrLevel" style="width: 50px;">
                                     <option value="">所有</option>
                                     <option value="1">优秀</option>
                                     <option value="2">良</option>
@@ -70,7 +70,7 @@
                             </li>
                             <li>
                                 <label>ACOS：</label>
-                                <select name="acosLevel">
+                                <select name="acosLevel" style="width: 50px;">
                                     <option value="">所有</option>
                                     <option value="1">优秀</option>
                                     <option value="2">良</option>
@@ -80,13 +80,23 @@
                             </li>
                             <li>
                                 <label>cpa：</label>
-                                <select name="cpaProfitLevel">
+                                <select name="cpaProfitLevel" style="width: 50px;">
                                     <option value="">所有</option>
                                     <option value="1">优秀</option>
                                     <option value="2">良</option>
                                     <option value="3">中</option>
                                     <option value="4">差</option>
                                 </select>
+                            </li>
+                            <li>
+                                <label>销量：</label>
+                                <input type="text" name="params[beginTotalOrders]" style="width: 50px;"/>-
+                                <input type="text" name="params[endTotalOrders]" style="width: 50px;"/>
+                            </li>
+                            <li>
+                                <label>花费：</label>
+                                <input type="text" name="params[beginSpend]" style="width: 50px;"/>-
+                                <input type="text" name="params[endSpend]" style="width: 50px;"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -157,7 +167,7 @@
                         title: '广告专员',
                         align: 'center',
                         formatter: function(value, row, index) {
-                            if(value==undefined||value=="") return "Phoebe";
+                            if(value==undefined||value=="") return "#N/A";
                             return value;
                         }
                     },
@@ -166,7 +176,7 @@
                     title: 'ASIN',
                     align: 'center',
                     formatter: function(value, row, index) {
-                        if(value==undefined||value=="") return 0;
+                        if(value==undefined||value=="") return "#N/A";
                         return value;
                     }
                 },
@@ -417,7 +427,10 @@
                     {
                         field: 'cvr',
                         title: '7天的</br>转化率',
-                        sortable: true
+                        sortable: true,
+                        formatter: function(value, row, index) {
+                            return value+"%";
+                        }
                     },
                     {
                         field: 'advertisedSkuUnits',
@@ -468,8 +481,8 @@
         function showLevel(value, row, index){
             if(value==null){
                 var resStr = "";
+                if(row.advertisedSkuUnits==0||row.advertisedSkuUnits==null) return  resStr+=" No Order";
                 if(row.costprice==null) return resStr="成本Can't find";
-                if(row.advertisedSkuUnits==0||row.advertisedSkuUnits==null) resStr+=" No Order";
                 return resStr;
             }else{
                 var label = '<button class="label label-danger" style="width: 50px;">差</button>';
@@ -486,7 +499,6 @@
         function turnNumToPercentText(value, row,index){
             if(value==null){
                 var resStr = "";
-                //alert(row.costprice);\
                 if(row.advertisedSkuUnits==0||row.advertisedSkuUnits==null) return " No Order";
                 if(row.costprice==null) return resStr="成本Can't find";
 

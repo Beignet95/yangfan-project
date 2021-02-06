@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.net.zwIpFiter.mapper.SysZwIpFilterMapper">
+    
+    <resultMap type="SysZwIpFilter" id="SysZwIpFilterResult">
+        <result property="id"    column="id"    />
+        <result property="ip"    column="ip"    />
+        <result property="moudle"    column="moudle"    />
+        <result property="mark"    column="mark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysZwIpFilterVo">
+        select id, ip, moudle, mark, create_by, create_time, update_by, update_time from sys_zw_ip_filter
+    </sql>
+
+    <select id="selectSysZwIpFilterList" parameterType="SysZwIpFilter" resultMap="SysZwIpFilterResult">
+        <include refid="selectSysZwIpFilterVo"/>
+        <where>  
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+            <if test="moudle != null  and moudle != ''"> and moudle = #{moudle}</if>
+            <if test="mark != null "> and mark = #{mark}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysZwIpFilterById" parameterType="Long" resultMap="SysZwIpFilterResult">
+        <include refid="selectSysZwIpFilterVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysZwIpFilter" parameterType="SysZwIpFilter" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_zw_ip_filter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ip != null">ip,</if>
+            <if test="moudle != null">moudle,</if>
+            <if test="mark != null">mark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ip != null">#{ip},</if>
+            <if test="moudle != null">#{moudle},</if>
+            <if test="mark != null">#{mark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysZwIpFilter" parameterType="SysZwIpFilter">
+        update sys_zw_ip_filter
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ip != null">ip = #{ip},</if>
+            <if test="moudle != null">moudle = #{moudle},</if>
+            <if test="mark != null">mark = #{mark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysZwIpFilterById" parameterType="Long">
+        delete from sys_zw_ip_filter where id = #{id}
+    </delete>
+
+    <delete id="deleteSysZwIpFilterByIds" parameterType="String">
+        delete from sys_zw_ip_filter where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectSysZwIpFilterByOnlyCondition" parameterType="SysZwIpFilter" resultMap="SysZwIpFilterResult">
+        <include refid="selectSysZwIpFilterVo"/>
+        where
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateSysZwIpFilterByOnlyCondition" parameterType="SysZwIpFilter">
+        update sys_zw_ip_filter
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="ip != null">ip = #{ip},</if>
+                                                                <if test="moudle != null">moudle = #{moudle},</if>
+                                                                <if test="mark != null">mark = #{mark},</if>
+                                                                <if test="createBy != null">create_by = #{createBy},</if>
+                                                                <if test="createTime != null">create_time = #{createTime},</if>
+                                                                <if test="updateBy != null">update_by = #{updateBy},</if>
+                                                                <if test="updateTime != null">update_time = #{updateTime},</if>
+                                    </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

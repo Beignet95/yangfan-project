@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.badcommodity.mapper.BadCommodityMapper">
+    
+    <resultMap type="BadCommodity" id="BadCommodityResult">
+        <result property="id"    column="id"    />
+        <result property="storeCode"    column="store_code"    />
+        <result property="principal"    column="principal"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="dealDate"    column="deal_date"    />
+        <result property="oderId"    column="oder_id"    />
+        <result property="type"    column="type"    />
+        <result property="sku"    column="sku"    />
+        <result property="badNum"    column="bad_num"    />
+        <result property="reissueNum"    column="reissue_num"    />
+        <result property="refundNum"    column="refund_num"    />
+        <result property="tracebackCode"    column="traceback_code"    />
+        <result property="badReason"    column="bad_reason"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="solution"    column="solution"    />
+        <result property="badSource"    column="bad_source"    />
+        <result property="fbaSku"    column="fba_sku"    />
+        <result property="returnDate"    column="return_date"    />
+        <result property="tye2"    column="tye2"    />
+        <result property="eachsetNum"    column="eachset_num"    />
+        <result property="badNum2"    column="bad_num2"    />
+        <result property="ycSku"    column="yc_sku"    />
+        <result property="reissue2"    column="reissue2"    />
+        <result property="reissueTrackingId"    column="reissue_tracking_id"    />
+        <result property="isdelivered"    column="isdelivered"    />
+        <result property="refundNum2"    column="refund_num2"    />
+        <result property="refundAmount"    column="refund_amount"    />
+        <result property="mailFollowTimes"    column="mail_follow_times"    />
+        <result property="lastFollowTime"    column="last_follow_time"    />
+        <result property="isdone"    column="isdone"    />
+        <result property="feedbackCaseId"    column="feedback_case_id"    />
+        <result property="remarks2"    column="remarks2"    />
+        <result property="picUrl1"    column="pic_url1"    />
+        <result property="picUrl2"    column="pic_url2"    />
+        <result property="picUrl3"    column="pic_url3"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBadCommodityVo">
+        select id, store_code, principal, order_date, deal_date, oder_id, type, sku, bad_num, reissue_num, refund_num, traceback_code, bad_reason, remarks, solution, bad_source, fba_sku, return_date, tye2, eachset_num, bad_num2, yc_sku, reissue2, reissue_tracking_id, isdelivered, refund_num2, refund_amount, mail_follow_times, last_follow_time, isdone, feedback_case_id, remarks2, pic_url1, pic_url2, pic_url3, create_by, create_time, update_by, update_time from pms_bad_commodity
+    </sql>
+
+    <select id="selectBadCommodityList" parameterType="BadCommodity" resultMap="BadCommodityResult">
+        <include refid="selectBadCommodityVo"/>
+        <where>  
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="dealDate != null "> and deal_date = #{dealDate}</if>
+            <if test="oderId != null  and oderId != ''"> and oder_id = #{oderId}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="badNum != null "> and bad_num = #{badNum}</if>
+            <if test="reissueNum != null "> and reissue_num = #{reissueNum}</if>
+            <if test="refundNum != null "> and refund_num = #{refundNum}</if>
+            <if test="tracebackCode != null  and tracebackCode != ''"> and traceback_code = #{tracebackCode}</if>
+            <if test="badReason != null  and badReason != ''"> and bad_reason = #{badReason}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="solution != null  and solution != ''"> and solution = #{solution}</if>
+            <if test="badSource != null  and badSource != ''"> and bad_source = #{badSource}</if>
+            <if test="fbaSku != null  and fbaSku != ''"> and fba_sku = #{fbaSku}</if>
+            <if test="returnDate != null  and returnDate != ''"> and return_date = #{returnDate}</if>
+            <if test="tye2 != null  and tye2 != ''"> and tye2 = #{tye2}</if>
+            <if test="eachsetNum != null "> and eachset_num = #{eachsetNum}</if>
+            <if test="badNum2 != null "> and bad_num2 = #{badNum2}</if>
+            <if test="ycSku != null  and ycSku != ''"> and yc_sku = #{ycSku}</if>
+            <if test="reissue2 != null "> and reissue2 = #{reissue2}</if>
+            <if test="reissueTrackingId != null  and reissueTrackingId != ''"> and reissue_tracking_id = #{reissueTrackingId}</if>
+            <if test="isdelivered != null "> and isdelivered = #{isdelivered}</if>
+            <if test="refundNum2 != null "> and refund_num2 = #{refundNum2}</if>
+            <if test="refundAmount != null "> and refund_amount = #{refundAmount}</if>
+            <if test="mailFollowTimes != null  and mailFollowTimes != ''"> and mail_follow_times = #{mailFollowTimes}</if>
+            <if test="lastFollowTime != null "> and last_follow_time = #{lastFollowTime}</if>
+            <if test="isdone != null and isdone != ''"> and isdone = #{isdone}</if>
+            <if test="feedbackCaseId != null  and feedbackCaseId != ''"> and feedback_case_id = #{feedbackCaseId}</if>
+            <if test="remarks2 != null  and remarks2 != ''"> and remarks2 = #{remarks2}</if>
+            <if test="picUrl1 != null  and picUrl1 != ''"> and pic_url1 = #{picUrl1}</if>
+            <if test="picUrl2 != null  and picUrl2 != ''"> and pic_url2 = #{picUrl2}</if>
+            <if test="picUrl3 != null  and picUrl3 != ''"> and pic_url3 = #{picUrl3}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectBadCommodityById" parameterType="Long" resultMap="BadCommodityResult">
+        <include refid="selectBadCommodityVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBadCommodity" parameterType="BadCommodity" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_bad_commodity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">store_code,</if>
+            <if test="principal != null">principal,</if>
+            <if test="orderDate != null">order_date,</if>
+            <if test="dealDate != null">deal_date,</if>
+            <if test="oderId != null">oder_id,</if>
+            <if test="type != null">type,</if>
+            <if test="sku != null">sku,</if>
+            <if test="badNum != null">bad_num,</if>
+            <if test="reissueNum != null">reissue_num,</if>
+            <if test="refundNum != null">refund_num,</if>
+            <if test="tracebackCode != null">traceback_code,</if>
+            <if test="badReason != null">bad_reason,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="solution != null">solution,</if>
+            <if test="badSource != null">bad_source,</if>
+            <if test="fbaSku != null">fba_sku,</if>
+            <if test="returnDate != null">return_date,</if>
+            <if test="tye2 != null">tye2,</if>
+            <if test="eachsetNum != null">eachset_num,</if>
+            <if test="badNum2 != null">bad_num2,</if>
+            <if test="ycSku != null">yc_sku,</if>
+            <if test="reissue2 != null">reissue2,</if>
+            <if test="reissueTrackingId != null">reissue_tracking_id,</if>
+            <if test="isdelivered != null">isdelivered,</if>
+            <if test="refundNum2 != null">refund_num2,</if>
+            <if test="refundAmount != null">refund_amount,</if>
+            <if test="mailFollowTimes != null">mail_follow_times,</if>
+            <if test="lastFollowTime != null">last_follow_time,</if>
+            <if test="isdone != null and isdone != ''">isdone,</if>
+            <if test="feedbackCaseId != null">feedback_case_id,</if>
+            <if test="remarks2 != null">remarks2,</if>
+            <if test="picUrl1 != null">pic_url1,</if>
+            <if test="picUrl2 != null">pic_url2,</if>
+            <if test="picUrl3 != null">pic_url3,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeCode != null">#{storeCode},</if>
+            <if test="principal != null">#{principal},</if>
+            <if test="orderDate != null">#{orderDate},</if>
+            <if test="dealDate != null">#{dealDate},</if>
+            <if test="oderId != null">#{oderId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="badNum != null">#{badNum},</if>
+            <if test="reissueNum != null">#{reissueNum},</if>
+            <if test="refundNum != null">#{refundNum},</if>
+            <if test="tracebackCode != null">#{tracebackCode},</if>
+            <if test="badReason != null">#{badReason},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="solution != null">#{solution},</if>
+            <if test="badSource != null">#{badSource},</if>
+            <if test="fbaSku != null">#{fbaSku},</if>
+            <if test="returnDate != null">#{returnDate},</if>
+            <if test="tye2 != null">#{tye2},</if>
+            <if test="eachsetNum != null">#{eachsetNum},</if>
+            <if test="badNum2 != null">#{badNum2},</if>
+            <if test="ycSku != null">#{ycSku},</if>
+            <if test="reissue2 != null">#{reissue2},</if>
+            <if test="reissueTrackingId != null">#{reissueTrackingId},</if>
+            <if test="isdelivered != null">#{isdelivered},</if>
+            <if test="refundNum2 != null">#{refundNum2},</if>
+            <if test="refundAmount != null">#{refundAmount},</if>
+            <if test="mailFollowTimes != null">#{mailFollowTimes},</if>
+            <if test="lastFollowTime != null">#{lastFollowTime},</if>
+            <if test="isdone != null and isdone != ''">#{isdone},</if>
+            <if test="feedbackCaseId != null">#{feedbackCaseId},</if>
+            <if test="remarks2 != null">#{remarks2},</if>
+            <if test="picUrl1 != null">#{picUrl1},</if>
+            <if test="picUrl2 != null">#{picUrl2},</if>
+            <if test="picUrl3 != null">#{picUrl3},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBadCommodity" parameterType="BadCommodity">
+        update pms_bad_commodity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="dealDate != null">deal_date = #{dealDate},</if>
+            <if test="oderId != null">oder_id = #{oderId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="badNum != null">bad_num = #{badNum},</if>
+            <if test="reissueNum != null">reissue_num = #{reissueNum},</if>
+            <if test="refundNum != null">refund_num = #{refundNum},</if>
+            <if test="tracebackCode != null">traceback_code = #{tracebackCode},</if>
+            <if test="badReason != null">bad_reason = #{badReason},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="solution != null">solution = #{solution},</if>
+            <if test="badSource != null">bad_source = #{badSource},</if>
+            <if test="fbaSku != null">fba_sku = #{fbaSku},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="tye2 != null">tye2 = #{tye2},</if>
+            <if test="eachsetNum != null">eachset_num = #{eachsetNum},</if>
+            <if test="badNum2 != null">bad_num2 = #{badNum2},</if>
+            <if test="ycSku != null">yc_sku = #{ycSku},</if>
+            <if test="reissue2 != null">reissue2 = #{reissue2},</if>
+            <if test="reissueTrackingId != null">reissue_tracking_id = #{reissueTrackingId},</if>
+            <if test="isdelivered != null">isdelivered = #{isdelivered},</if>
+            <if test="refundNum2 != null">refund_num2 = #{refundNum2},</if>
+            <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
+            <if test="mailFollowTimes != null">mail_follow_times = #{mailFollowTimes},</if>
+            <if test="lastFollowTime != null">last_follow_time = #{lastFollowTime},</if>
+            <if test="isdone != null and isdone != ''">isdone = #{isdone},</if>
+            <if test="feedbackCaseId != null">feedback_case_id = #{feedbackCaseId},</if>
+            <if test="remarks2 != null">remarks2 = #{remarks2},</if>
+            <if test="picUrl1 != null">pic_url1 = #{picUrl1},</if>
+            <if test="picUrl2 != null">pic_url2 = #{picUrl2},</if>
+            <if test="picUrl3 != null">pic_url3 = #{picUrl3},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBadCommodityById" parameterType="Long">
+        delete from pms_bad_commodity where id = #{id}
+    </delete>
+
+    <delete id="deleteBadCommodityByIds" parameterType="String">
+        delete from pms_bad_commodity where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectBadCommodityByOnlyCondition" parameterType="BadCommodity" resultMap="BadCommodityResult">
+        <include refid="selectBadCommodityVo"/>
+        where oder_id=#{oderId} and sku=#{sku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateBadCommodityByOnlyCondition" parameterType="BadCommodity">
+        update pms_bad_commodity
+        <trim prefix="SET" suffixOverrides=","><if test="storeCode != null">store_code = #{storeCode},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="dealDate != null">deal_date = #{dealDate},</if>
+            <if test="oderId != null">oder_id = #{oderId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="badNum != null">bad_num = #{badNum},</if>
+            <if test="reissueNum != null">reissue_num = #{reissueNum},</if>
+            <if test="refundNum != null">refund_num = #{refundNum},</if>
+            <if test="tracebackCode != null">traceback_code = #{tracebackCode},</if>
+            <if test="badReason != null">bad_reason = #{badReason},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="solution != null">solution = #{solution},</if>
+            <if test="badSource != null">bad_source = #{badSource},</if>
+            <if test="fbaSku != null">fba_sku = #{fbaSku},</if>
+            <if test="returnDate != null">return_date = #{returnDate},</if>
+            <if test="tye2 != null">tye2 = #{tye2},</if>
+            <if test="eachsetNum != null">eachset_num = #{eachsetNum},</if>
+            <if test="badNum2 != null">bad_num2 = #{badNum2},</if>
+            <if test="ycSku != null">yc_sku = #{ycSku},</if>
+            <if test="reissue2 != null">reissue2 = #{reissue2},</if>
+            <if test="reissueTrackingId != null">reissue_tracking_id = #{reissueTrackingId},</if>
+            <if test="isdelivered != null">isdelivered = #{isdelivered},</if>
+            <if test="refundNum2 != null">refund_num2 = #{refundNum2},</if>
+            <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
+            <if test="mailFollowTimes != null">mail_follow_times = #{mailFollowTimes},</if>
+            <if test="lastFollowTime != null">last_follow_time = #{lastFollowTime},</if>
+            <if test="isdone != null">isdone = #{isdone},</if>
+            <if test="feedbackCaseId != null">feedback_case_id = #{feedbackCaseId},</if>
+            <if test="remarks2 != null">remarks2 = #{remarks2},</if>
+            <if test="picUrl1 != null">pic_url1 = #{picUrl1},</if>
+            <if test="picUrl2 != null">pic_url2 = #{picUrl2},</if>
+            <if test="picUrl3 != null">pic_url3 = #{picUrl3},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where oder_id=#{oderId} and sku=#{sku}
+    </update>
+
+</mapper>

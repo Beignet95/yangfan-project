@@ -3,12 +3,14 @@ package com.ruoyi.project.compdata.advertising.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class AdvertisingEchartsVo {
     private String[] months;
     private Long[] totalExposures;

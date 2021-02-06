@@ -155,7 +155,7 @@ public class StadvertisingServiceImpl implements IStadvertisingService
                     if(AdvertisingActivityRes!=null){
                         AdvertisingActivityRes.setStoreCode(stadvertising.getStoreCode());
                         BeanUtils.copyProperties(AdvertisingActivityRes,stadvertising);
-                    };
+                    }
                     /** 从sku单价模块获取数据填充 **/
                     SkuCostprice skuCostpriceParam = new SkuCostprice();
                     String sku = stadvertising.getSku();
@@ -223,8 +223,8 @@ public class StadvertisingServiceImpl implements IStadvertisingService
                     Float cpa = (stadvertising.getCpaProfit()==null)? null: stadvertising.getCpaProfit().floatValue();
                     if(cpa==null) ;
                     else if(cpa<-2) stadvertising.setCpaProfitLevel(4);
-                    else if(acos>-2&&acos<=0) stadvertising.setCpaProfitLevel(3);
-                    else if(acos==0) stadvertising.setCpaProfitLevel(2);
+                    else if(cpa>-2&&cpa<=0) stadvertising.setCpaProfitLevel(3);
+                    else if(cpa==0) stadvertising.setCpaProfitLevel(2);
                     else stadvertising.setCpaProfitLevel(1);
 
                     /**设置识别码**/

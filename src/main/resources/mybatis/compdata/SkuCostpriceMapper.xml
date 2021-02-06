@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
             <if test="params.beginCostprice != null and params.beginCostprice != '' and params.endCostprice != null and params.endCostprice != ''"> and costprice between #{params.beginCostprice} and #{params.endCostprice}</if>
         </where>
+        order by id desc
     </select>
     
     <select id="selectSkuCostpriceById" parameterType="Long" resultMap="SkuCostpriceResult">
