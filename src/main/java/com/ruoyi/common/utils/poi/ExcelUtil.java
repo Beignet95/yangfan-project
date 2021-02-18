@@ -1218,11 +1218,12 @@ public class ExcelUtil<T>
             Cell cell = row.getCell(column);
             if (cell != null)
             {
+                CellType cellType = cell.getCellType();
                 if (cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
                 {
 
                     //TODO
-                    String formaula = cell.getCellFormula();
+                    //String formaula = cell.getCellFormula();
                     //TODO
                     val = cell.getNumericCellValue();
                     if (DateUtil.isCellDateFormatted(cell))

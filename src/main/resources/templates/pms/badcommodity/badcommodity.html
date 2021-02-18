@@ -16,7 +16,7 @@
                                 <input type="text" name="storeCode"/>
                             </li>
                             <li>
-                                <label>销售负责人：</label>
+                                <label style="width: 100px;">销售负责人：</label>
                                 <input type="text" name="principal"/>
                             </li>
                             <li>
@@ -28,78 +28,78 @@
                                 <input type="text" class="time-input" placeholder="请选择处理日期" name="dealDate"/>
                             </li>
                             <li>
-                                <label>订单号或无订单号：</label>
-                                <input type="text" name="oderId"/>
+                                <label style="width: 120px;">订单号或无订单号：</label>
+                                <input type="text" name="orderId"/>
                             </li>
                             <li>
                                 <label>型号：</label>
                                 <input type="text" name="type"/>
                             </li>
                             <li>
-                                <label>标准SKU：</label>
+                                <label style="width: 70px;">标准SKU：</label>
                                 <input type="text" name="sku"/>
                             </li>
-                            <li>
-                                <label>追溯码：</label>
-                                <input type="text" name="tracebackCode"/>
-                            </li>
-                            <li>
-                                <label>不良原因：</label>
-                                <select name="badReason" th:with="type=${@dict.getType('pms_bad_reason')}">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>产品不良解决方式：</label>
-                                <input type="text" name="solution"/>
-                            </li>
-                            <li>
-                                <label>不良来源：</label>
-                                <input type="text" name="badSource"/>
-                            </li>
-                            <li>
-                                <label>FBA SKU：</label>
-                                <input type="text" name="fbaSku"/>
-                            </li>
-                            <li>
-                                <label>return-date：</label>
-                                <input type="text" name="returnDate"/>
-                            </li>
-                            <li>
-                                <label>型号2：</label>
-                                <input type="text" name="tye2"/>
-                            </li>
-                            <li>
-                                <label>补发或退款易仓SKU：</label>
-                                <input type="text" name="ycSku"/>
-                            </li>
-                            <li>
-                                <label>补发跟踪号：</label>
-                                <input type="text" name="reissueTrackingId"/>
-                            </li>
-                            <li>
-                                <label>补发是否送达：</label>
-                                <select name="isdelivered" th:with="type=${@dict.getType('sys_common_ whether')}">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>最后跟进时间：</label>
-                                <input type="text" class="time-input" placeholder="yyyy/MM/dd" name="lastFollowTime"/>
-                            </li>
-                            <li>
-                                <label>是否完成：</label>
-                                <select name="isdone" th:with="type=${@dict.getType('sys_common_ whether')}">
-                                    <option value="">所有</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>Feedback Case ID：</label>
-                                <input type="text" name="feedbackCaseId"/>
-                            </li>
+<!--                            <li>-->
+<!--                                <label>追溯码：</label>-->
+<!--                                <input type="text" name="tracebackCode"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>不良原因：</label>-->
+<!--                                <select name="badReason" th:with="type=${@dict.getType('pms_bad_reason')}">-->
+<!--                                    <option value="">所有</option>-->
+<!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                                </select>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>产品不良解决方式：</label>-->
+<!--                                <input type="text" name="solution"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>不良来源：</label>-->
+<!--                                <input type="text" name="badSource"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>FBA SKU：</label>-->
+<!--                                <input type="text" name="fbaSku"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>return-date：</label>-->
+<!--                                <input type="text" name="returnDate"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>型号2：</label>-->
+<!--                                <input type="text" name="type2"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>补发或退款易仓SKU：</label>-->
+<!--                                <input type="text" name="ycSku"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>补发跟踪号：</label>-->
+<!--                                <input type="text" name="reissueTrackingId"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>补发是否送达：</label>-->
+<!--                                <select name="isdelivered" th:with="type=${@dict.getType('sys_common_ whether')}">-->
+<!--                                    <option value="">所有</option>-->
+<!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                                </select>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>最后跟进时间：</label>-->
+<!--                                <input type="text" class="time-input" placeholder="yyyy/MM/dd" name="lastFollowTime"/>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>是否完成：</label>-->
+<!--                                <select name="isdone" th:with="type=${@dict.getType('sys_common_ whether')}">-->
+<!--                                    <option value="">所有</option>-->
+<!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                                </select>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <label>Feedback Case ID：</label>-->
+<!--                                <input type="text" name="feedbackCaseId"/>-->
+<!--                            </li>-->
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -176,7 +176,7 @@
                     title: '处理日期'
                 },
                 {
-                    field: 'oderId',
+                    field: 'orderId',
                     title: '订单号或无订单号',
                     class: 'W150'
                 },
@@ -234,7 +234,7 @@
                     title: 'return-date'
                 },
                 {
-                    field: 'tye2',
+                    field: 'type2',
                     title: '型号2'
                 },
                 {

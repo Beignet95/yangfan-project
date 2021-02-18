@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改不良记录')" />
+    <th:block th:include="include :: header('修改不良记录重复数据')" />
     <th:block th:include="include :: datetimepicker-css" />
-    <th:block th:include="include :: bootstrap-fileinput-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-badcommodity-edit" th:object="${badCommodity}" enctype="multipart/form-data">
+        <form class="form-horizontal m" id="form-badCommodityRepeat-edit" th:object="${badCommodityRepeat}">
             <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">重复id：</label>
+                <div class="col-sm-8">
+                    <input name="repeatId" th:field="*{repeatId}" class="form-control" type="text">
+                </div>
+            </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">账户站点：</label>
                 <div class="col-sm-8">
@@ -25,7 +30,7 @@
                 <label class="col-sm-3 control-label">订单日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="orderDate" th:value="${#dates.format(badCommodity.orderDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="orderDate" th:value="${#dates.format(badCommodityRepeat.orderDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -34,7 +39,7 @@
                 <label class="col-sm-3 control-label">处理日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="dealDate" th:value="${#dates.format(badCommodity.dealDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="dealDate" th:value="${#dates.format(badCommodityRepeat.dealDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -48,7 +53,10 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">型号：</label>
                 <div class="col-sm-8">
-                    <input name="type" th:field="*{type}" class="form-control" type="text">
+                    <select name="type" class="form-control m-b">
+                        <option value="">所有</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
                 </div>
             </div>
             <div class="form-group">    
@@ -156,9 +164,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发是否送达：</label>
                 <div class="col-sm-8">
-                    <select name="isdelivered" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdelivered}"></option>
-                    </select>
+                    <input name="isdelivered" th:field="*{isdelivered}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
@@ -180,10 +186,10 @@
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">最后跟进时间：</label>
+                <label class="col-sm-3 control-label">最后跟进时间            时间格式：yyyy/MM/dd：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="lastFollowTime" th:value="${#dates.format(badCommodity.lastFollowTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="lastFollowTime" th:value="${#dates.format(badCommodityRepeat.lastFollowTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -191,9 +197,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">是否完成：</label>
                 <div class="col-sm-8">
-                    <select name="isdone" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdone}"></option>
-                    </select>
+                    <input name="isdone" th:field="*{isdone}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
@@ -208,10 +212,10 @@
                     <input name="remarks2" th:field="*{remarks2}" class="form-control" type="text">
                 </div>
             </div>
-            <!--<div class="form-group">
+            <div class="form-group">
                 <label class="col-sm-3 control-label">不良图片一：</label>
                 <div class="col-sm-8">
-                    <input name="picUrl1" th:field="*{picUrl1}" class="form-control" type="text">
+                    <textarea name="picUrl1" class="form-control">[[*{picUrl1}]]</textarea>
                 </div>
             </div>
             <div class="form-group">    
@@ -225,27 +229,20 @@
                 <div class="col-sm-8">
                     <input name="picUrl3" th:field="*{picUrl3}" class="form-control" type="text">
                 </div>
-            </div>-->
-            <div class="form-group">
-                <label class="col-sm-3 font-noraml">不良图片上传</label>
-                <div class="col-sm-8 file-loading">
-                    <input id="pic" name="pic" type="file" multiple>
-                </div>
             </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: bootstrap-fileinput-js" />
     <script th:inline="javascript">
-        var prefix = ctx + "pms/badcommodity";
-        $("#form-badcommodity-edit").validate({
+        var prefix = ctx + "pms/badCommodityRepeat";
+        $("#form-badCommodityRepeat-edit").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-badcommodity-edit').serialize());
+                $.operate.save(prefix + "/edit", $('#form-badCommodityRepeat-edit').serialize());
             }
         }
 
@@ -266,65 +263,6 @@
             minView: "month",
             autoclose: true
         });
-
-        var badCommodityPicturebList = [[${badCommodity.badCommodityPicturebList}]];
-        $(document).ready(function () {
-
-            /** " <img src='api/ylzjyj/${appraInfo.id}' width='500' class='file-preview-image kv-preview-data rotate-38827 is-portrait-gt4' alt='' title='#' style=' height: auto; max-width: 100%; max-height: 100%; margin-top: 0px;'>"**/
-            var picUrlArray = new Array();
-            var picNoArray = new Array();
-            var imageArray = new Array();
-            if(badCommodityPicturebList!=null){
-                for(var i = 0;i<badCommodityPicturebList.length;i++){
-                    var path = badCommodityPicturebList[i].path;
-                    var picNo = badCommodityPicturebList[i].picNo;
-                    picUrlArray.push(path);
-                }
-                //imageArray = $.parseJSON(badCommodityPicturebList);
-            }
-
-            $("#pic").fileinput({
-                'theme': 'explorer-fas',
-                'uploadUrl': prefix+"/uploadBadRecordPicture",
-                deleteUrl: prefix+"/deleteBadRecordPicture",
-                deleteExtraData: "",
-                overwriteInitial: false,
-                initialPreviewAsData: true,
-                uploadAsync: false,
-                showUpload: true, //是否显示上传按钮
-                allowedFileTypes: ['png','jpg','gif','jpeg'],
-                layoutTemplates:{
-                    actionUpload: '',//去除上传预览缩略图中的上传图片
-                },
-                initialPreview: picUrlArray,
-                initialPreviewConfig: badCommodityPicturebList
-            });
-
-            $("#pic").on("fileuploaded", function(event, data, proviewId, index) {
-                console.info(event);
-                console.info(data);
-                console.info(proviewId);
-                console.info(index);
-            });
-            //$("#pic").fileinput('_initFileActions');//这行代码就是调用绑定删除事件的
-
-            $("#pic").on("filebatchselected", function(event, files) {
-                alert("filebatchselected");
-            });
-
-            $("#pic").on('filedeleted', function (event, key) {
-                //预览
-                alert("delete");
-                //先重新组装input的id
-                console.log($("#fileIds").val());
-                console.log('1filedeleted--Key = ' + key);
-                $("#fileIds").val($("#fileIds").val().replace("#" + key + "#", ""));
-                console.log("---result----" + $("#fileIds").val());
-            });
-
-
-        });
-
     </script>
 </body>
 </html>

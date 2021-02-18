@@ -184,7 +184,7 @@ public class BadCommodityController extends BaseController
     {
         //TODO
         BadCommodity badCommodity = new BadCommodity();
-        badCommodity.setOderId(orderId);
+        badCommodity.setOrderId(orderId);
         List<BadCommodity> badCommodities = badCommodityService.selectBadCommodityList(badCommodity);
         if(badCommodities.size()>0){
            return AjaxResult.error("已经存在订单号为："+orderId+"的不良记录，不能再次录入");

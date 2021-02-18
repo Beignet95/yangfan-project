@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">订单号或无订单号：</label>
                 <div class="col-sm-4">
-                    <input name="oderId" id="orderId" class="form-control" type="text" onchange="getAndFillOrderData();" required>
+                    <input name="orderId" id="orderId" class="form-control" type="text" onchange="getAndFillOrderData();">
                 </div>
                 <div class="col-sm-2">
                     <input value="订单的退货记录" class="btn btn-w-m btn-info" type="button" onclick="toOrderReturnPage()">
@@ -24,20 +24,20 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">账户站点：</label>
                 <div class="col-sm-8">
-                    <input name="storeCode" class="form-control" type="text" required>
+                    <input name="storeCode" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">销售负责人：</label>
                 <div class="col-sm-8">
-                    <input name="principal" class="form-control" type="text" required>
+                    <input name="principal" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">订单日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="orderDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="orderDate" class="form-control" placeholder="yyyy/MM/dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                 <label class="col-sm-3 control-label">处理日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="dealDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="dealDate" class="form-control" placeholder="yyyy/MM/dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -54,31 +54,31 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">型号：</label>
                 <div class="col-sm-8">
-                    <input name="type" class="form-control" type="text" required>
+                    <input name="type" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">标准SKU：</label>
                 <div class="col-sm-8">
-                    <input name="sku" class="form-control" type="text" required>
+                    <input name="sku" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良总数            ：</label>
                 <div class="col-sm-8">
-                    <input name="badNum" class="form-control" type="text" number required>
+                    <input name="badNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="reissueNum" class="form-control" type="text" required>
+                    <input name="reissueNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">退款数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="refundNum" class="form-control" type="text" required>
+                    <input name="refundNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
@@ -98,7 +98,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <input name="remarks" class="form-control" type="text" required>
+                    <input name="remarks" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
@@ -133,7 +133,7 @@
             <div class="form-group has-success">
                 <label class="col-sm-3 control-label">型号2：</label>
                 <div class="col-sm-8">
-                    <input name="tye2" class="form-control" type="text">
+                    <input name="type2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group has-success">
@@ -196,7 +196,7 @@
                 <label class="col-sm-3 control-label">最后跟进时间：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="lastFollowTime" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="lastFollowTime" class="form-control" placeholder="yyyy/MM/dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -285,14 +285,19 @@
     <script th:inline="javascript">
         //;
         var prefix = ctx + "pms/badcommodity"
-        $("#form-badcommodity-add").validate({
-            focusCleanup: true
-        });
+        // $("#form-badcommodity-add").validate({
+        //     focusCleanup: true
+        // });
 
         function submitHandler() {
             if ($.validate.form()) {
                 //$.operate.save(prefix + "/add", $('#form-badcommodity-add').serialize(),savePicture());
                 save();
+            }else{
+                setTimeout(() => {
+                    var isError = document.getElementsByClassName("error");
+                    isError[0].focus();
+                }, 1);
             }
         }
         // function savePicture(data){
@@ -301,19 +306,19 @@
         // }
 
         $("input[name='orderDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
 
         $("input[name='dealDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
 
         $("input[name='lastFollowTime']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
@@ -357,6 +362,90 @@
             }
             window.open("/oms/ordRefund?searchKey="+searchKey);
         }
+
+        $(function(){
+            //表单校验
+            var icon = "<i class='fa fa-times-circle'></i> ";
+            $("#form-badcommodity-add").validate({
+                rules: {
+                    orderId: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    storeCode: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    principal: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    type: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    sku: {
+                        required: true,
+                        maxlength: 64
+                    },
+                    badNum: {
+                        required: true,
+                        number: true
+                    },
+                    reissueNum: {
+                        required: true,
+                        number: true
+                    },
+                    refundNum: {
+                        required: true,
+                        number: true
+                    },
+                    remarks: {
+                        required: true,
+                        maxlength: 64
+                    }
+                },
+                messages: {
+                    orderId: {
+                        required: icon + "请输入订单号",
+                        maxlength: icon + "订单号过长"
+                    },
+                    storeCode: {
+                        required: icon + "请输入账户站点",
+                        maxlength: icon + "账户站点过长"
+                    },
+                    principal: {
+                        required: icon + "请输入型号",
+                        maxlength: icon + "型号过长"
+                    },
+                    type: {
+                        required: icon + "请输入标准SKU",
+                        maxlength: icon + "标准SKU过长"
+                    },
+                    sku: {
+                        required: icon + "请输入标准SKU",
+                        maxlength: icon + "标准SKU过长"
+                    },badNum: {
+                        required: icon + "请输入不良总数",
+                        number: icon + "不良总数必须为数字"
+                    },
+                    reissueNum: {
+                        required: icon + "请输入补发数量",
+                        number: icon + "补发数量必须为数字"
+                    },
+                    refundNum: {
+                        required: icon + "请输入退款数量",
+                        number: icon + "退款数量必须为数字"
+                    },
+                    remarks: {
+                        required: icon + "请输入备注",
+                        maxlength: icon + "备注过长"
+                    }
+                }
+            });
+
+        });
+
 
     </script>
 </body>

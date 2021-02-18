@@ -1,11 +1,8 @@
-package com.ruoyi.project.pms.badcommodity.vo;
+package com.ruoyi.project.pms.badcommodity.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.project.pms.badcommodity.vo.BadCommodityPicture;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,22 +11,26 @@ import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
 
 /**
- * 不良记录对象 pms_bad_commodity
- *
+ * 不良记录重复数据对象 pms_bad_commodity_repeat
+ * 
  * @author Beignet
- * @date 2021-02-01
+ * @date 2021-02-18
  */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class BadCommodityExcelExpVO extends BaseEntity
+public class BadCommodityRepeat extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
     private Long id;
+
+    /** 重复id */
+    @Excel(name = "重复id")
+    private String repeatId;
 
     /** 账户站点 */
     @Excel(name = "账户站点")
@@ -40,12 +41,12 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private String principal;
 
     /** 订单日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     @Excel(name = "订单日期", width = 30, dateFormat = "yyyy/MM/dd")
     private Date orderDate;
 
     /** 处理日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     @Excel(name = "处理日期", width = 30, dateFormat = "yyyy/MM/dd")
     private Date dealDate;
 
@@ -62,18 +63,15 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private String sku;
 
     /** 不良总数            （个数） */
-    @Excel(name = "不良总数\n" +
-            "（个数）")
+    @Excel(name = "不良总数            ", readConverterExp = "个=数")
     private Long badNum;
 
     /** 补发数量            （个数） */
-    @Excel(name = "补发数量\n" +
-            "（个数）")
+    @Excel(name = "补发数量            ", readConverterExp = "个=数")
     private Long reissueNum;
 
     /** 退款数量            （个数） */
-    @Excel(name = "退款数量\n" +
-            "（个数）")
+    @Excel(name = "退款数量            ", readConverterExp = "个=数")
     private Long refundNum;
 
     /** 追溯码 */
@@ -85,7 +83,7 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private String badReason;
 
     /** 备注（具体客诉原因） */
-    @Excel(name = "备注（具体客诉原因）")
+    @Excel(name = "备注", readConverterExp = "具=体客诉原因")
     private String remarks;
 
     /** 产品不良解决方式 */
@@ -117,18 +115,16 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private Long badNum2;
 
     /** 补发或退款            易仓SKU */
-    @Excel(name = "补发或退款\n" +
-            "易仓SKU")
+    @Excel(name = "补发或退款            易仓SKU")
     private String ycSku;
 
     /** 补发数量            （个数） */
-    @Excel(name = "补发数量\n" +
-            "（个数）")
+    @Excel(name = "补发数量            ", readConverterExp = "个=数")
     private Long reissue2;
 
     /** 补发跟踪号 */
     @Excel(name = "补发跟踪号")
-    private String reissueTrackingId;
+    private Long reissueTrackingId;
 
     /** 补发是否送达 */
     @Excel(name = "补发是否送达")
@@ -139,19 +135,16 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private Long refundNum2;
 
     /** 退款金额            （默认原币） */
-    @Excel(name = "退款数量\n" +
-            "（个数）")
+    @Excel(name = "退款金额            ", readConverterExp = "默=认原币")
     private BigDecimal refundAmount;
 
     /** 邮件主动            跟进次数 */
-    @Excel(name = "邮件主动\n" +
-            "跟进次数")
-    private String mailFollowTimes;
+    @Excel(name = "邮件主动            跟进次数")
+    private Long mailFollowTimes;
 
     /** 最后跟进时间            时间格式：yyyy/MM/dd */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "最后跟进时间\n" +
-            "时间格式：2020/11/10", width = 30, dateFormat = "yyyy/MM/dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    @Excel(name = "最后跟进时间            时间格式：yyyy/MM/dd", width = 30, dateFormat = "yyyy/MM/dd")
     private Date lastFollowTime;
 
     /** 是否完成 */
@@ -159,8 +152,7 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private String isdone;
 
     /** Feedback            Case ID */
-    @Excel(name = "Feedback\n" +
-            "Case ID")
+    @Excel(name = "Feedback            Case ID")
     private String feedbackCaseId;
 
     /** 备注 */
@@ -168,18 +160,16 @@ public class BadCommodityExcelExpVO extends BaseEntity
     private String remarks2;
 
     /** 不良图片一 */
-    @Excel(name = "不良图片一",cellType = Excel.ColumnType.IMAGE)
+    @Excel(name = "不良图片一")
     private String picUrl1;
 
     /** 不良图片二 */
-    @Excel(name = "不良图片二",cellType = Excel.ColumnType.IMAGE)
+    @Excel(name = "不良图片二")
     private String picUrl2;
 
     /** 不良图片三 */
-    @Excel(name = "不良图片三",cellType = Excel.ColumnType.IMAGE)
+    @Excel(name = "不良图片三")
     private String picUrl3;
-
-    private List<BadCommodityPicture> badCommodityPicturebList;
 
 
 

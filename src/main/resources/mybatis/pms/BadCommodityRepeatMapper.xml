@@ -2,10 +2,11 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.pms.badcommodity.mapper.BadCommodityMapper">
+<mapper namespace="com.ruoyi.project.pms.badcommodity.mapper.BadCommodityRepeatMapper">
     
-    <resultMap type="BadCommodity" id="BadCommodityResult">
+    <resultMap type="BadCommodityRepeat" id="BadCommodityRepeatResult">
         <result property="id"    column="id"    />
+        <result property="repeatId"    column="repeat_id"    />
         <result property="storeCode"    column="store_code"    />
         <result property="principal"    column="principal"    />
         <result property="orderDate"    column="order_date"    />
@@ -46,13 +47,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectBadCommodityVo">
-        select id, store_code, principal, order_date, deal_date, order_id, type, sku, bad_num, reissue_num, refund_num, traceback_code, bad_reason, remarks, solution, bad_source, fba_sku, return_date, type2, eachset_num, bad_num2, yc_sku, reissue2, reissue_tracking_id, isdelivered, refund_num2, refund_amount, mail_follow_times, last_follow_time, isdone, feedback_case_id, remarks2, pic_url1, pic_url2, pic_url3, create_by, create_time, update_by, update_time from pms_bad_commodity
+    <sql id="selectBadCommodityRepeatVo">
+        select id, repeat_id, store_code, principal, order_date, deal_date, order_id, type, sku, bad_num, reissue_num, refund_num, traceback_code, bad_reason, remarks, solution, bad_source, fba_sku, return_date, type2, eachset_num, bad_num2, yc_sku, reissue2, reissue_tracking_id, isdelivered, refund_num2, refund_amount, mail_follow_times, last_follow_time, isdone, feedback_case_id, remarks2, pic_url1, pic_url2, pic_url3, create_by, create_time, update_by, update_time from pms_bad_commodity_repeat
     </sql>
 
-    <select id="selectBadCommodityList" parameterType="BadCommodity" resultMap="BadCommodityResult">
-        <include refid="selectBadCommodityVo"/>
+    <select id="selectBadCommodityRepeatList" parameterType="BadCommodityRepeat" resultMap="BadCommodityRepeatResult">
+        <include refid="selectBadCommodityRepeatVo"/>
         <where>  
+            <if test="repeatId != null  and repeatId != ''"> and repeat_id = #{repeatId}</if>
             <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
             <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
             <if test="orderDate != null "> and order_date = #{orderDate}</if>
@@ -75,13 +77,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="badNum2 != null "> and bad_num2 = #{badNum2}</if>
             <if test="ycSku != null  and ycSku != ''"> and yc_sku = #{ycSku}</if>
             <if test="reissue2 != null "> and reissue2 = #{reissue2}</if>
-            <if test="reissueTrackingId != null  and reissueTrackingId != ''"> and reissue_tracking_id = #{reissueTrackingId}</if>
+            <if test="reissueTrackingId != null "> and reissue_tracking_id = #{reissueTrackingId}</if>
             <if test="isdelivered != null "> and isdelivered = #{isdelivered}</if>
             <if test="refundNum2 != null "> and refund_num2 = #{refundNum2}</if>
             <if test="refundAmount != null "> and refund_amount = #{refundAmount}</if>
-            <if test="mailFollowTimes != null  and mailFollowTimes != ''"> and mail_follow_times = #{mailFollowTimes}</if>
+            <if test="mailFollowTimes != null "> and mail_follow_times = #{mailFollowTimes}</if>
             <if test="lastFollowTime != null "> and last_follow_time = #{lastFollowTime}</if>
-            <if test="isdone != null and isdone != ''"> and isdone = #{isdone}</if>
+            <if test="isdone != null  and isdone != ''"> and isdone = #{isdone}</if>
             <if test="feedbackCaseId != null  and feedbackCaseId != ''"> and feedback_case_id = #{feedbackCaseId}</if>
             <if test="remarks2 != null  and remarks2 != ''"> and remarks2 = #{remarks2}</if>
             <if test="picUrl1 != null  and picUrl1 != ''"> and pic_url1 = #{picUrl1}</if>
@@ -91,14 +93,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by id desc
     </select>
     
-    <select id="selectBadCommodityById" parameterType="Long" resultMap="BadCommodityResult">
-        <include refid="selectBadCommodityVo"/>
+    <select id="selectBadCommodityRepeatById" parameterType="Long" resultMap="BadCommodityRepeatResult">
+        <include refid="selectBadCommodityRepeatVo"/>
         where id = #{id}
     </select>
         
-    <insert id="insertBadCommodity" parameterType="BadCommodity" useGeneratedKeys="true" keyProperty="id">
-        insert into pms_bad_commodity
+    <insert id="insertBadCommodityRepeat" parameterType="BadCommodityRepeat" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_bad_commodity_repeat
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repeatId != null">repeat_id,</if>
             <if test="storeCode != null">store_code,</if>
             <if test="principal != null">principal,</if>
             <if test="orderDate != null">order_date,</if>
@@ -127,7 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="refundAmount != null">refund_amount,</if>
             <if test="mailFollowTimes != null">mail_follow_times,</if>
             <if test="lastFollowTime != null">last_follow_time,</if>
-            <if test="isdone != null and isdone != ''">isdone,</if>
+            <if test="isdone != null">isdone,</if>
             <if test="feedbackCaseId != null">feedback_case_id,</if>
             <if test="remarks2 != null">remarks2,</if>
             <if test="picUrl1 != null">pic_url1,</if>
@@ -139,6 +142,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repeatId != null">#{repeatId},</if>
             <if test="storeCode != null">#{storeCode},</if>
             <if test="principal != null">#{principal},</if>
             <if test="orderDate != null">#{orderDate},</if>
@@ -167,7 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="refundAmount != null">#{refundAmount},</if>
             <if test="mailFollowTimes != null">#{mailFollowTimes},</if>
             <if test="lastFollowTime != null">#{lastFollowTime},</if>
-            <if test="isdone != null and isdone != ''">#{isdone},</if>
+            <if test="isdone != null">#{isdone},</if>
             <if test="feedbackCaseId != null">#{feedbackCaseId},</if>
             <if test="remarks2 != null">#{remarks2},</if>
             <if test="picUrl1 != null">#{picUrl1},</if>
@@ -180,72 +184,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateBadCommodity" parameterType="BadCommodity">
-        update pms_bad_commodity
+    <update id="updateBadCommodityRepeat" parameterType="BadCommodityRepeat">
+        update pms_bad_commodity_repeat
         <trim prefix="SET" suffixOverrides=",">
+            <if test="repeatId != null">repeat_id = #{repeatId},</if>
             <if test="storeCode != null">store_code = #{storeCode},</if>
-            <if test="principal != null">principal = #{principal},</if>
-            <if test="orderDate != null">order_date = #{orderDate},</if>
-            <if test="dealDate != null">deal_date = #{dealDate},</if>
-            <if test="orderId != null">order_id = #{orderId},</if>
-            <if test="type != null">type = #{type},</if>
-            <if test="sku != null">sku = #{sku},</if>
-            <if test="badNum != null">bad_num = #{badNum},</if>
-            <if test="reissueNum != null">reissue_num = #{reissueNum},</if>
-            <if test="refundNum != null">refund_num = #{refundNum},</if>
-            <if test="tracebackCode != null">traceback_code = #{tracebackCode},</if>
-            <if test="badReason != null">bad_reason = #{badReason},</if>
-            <if test="remarks != null">remarks = #{remarks},</if>
-            <if test="solution != null">solution = #{solution},</if>
-            <if test="badSource != null">bad_source = #{badSource},</if>
-            <if test="fbaSku != null">fba_sku = #{fbaSku},</if>
-            <if test="returnDate != null">return_date = #{returnDate},</if>
-            <if test="type2 != null">type2 = #{type2},</if>
-            <if test="eachsetNum != null">eachset_num = #{eachsetNum},</if>
-            <if test="badNum2 != null">bad_num2 = #{badNum2},</if>
-            <if test="ycSku != null">yc_sku = #{ycSku},</if>
-            <if test="reissue2 != null">reissue2 = #{reissue2},</if>
-            <if test="reissueTrackingId != null">reissue_tracking_id = #{reissueTrackingId},</if>
-            <if test="isdelivered != null">isdelivered = #{isdelivered},</if>
-            <if test="refundNum2 != null">refund_num2 = #{refundNum2},</if>
-            <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
-            <if test="mailFollowTimes != null">mail_follow_times = #{mailFollowTimes},</if>
-            <if test="lastFollowTime != null">last_follow_time = #{lastFollowTime},</if>
-            <if test="isdone != null and isdone != ''">isdone = #{isdone},</if>
-            <if test="feedbackCaseId != null">feedback_case_id = #{feedbackCaseId},</if>
-            <if test="remarks2 != null">remarks2 = #{remarks2},</if>
-            <if test="picUrl1 != null">pic_url1 = #{picUrl1},</if>
-            <if test="picUrl2 != null">pic_url2 = #{picUrl2},</if>
-            <if test="picUrl3 != null">pic_url3 = #{picUrl3},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-        </trim>
-        where id = #{id}
-    </update>
-
-    <delete id="deleteBadCommodityById" parameterType="Long">
-        delete from pms_bad_commodity where id = #{id}
-    </delete>
-
-    <delete id="deleteBadCommodityByIds" parameterType="String">
-        delete from pms_bad_commodity where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
-
-    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
-    <select id="selectBadCommodityByOnlyCondition" parameterType="BadCommodity" resultMap="BadCommodityResult">
-        <include refid="selectBadCommodityVo"/>
-        where order_id=#{orderId} and sku=#{sku}
-    </select>
-
-    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
-    <update id="updateBadCommodityByOnlyCondition" parameterType="BadCommodity">
-        update pms_bad_commodity
-        <trim prefix="SET" suffixOverrides=","><if test="storeCode != null">store_code = #{storeCode},</if>
             <if test="principal != null">principal = #{principal},</if>
             <if test="orderDate != null">order_date = #{orderDate},</if>
             <if test="dealDate != null">deal_date = #{dealDate},</if>
@@ -284,7 +227,71 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
-        where order_id=#{orderId} and sku=#{sku}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBadCommodityRepeatById" parameterType="Long">
+        delete from pms_bad_commodity_repeat where id = #{id}
+    </delete>
+
+    <delete id="deleteBadCommodityRepeatByIds" parameterType="String">
+        delete from pms_bad_commodity_repeat where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectBadCommodityRepeatByOnlyCondition" parameterType="BadCommodityRepeat" resultMap="BadCommodityRepeatResult">
+        <include refid="selectBadCommodityRepeatVo"/>
+        where
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateBadCommodityRepeatByOnlyCondition" parameterType="BadCommodityRepeat">
+        update pms_bad_commodity_repeat
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="repeatId != null">repeat_id = #{repeatId},</if>
+                                                                <if test="storeCode != null">store_code = #{storeCode},</if>
+                                                                <if test="principal != null">principal = #{principal},</if>
+                                                                <if test="orderDate != null">order_date = #{orderDate},</if>
+                                                                <if test="dealDate != null">deal_date = #{dealDate},</if>
+                                                                <if test="orderId != null">order_id = #{orderId},</if>
+                                                                <if test="type != null">type = #{type},</if>
+                                                                <if test="sku != null">sku = #{sku},</if>
+                                                                <if test="badNum != null">bad_num = #{badNum},</if>
+                                                                <if test="reissueNum != null">reissue_num = #{reissueNum},</if>
+                                                                <if test="refundNum != null">refund_num = #{refundNum},</if>
+                                                                <if test="tracebackCode != null">traceback_code = #{tracebackCode},</if>
+                                                                <if test="badReason != null">bad_reason = #{badReason},</if>
+                                                                <if test="remarks != null">remarks = #{remarks},</if>
+                                                                <if test="solution != null">solution = #{solution},</if>
+                                                                <if test="badSource != null">bad_source = #{badSource},</if>
+                                                                <if test="fbaSku != null">fba_sku = #{fbaSku},</if>
+                                                                <if test="returnDate != null">return_date = #{returnDate},</if>
+                                                                <if test="type2 != null">type2 = #{type2},</if>
+                                                                <if test="eachsetNum != null">eachset_num = #{eachsetNum},</if>
+                                                                <if test="badNum2 != null">bad_num2 = #{badNum2},</if>
+                                                                <if test="ycSku != null">yc_sku = #{ycSku},</if>
+                                                                <if test="reissue2 != null">reissue2 = #{reissue2},</if>
+                                                                <if test="reissueTrackingId != null">reissue_tracking_id = #{reissueTrackingId},</if>
+                                                                <if test="isdelivered != null">isdelivered = #{isdelivered},</if>
+                                                                <if test="refundNum2 != null">refund_num2 = #{refundNum2},</if>
+                                                                <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
+                                                                <if test="mailFollowTimes != null">mail_follow_times = #{mailFollowTimes},</if>
+                                                                <if test="lastFollowTime != null">last_follow_time = #{lastFollowTime},</if>
+                                                                <if test="isdone != null">isdone = #{isdone},</if>
+                                                                <if test="feedbackCaseId != null">feedback_case_id = #{feedbackCaseId},</if>
+                                                                <if test="remarks2 != null">remarks2 = #{remarks2},</if>
+                                                                <if test="picUrl1 != null">pic_url1 = #{picUrl1},</if>
+                                                                <if test="picUrl2 != null">pic_url2 = #{picUrl2},</if>
+                                                                <if test="picUrl3 != null">pic_url3 = #{picUrl3},</if>
+                                                                <if test="createBy != null">create_by = #{createBy},</if>
+                                                                <if test="createTime != null">create_time = #{createTime},</if>
+                                                                <if test="updateBy != null">update_by = #{updateBy},</if>
+                                                                <if test="updateTime != null">update_time = #{updateTime},</if>
+                                    </trim>
+        where id = #{id}
     </update>
 
 </mapper>

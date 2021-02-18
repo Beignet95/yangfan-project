@@ -1,6 +1,7 @@
 package com.ruoyi.project.pms.badcommodity.service.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -13,6 +14,9 @@ import com.ruoyi.project.oms.oderReturn.service.IOrderReturnService;
 import com.ruoyi.project.oms.oderReturn.vo.OrderReturnVo;
 import com.ruoyi.project.oms.orderRefund.domain.OrderRefund;
 import com.ruoyi.project.oms.orderRefund.service.IOrderRefundService;
+import com.ruoyi.project.oms.orderReturnRepeat.domain.OrderReturnRepeat;
+import com.ruoyi.project.pms.badcommodity.domain.BadCommodityRepeat;
+import com.ruoyi.project.pms.badcommodity.service.IBadCommodityRepeatService;
 import com.ruoyi.project.pms.badcommodity.vo.BadCommodityExcelExpVO;
 import com.ruoyi.project.pms.badcommodity.vo.BadCommodityPicture;
 import org.slf4j.Logger;
@@ -52,6 +56,9 @@ public class BadCommodityServiceImpl implements IBadCommodityService
 
     @Autowired
     private IOrderReturnService orderReturnService;
+
+    @Autowired
+    private IBadCommodityRepeatService badCommodityRepeatService;
 
     /**
      * 查询不良记录
@@ -157,15 +164,38 @@ public class BadCommodityServiceImpl implements IBadCommodityService
         }
         int successNum = 0;
         int failureNum = 0;
+        int repeatNum = 0;
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
+        StringBuilder repeatMsg = new StringBuilder();
         String operName = ShiroUtils.getLoginName();
+
+        //保存重复数据
+        //保留size>1的值，就是保留具有重复数据的value
+        Map<String, List<BadCommodity>> repeatMap = badCommodityList.stream().collect(Collectors.groupingBy(BadCommodity::getOrderId));
+        repeatMap.entrySet().removeIf(m -> m.getValue().size()==1);
+        String repeatId = UUID.randomUUID().toString().replaceAll("-","");
+        if(repeatMap!=null&&repeatMap.size()>0)
+            for(List<BadCommodity> list : repeatMap.values()){
+                for (BadCommodity badCommodity:list){
+                    BadCommodityRepeat badCommodityRepeat = new BadCommodityRepeat();
+                    BeanUtils.copyProperties(badCommodity,badCommodityRepeat);
+                    badCommodityRepeat.setRepeatId(repeatId);
+                    badCommodityRepeatService.insertBadCommodityRepeat(badCommodityRepeat);
+                    repeatNum++;
+                    repeatMsg.append("<br/>" + repeatNum + "、订单号为" + badCommodity.getOrderId()+" 的数据为此Excel的重复数据");
+                }
+            }
+
         for (BadCommodity badCommodity : badCommodityList)
         {
             try
             {
                 // 验证数据是否已经
                 BadCommodity domain = badCommodityMapper.selectBadCommodityByOnlyCondition(badCommodity);
+
+                if(repeatMap.containsKey(badCommodity.getOrderId())) continue;//为重复数据时，则跳过
+
                 if (domain==null)
                 {
                     badCommodity.setCreateBy(operName);
@@ -196,10 +226,14 @@ public class BadCommodityServiceImpl implements IBadCommodityService
                 log.error(msg, e);
             }
         }
-        if (failureNum > 0)
-        {
-            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+        if(failureNum>0&&repeatNum>0){
+            failureMsg.insert(0,"<button onclick=\"window.open('/pms/badCommodityRepeat?repeatId="+repeatId+"')\">查看重复数据</button><br/>共 "+repeatNum+" 条数据重复，共有 "+failureNum+" 条数据格式不正确。<br/>"+
+                    "其中错误数据如下（Excel上的重复数据不列出）：");
             throw new BusinessException(failureMsg.toString());
+        }
+        else if(repeatNum>0){
+            repeatMsg.insert(0,"<button onclick=\"window.open('/pms/badCommodityRepeat?repeatId="+repeatId+"')\">查看重复数据</button><br/>共 "+repeatNum+" 条数据重复,重复数据如下");
+            throw new BusinessException(repeatMsg.toString());
         }
         else
         {
@@ -256,10 +290,12 @@ public class BadCommodityServiceImpl implements IBadCommodityService
     @Override
     public BadCommodityPicture uploadBadRecordPicture(MultipartFile file, BadCommodity badCommodity) {
         badCommodity = badCommodityMapper.selectBadCommodityByOnlyCondition(badCommodity);
-        if(StringUtils.isNotEmpty(badCommodity.getPicUrl1())){
-            List<BadCommodityPicture> badCommodityPictureList =
-                    (List<BadCommodityPicture>) JSONArray.parseArray(badCommodity.getPicUrl1(), BadCommodityPicture.class);
-            try {
+        if(badCommodity==null) throw new BusinessException("该记录已被删除！无法上传图片！");
+
+        List<BadCommodityPicture> badCommodityPictureList =StringUtils.isNotEmpty(badCommodity.getPicUrl1())?
+                    (List<BadCommodityPicture>) JSONArray.parseArray(badCommodity.getPicUrl1(), BadCommodityPicture.class):new ArrayList<BadCommodityPicture>();
+
+        try {
                 if (!file.isEmpty()) {
                     String filePathPrefix = RuoYiConfig.getProfile()+"/bad_commodity_pic";
                     String filePath = FileUploadUtils.upload(filePathPrefix, file);
@@ -280,8 +316,6 @@ public class BadCommodityServiceImpl implements IBadCommodityService
                 log.error("上传不良图片失败！", e);
                 throw new BusinessException("上传不良图片失败！");
             }
-        }
-        return null;
     }
 
     private String getNewPicNoByPicList(List<BadCommodityPicture> badCommodityPictureList) {

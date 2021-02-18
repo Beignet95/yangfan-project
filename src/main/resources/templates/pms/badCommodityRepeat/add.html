@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改不良记录')" />
+    <th:block th:include="include :: header('新增不良记录重复数据')" />
     <th:block th:include="include :: datetimepicker-css" />
-    <th:block th:include="include :: bootstrap-fileinput-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-badcommodity-edit" th:object="${badCommodity}" enctype="multipart/form-data">
-            <input name="id" th:field="*{id}" type="hidden">
+        <form class="form-horizontal m" id="form-badCommodityRepeat-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">重复id：</label>
+                <div class="col-sm-8">
+                    <input name="repeatId" class="form-control" type="text">
+                </div>
+            </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">账户站点：</label>
                 <div class="col-sm-8">
-                    <input name="storeCode" th:field="*{storeCode}" class="form-control" type="text">
+                    <input name="storeCode" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">销售负责人：</label>
                 <div class="col-sm-8">
-                    <input name="principal" th:field="*{principal}" class="form-control" type="text">
+                    <input name="principal" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">订单日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="orderDate" th:value="${#dates.format(badCommodity.orderDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="orderDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -34,7 +38,7 @@
                 <label class="col-sm-3 control-label">处理日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="dealDate" th:value="${#dates.format(badCommodity.dealDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="dealDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -42,148 +46,149 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">订单号或无订单号：</label>
                 <div class="col-sm-8">
-                    <input name="orderId" th:field="*{orderId}" class="form-control" type="text">
+                    <input name="orderId" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">型号：</label>
                 <div class="col-sm-8">
-                    <input name="type" th:field="*{type}" class="form-control" type="text">
+                    <select name="type" class="form-control m-b">
+                        <option value="">所有</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">标准SKU：</label>
                 <div class="col-sm-8">
-                    <input name="sku" th:field="*{sku}" class="form-control" type="text">
+                    <input name="sku" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良总数            ：</label>
                 <div class="col-sm-8">
-                    <input name="badNum" th:field="*{badNum}" class="form-control" type="text">
+                    <input name="badNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="reissueNum" th:field="*{reissueNum}" class="form-control" type="text">
+                    <input name="reissueNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">退款数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="refundNum" th:field="*{refundNum}" class="form-control" type="text">
+                    <input name="refundNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">追溯码：</label>
                 <div class="col-sm-8">
-                    <input name="tracebackCode" th:field="*{tracebackCode}" class="form-control" type="text">
+                    <input name="tracebackCode" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良原因：</label>
                 <div class="col-sm-8">
-                    <input name="badReason" th:field="*{badReason}" class="form-control" type="text">
+                    <input name="badReason" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <input name="remarks" th:field="*{remarks}" class="form-control" type="text">
+                    <input name="remarks" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">产品不良解决方式：</label>
                 <div class="col-sm-8">
-                    <input name="solution" th:field="*{solution}" class="form-control" type="text">
+                    <input name="solution" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良来源：</label>
                 <div class="col-sm-8">
-                    <input name="badSource" th:field="*{badSource}" class="form-control" type="text">
+                    <input name="badSource" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">FBA SKU：</label>
                 <div class="col-sm-8">
-                    <input name="fbaSku" th:field="*{fbaSku}" class="form-control" type="text">
+                    <input name="fbaSku" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">return-date：</label>
                 <div class="col-sm-8">
-                    <input name="returnDate" th:field="*{returnDate}" class="form-control" type="text">
+                    <input name="returnDate" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">型号2：</label>
                 <div class="col-sm-8">
-                    <input name="type2" th:field="*{type2}" class="form-control" type="text">
+                    <input name="type2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">每套个数：</label>
                 <div class="col-sm-8">
-                    <input name="eachsetNum" th:field="*{eachsetNum}" class="form-control" type="text">
+                    <input name="eachsetNum" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良总个数：</label>
                 <div class="col-sm-8">
-                    <input name="badNum2" th:field="*{badNum2}" class="form-control" type="text">
+                    <input name="badNum2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发或退款            易仓SKU：</label>
                 <div class="col-sm-8">
-                    <input name="ycSku" th:field="*{ycSku}" class="form-control" type="text">
+                    <input name="ycSku" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="reissue2" th:field="*{reissue2}" class="form-control" type="text">
+                    <input name="reissue2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发跟踪号：</label>
                 <div class="col-sm-8">
-                    <input name="reissueTrackingId" th:field="*{reissueTrackingId}" class="form-control" type="text">
+                    <input name="reissueTrackingId" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">补发是否送达：</label>
                 <div class="col-sm-8">
-                    <select name="isdelivered" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdelivered}"></option>
-                    </select>
+                    <input name="isdelivered" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">退款数量            ：</label>
                 <div class="col-sm-8">
-                    <input name="refundNum2" th:field="*{refundNum2}" class="form-control" type="text">
+                    <input name="refundNum2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">退款金额            ：</label>
                 <div class="col-sm-8">
-                    <input name="refundAmount" th:field="*{refundAmount}" class="form-control" type="text">
+                    <input name="refundAmount" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">邮件主动            跟进次数：</label>
                 <div class="col-sm-8">
-                    <input name="mailFollowTimes" th:field="*{mailFollowTimes}" class="form-control" type="text">
+                    <input name="mailFollowTimes" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">最后跟进时间：</label>
+                <label class="col-sm-3 control-label">最后跟进时间            时间格式：yyyy/MM/dd：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="lastFollowTime" th:value="${#dates.format(badCommodity.lastFollowTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="lastFollowTime" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -191,61 +196,52 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">是否完成：</label>
                 <div class="col-sm-8">
-                    <select name="isdone" class="form-control m-b" th:with="type=${@dict.getType('sys_common_ whether')}">
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isdone}"></option>
-                    </select>
+                    <input name="isdone" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">Feedback            Case ID：</label>
                 <div class="col-sm-8">
-                    <input name="feedbackCaseId" th:field="*{feedbackCaseId}" class="form-control" type="text">
+                    <input name="feedbackCaseId" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
-                    <input name="remarks2" th:field="*{remarks2}" class="form-control" type="text">
+                    <input name="remarks2" class="form-control" type="text">
                 </div>
             </div>
-            <!--<div class="form-group">
+            <div class="form-group">
                 <label class="col-sm-3 control-label">不良图片一：</label>
                 <div class="col-sm-8">
-                    <input name="picUrl1" th:field="*{picUrl1}" class="form-control" type="text">
+                    <textarea name="picUrl1" class="form-control"></textarea>
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良图片二：</label>
                 <div class="col-sm-8">
-                    <input name="picUrl2" th:field="*{picUrl2}" class="form-control" type="text">
+                    <input name="picUrl2" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良图片三：</label>
                 <div class="col-sm-8">
-                    <input name="picUrl3" th:field="*{picUrl3}" class="form-control" type="text">
-                </div>
-            </div>-->
-            <div class="form-group">
-                <label class="col-sm-3 font-noraml">不良图片上传</label>
-                <div class="col-sm-8 file-loading">
-                    <input id="pic" name="pic" type="file" multiple>
+                    <input name="picUrl3" class="form-control" type="text">
                 </div>
             </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: bootstrap-fileinput-js" />
     <script th:inline="javascript">
-        var prefix = ctx + "pms/badcommodity";
-        $("#form-badcommodity-edit").validate({
+        var prefix = ctx + "pms/badCommodityRepeat"
+        $("#form-badCommodityRepeat-add").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-badcommodity-edit').serialize());
+                $.operate.save(prefix + "/add", $('#form-badCommodityRepeat-add').serialize());
             }
         }
 
@@ -266,65 +262,6 @@
             minView: "month",
             autoclose: true
         });
-
-        var badCommodityPicturebList = [[${badCommodity.badCommodityPicturebList}]];
-        $(document).ready(function () {
-
-            /** " <img src='api/ylzjyj/${appraInfo.id}' width='500' class='file-preview-image kv-preview-data rotate-38827 is-portrait-gt4' alt='' title='#' style=' height: auto; max-width: 100%; max-height: 100%; margin-top: 0px;'>"**/
-            var picUrlArray = new Array();
-            var picNoArray = new Array();
-            var imageArray = new Array();
-            if(badCommodityPicturebList!=null){
-                for(var i = 0;i<badCommodityPicturebList.length;i++){
-                    var path = badCommodityPicturebList[i].path;
-                    var picNo = badCommodityPicturebList[i].picNo;
-                    picUrlArray.push(path);
-                }
-                //imageArray = $.parseJSON(badCommodityPicturebList);
-            }
-
-            $("#pic").fileinput({
-                'theme': 'explorer-fas',
-                'uploadUrl': prefix+"/uploadBadRecordPicture",
-                deleteUrl: prefix+"/deleteBadRecordPicture",
-                deleteExtraData: "",
-                overwriteInitial: false,
-                initialPreviewAsData: true,
-                uploadAsync: false,
-                showUpload: true, //是否显示上传按钮
-                allowedFileTypes: ['png','jpg','gif','jpeg'],
-                layoutTemplates:{
-                    actionUpload: '',//去除上传预览缩略图中的上传图片
-                },
-                initialPreview: picUrlArray,
-                initialPreviewConfig: badCommodityPicturebList
-            });
-
-            $("#pic").on("fileuploaded", function(event, data, proviewId, index) {
-                console.info(event);
-                console.info(data);
-                console.info(proviewId);
-                console.info(index);
-            });
-            //$("#pic").fileinput('_initFileActions');//这行代码就是调用绑定删除事件的
-
-            $("#pic").on("filebatchselected", function(event, files) {
-                alert("filebatchselected");
-            });
-
-            $("#pic").on('filedeleted', function (event, key) {
-                //预览
-                alert("delete");
-                //先重新组装input的id
-                console.log($("#fileIds").val());
-                console.log('1filedeleted--Key = ' + key);
-                $("#fileIds").val($("#fileIds").val().replace("#" + key + "#", ""));
-                console.log("---result----" + $("#fileIds").val());
-            });
-
-
-        });
-
     </script>
 </body>
 </html>

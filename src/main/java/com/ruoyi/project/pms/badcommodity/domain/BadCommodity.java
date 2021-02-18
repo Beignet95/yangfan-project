@@ -40,18 +40,18 @@ public class BadCommodity extends BaseEntity
     private String principal;
 
     /** 订单日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "订单日期", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    @Excel(name = "订单日期", width = 30, dateFormat = "yyyy/MM/dd")
     private Date orderDate;
 
     /** 处理日期 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "处理日期", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    @Excel(name = "处理日期", width = 30, dateFormat = "yyyy/MM/dd")
     private Date dealDate;
 
     /** 订单号或无订单号 */
     @Excel(name = "订单号或无订单号")
-    private String oderId;
+    private String orderId;
 
     /** 型号 */
     @Excel(name = "型号")
@@ -106,7 +106,7 @@ public class BadCommodity extends BaseEntity
 
     /** 型号2 */
     @Excel(name = "型号2")
-    private String tye2;
+    private String type2;
 
     /** 每套个数 */
     @Excel(name = "每套个数")
@@ -149,9 +149,9 @@ public class BadCommodity extends BaseEntity
     private String mailFollowTimes;
 
     /** 最后跟进时间            时间格式：yyyy/MM/dd */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     @Excel(name = "最后跟进时间\n" +
-            "时间格式：2020/11/10", width = 30, dateFormat = "yyyy-MM-dd")
+            "时间格式：2020/11/10", width = 30, dateFormat = "yyyy/MM/dd")
     private Date lastFollowTime;
 
     /** 是否完成 */
