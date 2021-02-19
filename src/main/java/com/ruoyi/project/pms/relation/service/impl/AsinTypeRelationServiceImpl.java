@@ -166,30 +166,18 @@ public class AsinTypeRelationServiceImpl implements IAsinTypeRelationService
     @Override
     //@Transactional
     public String syncAsinTypeRalation2AdvertisingData() {
-//        List<AsinTypeRelation> relationList = asinTypeRelationMapper.selectAsinTypeRelationList(new AsinTypeRelation());
-//        List<List<AsinTypeRelation>> relationLists = ListUtils.splitList(relationList,20);
-//        int updateNum = 0;
-//        for (List<AsinTypeRelation> relations:relationLists){
-//            updateNum += advertisingService.updateAdvertisingByAsinTypeRelation(relations);
-//        }
-        int successNum = 0;int failNum = 0;
+        int successNum = 0;
         List<Advertising> advertisingList = advertisingService.selectAdvertisingWhenTypeIsNull();
-        for(Advertising advertising:advertisingList){
-            try{
-                AsinTypeRelation relation = asinTypeRelationMapper.selectAsinTypeRelationByAsin(advertising.getAsin());
-                advertising.setType(relation.getType());
-                advertisingService.updateAdvertising(advertising);
-                successNum++;
-            }catch (Exception e){
-                e.printStackTrace();
-                failNum++;
-            }
-
+        try{
+             successNum = asinTypeRelationMapper.syncAsinTypeRalation2AdvertisingData();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        if((successNum+failNum)==0){
+
+        if(advertisingList.size()==0){
             return "没有需要更新的数据";
         }
-        return successNum+"条数据更新成功！"+failNum+"条数据更新失败！";
+        return successNum+"条数据更新成功！";
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.ruoyi.project.pms.relation.controller;
 import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -148,5 +149,15 @@ public class AsinTypeRelationController extends BaseController
     {
         String message = asinTypeRelationService.syncAsinTypeRalation2AdvertisingData();;
         return AjaxResult.success(message);
+    }
+
+    //导出 导入模板
+    @RequiresPermissions("pms:relation:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<AsinTypeRelation> util = new ExcelUtil<AsinTypeRelation>(AsinTypeRelation.class);
+        return util.importTemplateExcel("ASIN与型号关联");
     }
 }

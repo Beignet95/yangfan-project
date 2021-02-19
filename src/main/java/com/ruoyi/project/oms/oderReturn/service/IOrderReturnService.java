@@ -68,5 +68,5 @@ public interface IOrderReturnService
     public String importOrderReturn(List<OrderReturn> orderReturnList, boolean isUpdateSupport);
 
 
-    OrderReturn selectOrderReturnByOrderId(String orderId);
+    OrderReturn selectOrderReturnByOnlyCondition(OrderReturn orderReturn);
 }

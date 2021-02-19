@@ -12,6 +12,7 @@ import com.ruoyi.project.compdata.advertising.service.IAdvertisingService;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalySearchVo;
 import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.system.user.domain.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -186,7 +187,7 @@ public class AdvertisingController extends BaseController
     @ResponseBody
     public AjaxResult importTemplate()
     {
-        ExcelUtil<Advertising> util = new ExcelUtil<Advertising>(Advertising.class);
+        ExcelUtil<AdvertisingTempVo> util = new ExcelUtil<AdvertisingTempVo>(AdvertisingTempVo.class);
         return util.importTemplateExcel("广告源数据");
     }
 

@@ -243,9 +243,15 @@ public class BadCommodityServiceImpl implements IBadCommodityService
     }
 
     @Override
-    public OrderReturnVo selectOrderReturnVo(String orderId) {
-        OrderRefund orderRefund = orderRefundService.selectOrderRefundByOrderId(orderId);
-        OrderReturn orderReturn = orderReturnService.selectOrderReturnByOrderId(orderId);
+    public OrderReturnVo selectOrderReturnVo(String orderId,String sku) {
+        OrderRefund orderRefundparam = new OrderRefund();
+        orderRefundparam.setOrderId(orderId);
+        orderRefundparam.setSku(sku);
+        OrderRefund orderRefund = orderRefundService.selectOrderRefundByOnlyCondition(orderRefundparam);
+        OrderReturn orderReturnParam = new OrderReturn();
+        orderReturnParam.setOrderId(orderId);
+        orderReturnParam.setSku(sku);
+        OrderReturn orderReturn = orderReturnService.selectOrderReturnByOnlyCondition(orderReturnParam);
         OrderReturnVo orderReturnVo = new OrderReturnVo();
         if(orderRefund!=null) BeanUtils.copyProperties(orderRefund,orderReturnVo);
         if(orderReturn!=null) BeanUtils.copyProperties(orderReturn,orderReturnVo);

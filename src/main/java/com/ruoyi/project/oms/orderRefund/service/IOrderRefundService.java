@@ -1,6 +1,8 @@
 package com.ruoyi.project.oms.orderRefund.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.project.oms.orderRefund.domain.OrderRefund;
 
 /**
@@ -68,5 +70,5 @@ public interface IOrderRefundService
     public String importOrderRefund(List<OrderRefund> OrderRefundList, boolean isUpdateSupport);
 
 
-    OrderRefund selectOrderRefundByOrderId(String orderId);
+    OrderRefund selectOrderRefundByOnlyCondition(OrderRefund orderRefund);
 }

@@ -43,6 +43,11 @@ public class AdvertisingTempVo extends BaseEntity
     @Excel(name = "PARENT_ASIN")
     private String col4;
 
+    /** ASIN */
+    @Excel(name = "ASIN")
+    private String col41;
+
+
 //	品名	SKU	分类	品牌	销量	订单量
     /** 品名 */
     @Excel(name = "品名")
@@ -181,4 +186,7 @@ public class AdvertisingTempVo extends BaseEntity
     /** 广告销售额 */
     @Excel(name = "广告销售额")
     private Integer col40;
+    /** 广告CVR */
+    @Excel(name = "广告CVR")
+    private Integer col42;
 }

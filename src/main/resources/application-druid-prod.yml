@@ -6,9 +6,9 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://106.12.115.186:3306/ry2?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://106.12.115.186:3306/yangfan?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: 123456
+                password: yangfan2021
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -17,11 +17,11 @@ spring:
                 username: 
                 password: 
             # 初始连接数
-            initialSize: 5
+            initialSize: 50
             # 最小连接池数量
-            minIdle: 10
+            minIdle: 50
             # 最大连接池数量
-            maxActive: 20
+            maxActive: 1000
             # 配置获取连接等待超时的时间
             maxWait: 60000
             # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒

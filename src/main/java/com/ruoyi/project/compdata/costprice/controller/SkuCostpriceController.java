@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.pms.relation.domain.AsinTypeRelation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -138,5 +139,15 @@ public class SkuCostpriceController extends BaseController
         List<SkuCostprice> skuCostpriceList = util.importExcel(StringUtils.EMPTY,file.getInputStream());
         String message = skuCostpriceService.importSkuCostpriceService(skuCostpriceList, updateSupport);
         return AjaxResult.success(message);
+    }
+
+    //导出 导入模板
+    @RequiresPermissions("compdata:costprice:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<SkuCostprice> util = new ExcelUtil<SkuCostprice>(SkuCostprice.class);
+        return util.importTemplateExcel("成本");
     }
 }

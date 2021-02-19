@@ -60,7 +60,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">标准SKU：</label>
                 <div class="col-sm-8">
-                    <input name="sku" class="form-control" type="text">
+                    <input id="sku" name="sku" class="form-control" type="text" onchange="getAndFillOrderData();">
                 </div>
             </div>
             <div class="form-group">    
@@ -90,7 +90,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">不良原因：</label>
                 <div class="col-sm-8">
-                    <select name="badReason" class="form-control m-b" th:with="type=${@dict.getType('pms_bad_reason')}">
+                    <select id="badReason" name="badReason" class="form-control m-b" th:with="type=${@dict.getType('pms_bad_reason')}">
                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                     </select>
                 </div>
@@ -452,12 +452,13 @@
 <script>
     function getAndFillOrderData(){
         var orderId = $("#orderId").val();
-        $.get(prefix+"/getOrderReturnVo/"+orderId,function(result){
+        var sku = $("input[name='sku']").val();
+        $.get(prefix+"/getOrderReturnVo?orderId="+orderId+"&sku="+sku,function(result){
             if(result.code==0){
                 $("input[name='storeCode']").val(result.data.storeCode);
-                $("input[name='sku']").val(result.data.sku);
+                //$("input[name='sku']").val(result.data.sku);
                 //reasonForcn
-                $("input[name='badReason']").val(result.data.reasonForcn);
+                $("#badReason").val(result.data.reasonForcn);
             }else{
                 layer.msg(result.msg, {icon: 2});
             }

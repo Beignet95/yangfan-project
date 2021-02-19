@@ -237,9 +237,7 @@ public class OrderReturnServiceImpl implements IOrderReturnService
     }
 
     @Override
-    public OrderReturn selectOrderReturnByOrderId(String orderId) {
-        OrderReturn orderReturn = new OrderReturn();
-        orderReturn.setOrderId(orderId);
+    public OrderReturn selectOrderReturnByOnlyCondition(OrderReturn orderReturn) {
         return orderReturnMapper.selectOrderReturnByOnlyCondition(orderReturn);
     }
 }

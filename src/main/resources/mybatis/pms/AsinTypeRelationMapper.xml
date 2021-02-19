@@ -84,5 +84,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 
+    <update id="syncAsinTypeRalation2AdvertisingData">
+        update cpd_advertising c set type=(SELECT type from pms_asin_type_relation where asin=c.asin) where type is null
+    </update>
+
+
+
 
 </mapper>

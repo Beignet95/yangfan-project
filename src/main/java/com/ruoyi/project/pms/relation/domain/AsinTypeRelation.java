@@ -34,7 +34,6 @@ public class AsinTypeRelation extends BaseEntity
     private String asin;
 
     /** 删除标记（1为删除,2为未删除） */
-    @Excel(name = "删除标记", readConverterExp = "1=为删除,2为未删除")
     private Integer isdelete;
 
 

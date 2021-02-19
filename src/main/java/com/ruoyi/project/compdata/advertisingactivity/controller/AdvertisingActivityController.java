@@ -3,6 +3,7 @@ package com.ruoyi.project.compdata.advertisingactivity.controller;
 import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,5 +139,15 @@ public class AdvertisingActivityController extends BaseController
         List<AdvertisingActivity> advertisingActivityList = util.importExcel(StringUtils.EMPTY,file.getInputStream());
         String message = advertisingActivityService.importAdvertisingActivity(advertisingActivityList, updateSupport);
         return AjaxResult.success(message);
+    }
+
+    //导出 导入模板
+    @RequiresPermissions("compdata:advertisingactivity:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<AdvertisingActivity> util = new ExcelUtil<AdvertisingActivity>(AdvertisingActivity.class);
+        return util.importTemplateExcel("广告活动映射");
     }
 }

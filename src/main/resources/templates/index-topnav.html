@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
-    <title>若依系统首页</title>
+    <title>杨帆数据分析系统首页</title>
     <!-- 避免IE使用兼容模式 -->
  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link th:href="@{favicon.ico}" rel="shortcut icon"/>
@@ -26,7 +26,7 @@
         </div>
         <a th:href="@{/index}">
             <li class="logo hidden-xs">
-                <span class="logo-lg">RuoYi</span>
+                <span class="logo-lg">杨帆科技</span>
             </li>
          </a>
         <div class="sidebar-collapse tab-content" id="side-menu">
@@ -89,7 +89,7 @@
 			</div>
 			
             <!-- 实例演示菜单 -->
-			<div class="tab-pane fade height-full" id="demo" th:if="${demoEnabled}">
+			<div class="tab-pane fade height-full" id="demo" th:if="${demoEnabled}" style="display: none;">
 			  <ul class="nav">
 			    <li>
 			      <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">表单</span><span class="fa arrow"></span></a>
@@ -220,18 +220,7 @@
                         </a>
                     </li>
 	                </th:block>
-	                
-	                <li role="presentation" id="tab_index">
-                      <a data-toggle="tab" href="#index">
-                        <i class="fa fa-area-chart"></i> <span>统计报表</span>
-                      </a>
-                    </li>
-                    
-                    <li role="presentation" id="tab_demo" th:if="${demoEnabled}">
-                      <a data-toggle="tab" href="#demo">
-                        <i class="fa fa-desktop"></i> <span>实例演示</span>
-                      </a>
-                    </li>
+
 				  </ul>
 				</div>
                 <!-- 右侧栏 -->

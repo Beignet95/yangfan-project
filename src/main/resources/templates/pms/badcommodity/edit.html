@@ -26,7 +26,7 @@
                 <label class="col-sm-3 control-label">订单日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="orderDate" th:value="${#dates.format(badCommodity.orderDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="orderDate" th:value="${#dates.format(badCommodity.orderDate, 'yyyy/MM/dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 <label class="col-sm-3 control-label">处理日期：</label>
                 <div class="col-sm-8">
                     <div class="input-group date">
-                        <input name="dealDate" th:value="${#dates.format(badCommodity.dealDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="dealDate" th:value="${#dates.format(badCommodity.dealDate, 'yyyy/MM/dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -293,19 +293,19 @@
         }
 
         $("input[name='orderDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
 
         $("input[name='dealDate']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
 
         $("input[name='lastFollowTime']").datetimepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy/mm/dd",
             minView: "month",
             autoclose: true
         });
@@ -369,10 +369,10 @@
         function deletePic(picNo){
             $.post(prefix+"/deleteBadRecordPicture",{id:$("input[name='id']").val(),picNo:picNo},function (result) {
                 if(result.code==0){
-                    alert("删除成功:"+picNo);
+                    $.modal.alertSuccess("删除成功!");
                     $("#"+picNo).remove();
                 }else{
-                    alert("删除失败");
+                    $.modal.alertError("删除失败!")
                 }
             });
         }
@@ -429,12 +429,12 @@
                         maxlength: icon + "账户站点过长"
                     },
                     principal: {
-                        required: icon + "请输入型号",
-                        maxlength: icon + "型号过长"
+                        required: icon + "请输入销售负责人",
+                        maxlength: icon + "销售负责人过长"
                     },
                     type: {
-                        required: icon + "请输入标准SKU",
-                        maxlength: icon + "标准SKU过长"
+                        required: icon + "请输入型号",
+                        maxlength: icon + "型号过长"
                     },
                     sku: {
                         required: icon + "请输入标准SKU",

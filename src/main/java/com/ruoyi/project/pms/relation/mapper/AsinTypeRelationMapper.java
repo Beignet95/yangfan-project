@@ -64,4 +64,6 @@ public interface AsinTypeRelationMapper
     AsinTypeRelation selectAsinTypeRelationByAsin(String asin);
 
     int updateAsinTypeRelationByAsin(AsinTypeRelation asin);
+
+    int syncAsinTypeRalation2AdvertisingData();
 }

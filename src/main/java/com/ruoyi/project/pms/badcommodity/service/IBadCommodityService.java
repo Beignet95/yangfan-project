@@ -73,7 +73,7 @@ public interface IBadCommodityService
     public String importBadCommodity(List<BadCommodity> badCommodityList, boolean isUpdateSupport);
 
 
-    OrderReturnVo selectOrderReturnVo(String orderId);
+    OrderReturnVo selectOrderReturnVo(String orderId,String sku);
 
     int insertBadCommodityAndUploadPicture(BadCommodity badCommodity, List<MultipartFile> files);
 

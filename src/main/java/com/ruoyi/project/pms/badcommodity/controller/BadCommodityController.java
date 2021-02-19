@@ -169,18 +169,18 @@ public class BadCommodityController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
     {
         ExcelUtil<BadCommodity> util = new ExcelUtil<BadCommodity>(BadCommodity.class);
-        List<BadCommodity> badcommodityList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),1);
+        List<BadCommodity> badcommodityList = util.importExcel(StringUtils.EMPTY,file.getInputStream());
         String message = badCommodityService.importBadCommodity(badcommodityList, updateSupport);
         return AjaxResult.success(message);
     }
 
 
     /**
-     * 获取订单退化Vo
+     * 获取订单退货Vo
      */
-    @GetMapping("/getOrderReturnVo/{orderId}")
+    @GetMapping("/getOrderReturnVo")
     @ResponseBody
-    public AjaxResult getOrderReturnVo(@PathVariable("orderId") String orderId, ModelMap mmap)
+    public AjaxResult getOrderReturnVo(@RequestParam("orderId") String orderId,@RequestParam("sku")String sku, ModelMap mmap)
     {
         //TODO
         BadCommodity badCommodity = new BadCommodity();
@@ -189,7 +189,7 @@ public class BadCommodityController extends BaseController
         if(badCommodities.size()>0){
            return AjaxResult.error("已经存在订单号为："+orderId+"的不良记录，不能再次录入");
         }
-        OrderReturnVo OrderReturnVo = badCommodityService.selectOrderReturnVo(orderId);
+        OrderReturnVo OrderReturnVo = badCommodityService.selectOrderReturnVo(orderId,sku);
         return AjaxResult.success(OrderReturnVo);
     }
 

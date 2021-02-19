@@ -212,6 +212,9 @@ public class ExcelUtil<T>
                     }
                 }
             }
+            //fieldsMap.size为0时，证明读取列名的行不是第一行或者根本没有列名行
+            if(fieldsMap.size()<1) throw new BusinessException("读取列名的行不是第一行或者根本没有列名行");
+
             for (int i = 1; i < rows; i++)
             {
                 // 从第2行开始取数据,默认第一行是表头.

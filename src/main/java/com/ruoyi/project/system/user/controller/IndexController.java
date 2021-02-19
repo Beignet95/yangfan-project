@@ -129,7 +129,7 @@ public class IndexController extends BaseController
     public String main(ModelMap mmap)
     {
         mmap.put("version", ruoYiConfig.getVersion());
-        return "main";
+        return "main_v1";
     }
     
     // 检查初始密码是否提醒修改

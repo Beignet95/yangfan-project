@@ -215,9 +215,7 @@ public class OrderRefundServiceImpl implements IOrderRefundService
     }
 
     @Override
-    public OrderRefund selectOrderRefundByOrderId(String orderId) {
-        OrderRefund orderRefund = new OrderRefund();
-        orderRefund.setOrderId(orderId);
+    public OrderRefund selectOrderRefundByOnlyCondition(OrderRefund orderRefund) {
         return orderRefundMapper.selectOrderRefundByOnlyCondition(orderRefund);
     }
 }
