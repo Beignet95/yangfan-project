@@ -133,7 +133,6 @@ public class VideoAdvertisingServiceImpl implements IVideoAdvertisingService
      */
     @Override
     public String importVideoAdvertising(List<VideoAdvertising> videoAdvertisingList, boolean isUpdateSupport) {
-        //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(videoAdvertisingList) || videoAdvertisingList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");

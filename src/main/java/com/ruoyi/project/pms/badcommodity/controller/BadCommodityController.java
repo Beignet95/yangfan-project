@@ -169,7 +169,7 @@ public class BadCommodityController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
     {
         ExcelUtil<BadCommodity> util = new ExcelUtil<BadCommodity>(BadCommodity.class);
-        List<BadCommodity> badcommodityList = util.importExcel(StringUtils.EMPTY,file.getInputStream());
+        List<BadCommodity> badcommodityList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),0);
         String message = badCommodityService.importBadCommodity(badcommodityList, updateSupport);
         return AjaxResult.success(message);
     }

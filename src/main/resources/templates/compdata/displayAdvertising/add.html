@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增Display广告数据源')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-displayAdvertising-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">账号简称：</label>
+                <div class="col-sm-8">
+                    <input name="storeCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">ASIN：</label>
+                <div class="col-sm-8">
+                    <input name="asin" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标准SKU：</label>
+                <div class="col-sm-8">
+                    <input name="sku" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">广告专员：</label>
+                <div class="col-sm-8">
+                    <input name="commissioner" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">产品类型：</label>
+                <div class="col-sm-8">
+                    <input name="type" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Listing链接：</label>
+                <div class="col-sm-8">
+                    <input name="link" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">利润：</label>
+                <div class="col-sm-8">
+                    <input name="profit" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">CPA：</label>
+                <div class="col-sm-8">
+                    <input name="cpa" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">CPA盈亏(利润值-CPA)：</label>
+                <div class="col-sm-8">
+                    <input name="cpaProfit" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">CPA等级：</label>
+                <div class="col-sm-8">
+                    <input name="cpaProfitLevel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">CTR等级：</label>
+                <div class="col-sm-8">
+                    <input name="ctrLevel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">CVR等级：</label>
+                <div class="col-sm-8">
+                    <input name="cvrLevel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">ACOS等级：</label>
+                <div class="col-sm-8">
+                    <input name="acosLevel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">广告专员操作反馈：</label>
+                <div class="col-sm-8">
+                    <input name="operationFeedback" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">识别码：</label>
+                <div class="col-sm-8">
+                    <input name="identificationCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Start Date：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="startDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">End Date：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="endDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Currency：</label>
+                <div class="col-sm-8">
+                    <input name="currency" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Campaign Name：</label>
+                <div class="col-sm-8">
+                    <input name="campaignName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Ad Group Name：</label>
+                <div class="col-sm-8">
+                    <input name="adGroupName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Targeting：</label>
+                <div class="col-sm-8">
+                    <input name="targeting" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Impressions：</label>
+                <div class="col-sm-8">
+                    <input name="impressions" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Clicks：</label>
+                <div class="col-sm-8">
+                    <input name="clicks" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Click-Thru Rate (CTR)：</label>
+                <div class="col-sm-8">
+                    <input name="ctr" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Cost Per Click (CPC)：</label>
+                <div class="col-sm-8">
+                    <input name="cpc" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Spend：</label>
+                <div class="col-sm-8">
+                    <input name="spend" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">7 Day Total Sales：</label>
+                <div class="col-sm-8">
+                    <input name="totalSales" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Total Advertising Cost of Sales (ACoS)：</label>
+                <div class="col-sm-8">
+                    <input name="acos" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Total Return on Advertising Spend (RoAS)：</label>
+                <div class="col-sm-8">
+                    <input name="roas" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">7 Day Total Orders (#)：</label>
+                <div class="col-sm-8">
+                    <input name="totalOrders" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">7 Day Total Units (#)：</label>
+                <div class="col-sm-8">
+                    <input name="totalUnits" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">7 Day Conversion Rate：</label>
+                <div class="col-sm-8">
+                    <input name="cvr" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">单价：</label>
+                <div class="col-sm-8">
+                    <input name="costprice" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "compdata/displayAdvertising"
+        $("#form-displayAdvertising-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-displayAdvertising-add').serialize());
+            }
+        }
+
+        $("input[name='startDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='endDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

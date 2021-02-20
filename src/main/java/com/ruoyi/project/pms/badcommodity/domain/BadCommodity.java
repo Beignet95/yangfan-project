@@ -168,7 +168,7 @@ public class BadCommodity extends BaseEntity
     private String remarks2;
 
     /** 不良图片一 */
-    //@Excel(name = "不良图片一",cellType = Excel.ColumnType.IMAGE)
+    @Excel(name = "不良图片一",cellType = Excel.ColumnType.IMAGE)
     private String picUrl1;
 
     /** 不良图片二 */

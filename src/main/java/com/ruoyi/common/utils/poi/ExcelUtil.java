@@ -19,10 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFPicture;
-import org.apache.poi.hssf.usermodel.HSSFShape;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -1224,10 +1221,6 @@ public class ExcelUtil<T>
                 CellType cellType = cell.getCellType();
                 if (cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
                 {
-
-                    //TODO
-                    //String formaula = cell.getCellFormula();
-                    //TODO
                     val = cell.getNumericCellValue();
                     if (DateUtil.isCellDateFormatted(cell))
                     {
@@ -1236,8 +1229,9 @@ public class ExcelUtil<T>
                     else
                     {
                         CellStyle cellStyle = cell.getCellStyle();
-                        short currenyStyleNum = cellStyle.getDataFormat();
-                        if(currenyStyleNum==176) return val = "€"+ val;
+                        String formatString = cellStyle.getDataFormatString();
+
+                        if("[$€-2]\\ #,##0.00;[Red][$€-2]\\ \\-#,##0.00".equals(formatString)) return val = "€"+ val;
 
                         if ((Double) val % 1 > 0)
                         {
