@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -218,5 +219,26 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 //        m = c.getTime();
 //        String preMonthStr = format.format(m);
 //        System.out.println("本月为："+curMonthStr+",上月为："+preMonthStr);
+    }
+
+    /**
+     * 日期型字符串转化为日期 格式
+     */
+    public static Date parseUTCDate4CSV(Object str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+        try
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'UTC'", Locale.US);
+            Date date =sdf.parse((String) str);
+            return date;
+        }
+        catch (ParseException e)
+        {
+            return null;
+        }
     }
 }

@@ -386,6 +386,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
+    <select id="selectKeywordAnalysisData" parameterType="KeywordAnalyVo" resultType="KeywordAnalyVo">
+        select customer_search_term as customerSearchTerm,SUM(total_orders) as totalOrder
+        from cpd_stadvertising
+        <where>
+            <if test="params.type != null  and params.type != ''"> and type= #{params.type}</if>
+            <if test="customerSearchTerm != null  and customerSearchTerm != ''"> and customer_search_term= #{customerSearchTerm}</if>
+            <if test="params.beginTime != null  and params.beginTime != ''"> and start_date &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null  and params.endTime != ''"> and end_date &lt;= #{params.endTime}</if>
+        </where>
+        GROUP BY customer_search_term
+        order BY totalOrder desc
+    </select>
 
+    <select id="selectTotalOrder" parameterType="KeywordAnalyVo" resultType="Integer">
+        select SUM(total_orders)
+        from cpd_stadvertising
+        <where>
+            <if test="params.type != null  and params.type != ''"> and type= #{params.type}</if>
+            <if test="customerSearchTerm != null  and customerSearchTerm != ''"> and customer_search_term= #{customerSearchTerm}</if>
+            <if test="params.beginTime != null  and params.beginTime != ''"> and start_date &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null  and params.endTime != ''"> and end_date &lt;= #{params.endTime}</if>
+        </where>
+    </select>
+
+    <select id="selectAdvertisingEchartsVo" parameterType="Stadvertising" resultType="KeywordEchartsAnalyVo">
+        SELECT DATE_FORMAT(start_date, '%Y-%m') as month,
+        SUM(total_orders) as totalOrders,
+        SUM(clicks) as clicks,
+        SUM(impressions) as impressions,
+        SUM(total_orders)/SUM(clicks) as cvr,
+        SUM(spend)/SUM(clicks) as cpc,
+        SUM(clicks)/SUM(impressions) as ctr
+        from cpd_stadvertising
+        <where>
+            <if test="params.type != null  and params.type != ''"> and type= #{params.type}</if>
+            <if test="customerSearchTerm != null  and customerSearchTerm != ''"> and customer_search_term= #{customerSearchTerm}</if>
+            <if test="params.beginTime != null  and params.beginTime != ''"> and start_date &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null  and params.endTime != ''"> and end_date &lt;= #{params.endTime}</if>
+        </where>
+        GROUP BY DATE_FORMAT(start_date, '%Y-%m')
+    </select>
 
 </mapper>

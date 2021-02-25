@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.oms.transactionRecord.mapper.TransactionRecordMapper">
+    
+    <resultMap type="TransactionRecord" id="TransactionRecordResult">
+        <result property="id"    column="id"    />
+        <result property="time"    column="time"    />
+        <result property="settlementId"    column="settlement_id"    />
+        <result property="type"    column="type"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="sku"    column="sku"    />
+        <result property="description"    column="description"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="marketplace"    column="marketplace"    />
+        <result property="fulfilment"    column="fulfilment"    />
+        <result property="orderCity"    column="order_city"    />
+        <result property="orderState"    column="order_state"    />
+        <result property="orderPostal"    column="order_postal"    />
+        <result property="taxCollectionModel"    column="tax_collection_model"    />
+        <result property="productSales"    column="product_sales"    />
+        <result property="productSalesTax"    column="product_sales_tax"    />
+        <result property="postageCredits"    column="postage_credits"    />
+        <result property="shippingCreditsTax"    column="shipping_credits_tax"    />
+        <result property="giftWrapCredits"    column="gift_wrap_credits"    />
+        <result property="giftwrapCreditsTax"    column="giftwrap_credits_tax"    />
+        <result property="promotionalRebates"    column="promotional_rebates"    />
+        <result property="promotionalRebatesTax"    column="promotional_rebates_tax"    />
+        <result property="marketplaceWithheldTax"    column="marketplace_withheld_tax"    />
+        <result property="sellingFees"    column="selling_fees"    />
+        <result property="fbaFees"    column="fba_fees"    />
+        <result property="otherTransactionFees"    column="other_transaction_fees"    />
+        <result property="other"    column="other"    />
+        <result property="total"    column="total"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTransactionRecordVo">
+        select id, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, create_by, create_time, update_by, update_time from oms_transaction_record
+    </sql>
+
+    <select id="selectTransactionRecordList" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
+        <include refid="selectTransactionRecordVo"/>
+        <where>  
+            <if test="time != null "> and time = #{time}</if>
+            <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="marketplace != null  and marketplace != ''"> and marketplace = #{marketplace}</if>
+            <if test="fulfilment != null  and fulfilment != ''"> and fulfilment = #{fulfilment}</if>
+            <if test="orderCity != null  and orderCity != ''"> and order_city = #{orderCity}</if>
+            <if test="orderState != null  and orderState != ''"> and order_state = #{orderState}</if>
+            <if test="orderPostal != null  and orderPostal != ''"> and order_postal = #{orderPostal}</if>
+            <if test="taxCollectionModel != null  and taxCollectionModel != ''"> and tax_collection_model = #{taxCollectionModel}</if>
+            <if test="productSales != null "> and product_sales = #{productSales}</if>
+            <if test="productSalesTax != null "> and product_sales_tax = #{productSalesTax}</if>
+            <if test="postageCredits != null "> and postage_credits = #{postageCredits}</if>
+            <if test="shippingCreditsTax != null "> and shipping_credits_tax = #{shippingCreditsTax}</if>
+            <if test="giftWrapCredits != null "> and gift_wrap_credits = #{giftWrapCredits}</if>
+            <if test="giftwrapCreditsTax != null "> and giftwrap_credits_tax = #{giftwrapCreditsTax}</if>
+            <if test="promotionalRebates != null "> and promotional_rebates = #{promotionalRebates}</if>
+            <if test="promotionalRebatesTax != null "> and promotional_rebates_tax = #{promotionalRebatesTax}</if>
+            <if test="marketplaceWithheldTax != null "> and marketplace_withheld_tax = #{marketplaceWithheldTax}</if>
+            <if test="sellingFees != null "> and selling_fees = #{sellingFees}</if>
+            <if test="fbaFees != null "> and fba_fees = #{fbaFees}</if>
+            <if test="otherTransactionFees != null "> and other_transaction_fees = #{otherTransactionFees}</if>
+            <if test="other != null "> and other = #{other}</if>
+            <if test="total != null "> and total = #{total}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectTransactionRecordById" parameterType="Long" resultMap="TransactionRecordResult">
+        <include refid="selectTransactionRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTransactionRecord" parameterType="TransactionRecord">
+        insert into oms_transaction_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="time != null">time,</if>
+            <if test="settlementId != null">settlement_id,</if>
+            <if test="type != null">type,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="sku != null">sku,</if>
+            <if test="description != null">description,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="marketplace != null">marketplace,</if>
+            <if test="fulfilment != null">fulfilment,</if>
+            <if test="orderCity != null">order_city,</if>
+            <if test="orderState != null">order_state,</if>
+            <if test="orderPostal != null">order_postal,</if>
+            <if test="taxCollectionModel != null">tax_collection_model,</if>
+            <if test="productSales != null">product_sales,</if>
+            <if test="productSalesTax != null">product_sales_tax,</if>
+            <if test="postageCredits != null">postage_credits,</if>
+            <if test="shippingCreditsTax != null">shipping_credits_tax,</if>
+            <if test="giftWrapCredits != null">gift_wrap_credits,</if>
+            <if test="giftwrapCreditsTax != null">giftwrap_credits_tax,</if>
+            <if test="promotionalRebates != null">promotional_rebates,</if>
+            <if test="promotionalRebatesTax != null">promotional_rebates_tax,</if>
+            <if test="marketplaceWithheldTax != null">marketplace_withheld_tax,</if>
+            <if test="sellingFees != null">selling_fees,</if>
+            <if test="fbaFees != null">fba_fees,</if>
+            <if test="otherTransactionFees != null">other_transaction_fees,</if>
+            <if test="other != null">other,</if>
+            <if test="total != null">total,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="time != null">#{time},</if>
+            <if test="settlementId != null">#{settlementId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="sku != null">#{sku},</if>
+            <if test="description != null">#{description},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="marketplace != null">#{marketplace},</if>
+            <if test="fulfilment != null">#{fulfilment},</if>
+            <if test="orderCity != null">#{orderCity},</if>
+            <if test="orderState != null">#{orderState},</if>
+            <if test="orderPostal != null">#{orderPostal},</if>
+            <if test="taxCollectionModel != null">#{taxCollectionModel},</if>
+            <if test="productSales != null">#{productSales},</if>
+            <if test="productSalesTax != null">#{productSalesTax},</if>
+            <if test="postageCredits != null">#{postageCredits},</if>
+            <if test="shippingCreditsTax != null">#{shippingCreditsTax},</if>
+            <if test="giftWrapCredits != null">#{giftWrapCredits},</if>
+            <if test="giftwrapCreditsTax != null">#{giftwrapCreditsTax},</if>
+            <if test="promotionalRebates != null">#{promotionalRebates},</if>
+            <if test="promotionalRebatesTax != null">#{promotionalRebatesTax},</if>
+            <if test="marketplaceWithheldTax != null">#{marketplaceWithheldTax},</if>
+            <if test="sellingFees != null">#{sellingFees},</if>
+            <if test="fbaFees != null">#{fbaFees},</if>
+            <if test="otherTransactionFees != null">#{otherTransactionFees},</if>
+            <if test="other != null">#{other},</if>
+            <if test="total != null">#{total},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTransactionRecord" parameterType="TransactionRecord">
+        update oms_transaction_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="time != null">time = #{time},</if>
+            <if test="settlementId != null">settlement_id = #{settlementId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="marketplace != null">marketplace = #{marketplace},</if>
+            <if test="fulfilment != null">fulfilment = #{fulfilment},</if>
+            <if test="orderCity != null">order_city = #{orderCity},</if>
+            <if test="orderState != null">order_state = #{orderState},</if>
+            <if test="orderPostal != null">order_postal = #{orderPostal},</if>
+            <if test="taxCollectionModel != null">tax_collection_model = #{taxCollectionModel},</if>
+            <if test="productSales != null">product_sales = #{productSales},</if>
+            <if test="productSalesTax != null">product_sales_tax = #{productSalesTax},</if>
+            <if test="postageCredits != null">postage_credits = #{postageCredits},</if>
+            <if test="shippingCreditsTax != null">shipping_credits_tax = #{shippingCreditsTax},</if>
+            <if test="giftWrapCredits != null">gift_wrap_credits = #{giftWrapCredits},</if>
+            <if test="giftwrapCreditsTax != null">giftwrap_credits_tax = #{giftwrapCreditsTax},</if>
+            <if test="promotionalRebates != null">promotional_rebates = #{promotionalRebates},</if>
+            <if test="promotionalRebatesTax != null">promotional_rebates_tax = #{promotionalRebatesTax},</if>
+            <if test="marketplaceWithheldTax != null">marketplace_withheld_tax = #{marketplaceWithheldTax},</if>
+            <if test="sellingFees != null">selling_fees = #{sellingFees},</if>
+            <if test="fbaFees != null">fba_fees = #{fbaFees},</if>
+            <if test="otherTransactionFees != null">other_transaction_fees = #{otherTransactionFees},</if>
+            <if test="other != null">other = #{other},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTransactionRecordById" parameterType="Long">
+        delete from oms_transaction_record where id = #{id}
+    </delete>
+
+    <delete id="deleteTransactionRecordByIds" parameterType="String">
+        delete from oms_transaction_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectTransactionRecordByOnlyCondition" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
+        <include refid="selectTransactionRecordVo"/>
+        where time=#{time} and order_id=#{orderId} and sku=#{sku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateTransactionRecordByOnlyCondition" parameterType="TransactionRecord">
+        update oms_transaction_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="time != null">time = #{time},</if>
+            <if test="settlementId != null">settlement_id = #{settlementId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="marketplace != null">marketplace = #{marketplace},</if>
+            <if test="fulfilment != null">fulfilment = #{fulfilment},</if>
+            <if test="orderCity != null">order_city = #{orderCity},</if>
+            <if test="orderState != null">order_state = #{orderState},</if>
+            <if test="orderPostal != null">order_postal = #{orderPostal},</if>
+            <if test="taxCollectionModel != null">tax_collection_model = #{taxCollectionModel},</if>
+            <if test="productSales != null">product_sales = #{productSales},</if>
+            <if test="productSalesTax != null">product_sales_tax = #{productSalesTax},</if>
+            <if test="postageCredits != null">postage_credits = #{postageCredits},</if>
+            <if test="shippingCreditsTax != null">shipping_credits_tax = #{shippingCreditsTax},</if>
+            <if test="giftWrapCredits != null">gift_wrap_credits = #{giftWrapCredits},</if>
+            <if test="giftwrapCreditsTax != null">giftwrap_credits_tax = #{giftwrapCreditsTax},</if>
+            <if test="promotionalRebates != null">promotional_rebates = #{promotionalRebates},</if>
+            <if test="promotionalRebatesTax != null">promotional_rebates_tax = #{promotionalRebatesTax},</if>
+            <if test="marketplaceWithheldTax != null">marketplace_withheld_tax = #{marketplaceWithheldTax},</if>
+            <if test="sellingFees != null">selling_fees = #{sellingFees},</if>
+            <if test="fbaFees != null">fba_fees = #{fbaFees},</if>
+            <if test="otherTransactionFees != null">other_transaction_fees = #{otherTransactionFees},</if>
+            <if test="other != null">other = #{other},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where time=#{time} and order_id=#{orderId} and sku=#{sku}
+    </update>
+
+</mapper>

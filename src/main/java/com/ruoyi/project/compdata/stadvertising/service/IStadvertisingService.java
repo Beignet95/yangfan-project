@@ -2,6 +2,8 @@ package com.ruoyi.project.compdata.stadvertising.service;
 
 import java.util.List;
 import com.ruoyi.project.compdata.stadvertising.domain.Stadvertising;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsVo;
 import com.ruoyi.project.compdata.stadvertising.vo.StadvertisingAnalyVo;
 
 /**
@@ -67,4 +69,10 @@ public interface IStadvertisingService
     List<StadvertisingAnalyVo> selectStadvertisingAnalyVoList(StadvertisingAnalyVo stadvertising);
 
     int selectCount(Stadvertising stadvertising);
+
+    List<KeywordAnalyVo> selectKeywordAnalysisData(KeywordAnalyVo keywordAnalyVo) throws IllegalAccessException;
+
+    Integer selectTotalOrder(KeywordAnalyVo keywordAnalyVo);
+
+    KeywordEchartsVo selectAdvertisingEchartsVo(Stadvertising stadvertising);
 }

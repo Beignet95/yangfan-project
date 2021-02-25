@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.ruoyi.common.utils.Arith;
+import com.ruoyi.common.utils.math.MathUtil;
 import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity;
 import com.ruoyi.project.compdata.advertisingactivity.service.IAdvertisingActivityService;
 import com.ruoyi.project.compdata.costprice.domain.SkuCostprice;
 import com.ruoyi.project.compdata.costprice.service.ISkuCostpriceService;
+import com.ruoyi.project.compdata.videoadvertising.domain.VideoAdvertising;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
@@ -64,7 +66,13 @@ public class DisplayAdvertisingServiceImpl implements IDisplayAdvertisingService
     @Override
     public List<DisplayAdvertising> selectDisplayAdvertisingList(DisplayAdvertising displayAdvertising)
     {
-        return displayAdvertisingMapper.selectDisplayAdvertisingList(displayAdvertising);
+        List<DisplayAdvertising> displayAdvertisingList = displayAdvertisingMapper.selectDisplayAdvertisingList(displayAdvertising);
+        for(DisplayAdvertising domain:displayAdvertisingList){
+            domain.setCtr(MathUtil.float2PercentNum(domain.getCtr()));
+            domain.setCvr(MathUtil.float2PercentNum(domain.getCvr()));
+            domain.setAcos(MathUtil.float2PercentNum(domain.getAcos()));
+        }
+        return displayAdvertisingList;
     }
 
     /**
@@ -125,7 +133,6 @@ public class DisplayAdvertisingServiceImpl implements IDisplayAdvertisingService
      */
     @Override
     public String importDisplayAdvertising(List<DisplayAdvertising> displayAdvertisingList, boolean isUpdateSupport) {
-        //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(displayAdvertisingList) || displayAdvertisingList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
@@ -227,13 +234,16 @@ public class DisplayAdvertisingServiceImpl implements IDisplayAdvertisingService
                     displayAdvertising.setIdentificationCode(displayAdvertising.getCampaignName()+"-"+displayAdvertising.getTargeting());
                 }
 
+                String identyStr = displayAdvertising.getStoreCode()+"-"+displayAdvertising.getStartDate()+"-"+displayAdvertising.getEndDate()+"-"
+                        +displayAdvertising.getCampaignName() +"-"+displayAdvertising.getAdGroupName()+"-"+displayAdvertising.getTargeting();
+
                 if (domain==null)
                 {
                     displayAdvertising.setCreateBy(operName);
                     displayAdvertising.setCreateTime(new Date());
                     this.insertDisplayAdvertising(displayAdvertising);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、"+ displayAdvertising.toString()+" 的数据导入成功");
+                    successMsg.append("<br/>" + successNum + "、"+ identyStr+" 的数据导入成功");
                 }
                 else if (isUpdateSupport)
                 {
@@ -241,18 +251,20 @@ public class DisplayAdvertisingServiceImpl implements IDisplayAdvertisingService
                     displayAdvertising.setUpdateTime(new Date());
                     displayAdvertisingMapper.updateDisplayAdvertisingByOnlyCondition(displayAdvertising);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、" + displayAdvertising.toString()+" 的数据更新成功");
+                    successMsg.append("<br/>" + successNum + "、" + identyStr+" 的数据更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、" + displayAdvertising.toString()+" 的数据已存在");
+                    failureMsg.append("<br/>" + failureNum + "、" + identyStr+" 的数据已存在");
                 }
             }
             catch (Exception e)
             {
+                String identyStr = displayAdvertising.getStoreCode()+"-"+displayAdvertising.getStartDate()+"-"+displayAdvertising.getEndDate()+"-"
+                        +displayAdvertising.getCampaignName() +"-"+displayAdvertising.getAdGroupName()+"-"+displayAdvertising.getTargeting();
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、" + displayAdvertising.toString()+" 的数据导入失败：";
+                String msg = "<br/>" + failureNum + "、" + identyStr+" 的数据导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }

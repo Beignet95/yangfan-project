@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增产品负责人映射')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-productPrincipal-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">标准SKU：</label>
+                <div class="col-sm-8">
+                    <input name="sku" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">型号：</label>
+                <div class="col-sm-8">
+                    <input name="type" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">广告负责人：</label>
+                <div class="col-sm-8">
+                    <input name="principal" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">类型：</label>
+                <div class="col-sm-8">
+                    <select name="chargeType" class="form-control m-b" th:with="type=${@dict.getType('cpd_principal_type')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "compdata/productPrincipal"
+        $("#form-productPrincipal-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-productPrincipal-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

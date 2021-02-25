@@ -1,5 +1,14 @@
 package com.ruoyi.project.compdata.finance.service.impl;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
+import com.ruoyi.common.utils.Arith;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.csv.CsvUtil;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.apache.poi.ddf.EscherClientAnchorRecord;
 import org.apache.poi.ddf.EscherRecord;
 import org.apache.poi.hssf.record.EscherAggregate;
@@ -10,123 +19,68 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.Csv;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class MainText {
-    private ArrayList<File> excelFiles = null;
+    public static void main(String[] args) throws ParseException {
 
-    public static void getImageMatrices(String folderName)
-            throws IOException, FileNotFoundException, InvalidFormatException {
-        File fileFolder = new File(folderName);
-        String filename= fileFolder.getName();
-        File[] excelWorkbooks = fileFolder.listFiles(new ExcelFilenameFilter());
-        for(File excelWorkbook : excelWorkbooks) {
-            Workbook workbook = WorkbookFactory.create(new FileInputStream(excelWorkbook));
-            try {
-                processImages((HSSFWorkbook)workbook);
-            } catch (Exception ex) {
-                processImages((XSSFWorkbook)workbook);
+        //InputStreamReader is = new InputStreamReader(new FileInputStream(
+        // "C:\\Users\\Administrator\\Desktop\\测试\\英国CustomTransaction-source.csv"), "utf-8");
+
+        try (Reader reader = Files.newBufferedReader(Paths.get("C:\\Users\\Administrator\\Desktop\\测试\\英国CustomTransaction-source.csv"));
+             CSVReader csvReader = new CSVReader(reader)) {
+
+            String[] record;
+            while ((record = csvReader.readNext()) != null) {
+                System.out.println("User["+ String.join(", ", record) +"]");
             }
-            if(workbook instanceof HSSFWorkbook) {
-                processImages((HSSFWorkbook)workbook);
-            }
-            else {
-                processImages((XSSFWorkbook)workbook);
-            }
+        } catch (IOException | CsvValidationException ex) {
+            ex.printStackTrace();
         }
     }
-    public static void processImages(HSSFWorkbook workbook) {
-        EscherAggregate drawingAggregate = null;
-        HSSFSheet sheet = null;
-        List<EscherRecord> recordList = null;
-        Iterator<EscherRecord> recordIter = null;
-        int numSheets = workbook.getNumberOfSheets();
-        for(int i = 0; i < numSheets; i++) {
-            System.out.println("Processing sheet number: " + (i + 1));
-            sheet = workbook.getSheetAt(i);
-            drawingAggregate = sheet.getDrawingEscherAggregate();
-            if(drawingAggregate != null) {
-                recordList = drawingAggregate.getEscherRecords();
-                recordIter = recordList.iterator();
-                while(recordIter.hasNext()) {
-                    iterateRecords(recordIter.next(), 1);
-                }
-            }
+    public  void testUTCtime() throws ParseException {
+        //字符串转Date
+        //String stringDate = "Thu Oct 16 07:13:48 GMT 2015";//
+        String stringDate = "24 Feb 2021 06:18:24 UTC";
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'UTC'",Locale.US);
+        Date date =sdf.parse(stringDate);
+        System.out.println(date.toString());
+    }
+
+
+    public void testCVSIMPORT(){
+        File csv = new File("C:\\Users\\Administrator\\Desktop\\开发需求汇总\\H4-EU 1月财务报表\\德国CustomTransaction.csv");  // CSV文件路径
+        BufferedReader br = null;
+        try
+        {
+            br = new BufferedReader(new FileReader(csv));
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
         }
-    }
-
-    public static void iterateRecords(EscherRecord escherRecord, int level) {
-        List<EscherRecord> recordList = null;
-        Iterator<EscherRecord> recordIter = null;
-        EscherRecord childRecord = null;
-        recordList = escherRecord.getChildRecords();
-        recordIter = recordList.iterator();
-        while(recordIter.hasNext()) {
-            childRecord = recordIter.next();
-            if(childRecord instanceof EscherClientAnchorRecord) {
-                printAnchorDetails((EscherClientAnchorRecord)childRecord);
-            }
-            if(childRecord.getChildRecords().size() > 0) {
-                iterateRecords(childRecord, ++level);
-            }
-        }
-    }
-
-    public static void printAnchorDetails(EscherClientAnchorRecord anchorRecord) {
-        System.out.println("The top left hand corner of the image can be found " +
-                "in the cell at column number " +
-                anchorRecord.getCol1() +
-                " and row number " +
-                anchorRecord.getRow1() +
-                " at the offset position x " +
-                anchorRecord.getDx1() +
-                " and y " +
-                anchorRecord.getDy1() +
-                " co-ordinates.");
-        System.out.println("The bottom right hand corner of the image can be found " +
-                "in the cell at column number " +
-                anchorRecord.getCol2() +
-                " and row number " +
-                anchorRecord.getRow2() +
-                " at the offset position x " +
-                anchorRecord.getDx2() +
-                " and y " +
-                anchorRecord.getDy2() +
-                " co-ordinates.");
-    }
-
-    public static void processImages(XSSFWorkbook workbook) {
-        System.out.println("No support yet for OOXML based workbooks. Investigating.");
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+        String line = "";
+        String everyLine = "";
         try {
-            getImageMatrices("C:\\Users\\Administrator\\Desktop\\客服\\test");
-        }
-        catch(Exception ex) {
-            System.out.println("Caught an: " + ex.getClass().getName());
-            System.out.println("Message: " + ex.getMessage());
-            System.out.println("Stacktrace follows:.....");
-            ex.printStackTrace(System.out);
-        }
-    }
-
-    public static class ExcelFilenameFilter implements FilenameFilter {
-
-        public boolean accept(File file, String fileName) {
-            boolean includeFile = false;
-            if(fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
-                includeFile = true;
+            List<String> allString = new ArrayList<>();
+            while ((line = br.readLine()) != null)  //读取到的内容给line变量
+            {
+                everyLine = line;
+                System.out.println(everyLine);
+                allString.add(everyLine);
             }
-            return(includeFile);
+            System.out.println("csv表格中所有行数："+allString.size());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
         }
-    }
 
+    }
 }

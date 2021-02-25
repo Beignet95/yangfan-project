@@ -11,11 +11,16 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.math.MathUtil;
 import com.ruoyi.common.utils.security.ShiroUtils;
+import com.ruoyi.framework.web.page.PageDomain;
+import com.ruoyi.framework.web.page.TableSupport;
 import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity;
 import com.ruoyi.project.compdata.advertisingactivity.service.IAdvertisingActivityService;
 import com.ruoyi.project.compdata.costprice.domain.SkuCostprice;
 import com.ruoyi.project.compdata.costprice.service.ISkuCostpriceService;
 import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsVo;
 import com.ruoyi.project.compdata.stadvertising.vo.StadvertisingAnalyVo;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
 import org.slf4j.Logger;
@@ -337,5 +342,50 @@ public class StadvertisingServiceImpl implements IStadvertisingService
     @Override
     public int selectCount(Stadvertising stadvertising) {
         return stadvertisingMapper.selectCount(stadvertising);
+    }
+
+    @Override
+    public List<KeywordAnalyVo> selectKeywordAnalysisData(KeywordAnalyVo keywordAnalyVo){
+        List<KeywordAnalyVo> keywordAnalyVoList = stadvertisingMapper.selectKeywordAnalysisData(keywordAnalyVo);
+        Integer totalOrder = stadvertisingMapper.selectTotalOrder(keywordAnalyVo);
+        PageDomain pageDomain = TableSupport.getPageDomain();
+        int pagesize = pageDomain.getPageSize();
+        int pagenum = pageDomain.getPageNum();
+        int position = pagesize*(pagenum-1);
+        for(KeywordAnalyVo vo:keywordAnalyVoList){
+            position++;
+            //Float orderRate = new Float(Arith.div(new Double(vo.getTotalOrder()),new Double(totalOrder),4));
+            //orderRate = Arith.div(new BigDecimal(vo.getTotalOrder()),new BigDecimal(totalOrder),4);
+            BigDecimal b1 = new BigDecimal(vo.getTotalOrder().toString());
+            BigDecimal b2 = new BigDecimal(totalOrder.toString());
+            BigDecimal orderRateb = b1.divide(b2,4,BigDecimal.ROUND_HALF_UP);
+            Float orderRate = orderRateb.floatValue();
+            vo.setOrderRate(orderRate*100);
+            vo.setPosition(position);
+        }
+        return keywordAnalyVoList;
+    }
+
+    @Override
+    public Integer selectTotalOrder(KeywordAnalyVo keywordAnalyVo) {
+        return stadvertisingMapper.selectTotalOrder(keywordAnalyVo);
+    }
+
+    @Override
+    public KeywordEchartsVo selectAdvertisingEchartsVo(Stadvertising stadvertising) {
+        KeywordEchartsVo echartsVo = new KeywordEchartsVo();
+        List<KeywordEchartsAnalyVo> keywordEchartsAnalyVos = stadvertisingMapper.selectAdvertisingEchartsVo(stadvertising);
+        String[] months = new String[keywordEchartsAnalyVos.size()];
+        Integer[] totalOrders = new Integer[keywordEchartsAnalyVos.size()];
+        Float[] orderRates = new Float[keywordEchartsAnalyVos.size()];
+        Float[] cvrs = new Float[keywordEchartsAnalyVos.size()];
+        Float[] cpcs = new Float[keywordEchartsAnalyVos.size()];
+        Integer[] Impressionses = new Integer[keywordEchartsAnalyVos.size()];;
+        Integer[] clicks = new Integer[keywordEchartsAnalyVos.size()];
+        Float[] ctrs = new Float[keywordEchartsAnalyVos.size()];
+        for(KeywordEchartsAnalyVo vo:keywordEchartsAnalyVos){
+
+        }
+        return echartsVo;
     }
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.productPrincipal.mapper.ProductPrincipalMapper">
+    
+    <resultMap type="ProductPrincipal" id="ProductPrincipalResult">
+        <result property="id"    column="id"    />
+        <result property="sku"    column="sku"    />
+        <result property="type"    column="type"    />
+        <result property="principal"    column="principal"    />
+        <result property="chargeType"    column="charge_type"    />
+    </resultMap>
+
+    <sql id="selectProductPrincipalVo">
+        select id, sku, type, principal, charge_type from cpd_product_principal
+    </sql>
+
+    <select id="selectProductPrincipalList" parameterType="ProductPrincipal" resultMap="ProductPrincipalResult">
+        <include refid="selectProductPrincipalVo"/>
+        <where>  
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="chargeType != null "> and charge_type = #{chargeType}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectProductPrincipalById" parameterType="Long" resultMap="ProductPrincipalResult">
+        <include refid="selectProductPrincipalVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductPrincipal" parameterType="ProductPrincipal">
+        insert into cpd_product_principal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="sku != null and sku != ''">sku,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="principal != null and principal != ''">principal,</if>
+            <if test="chargeType != null">charge_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="sku != null and sku != ''">#{sku},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="principal != null and principal != ''">#{principal},</if>
+            <if test="chargeType != null">#{chargeType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductPrincipal" parameterType="ProductPrincipal">
+        update cpd_product_principal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
+            <if test="chargeType != null">charge_type = #{chargeType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductPrincipalById" parameterType="Long">
+        delete from cpd_product_principal where id = #{id}
+    </delete>
+
+    <delete id="deleteProductPrincipalByIds" parameterType="String">
+        delete from cpd_product_principal where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectProductPrincipalByOnlyCondition" parameterType="ProductPrincipal" resultMap="ProductPrincipalResult">
+        <include refid="selectProductPrincipalVo"/>
+        where sku = #{sku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateProductPrincipalByOnlyCondition" parameterType="ProductPrincipal">
+        update cpd_product_principal
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="sku != null and sku != ''">sku = #{sku},</if>
+        <if test="type != null and type != ''">type = #{type},</if>
+        <if test="principal != null and principal != ''">principal = #{principal},</if>
+        <if test="chargeType != null">charge_type = #{chargeType},</if>
+        </trim>
+        where sku = #{sku}
+    </update>
+
+</mapper>

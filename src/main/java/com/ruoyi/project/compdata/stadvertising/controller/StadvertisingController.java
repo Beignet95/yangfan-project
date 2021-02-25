@@ -3,7 +3,8 @@ package com.ruoyi.project.compdata.stadvertising.controller;
 import java.util.List;
 
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsVo;
 import com.ruoyi.project.compdata.stadvertising.vo.StadvertisingAnalyVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * ST广告数据源Controller
@@ -170,6 +173,44 @@ public class StadvertisingController extends BaseController
         tableDataInfo.setTotal(count);
         return tableDataInfo;
 
+    }
+
+    /**
+     * 关键词趋势可视化分析页面
+     */
+    @GetMapping("/keywordAnalysis")
+    @RequiresPermissions("compdata:stadvertising:analysis")
+    public String keywordAnalysis(ModelMap mmap)
+    {
+        return prefix + "/keyword_analysis";
+    }
+
+
+
+    /**
+     * 关键词趋势可视化分析页面
+     */
+    @PostMapping("/getKeywordAnalysisData")
+    @RequiresPermissions("compdata:stadvertising:analysis")
+    @ResponseBody
+    public TableDataInfo getKeywordAnalysisData(KeywordAnalyVo KeywordAnalyVo) throws IllegalAccessException {
+        startPage();
+        List<KeywordAnalyVo> keywordAnalyVo = stadvertisingService.selectKeywordAnalysisData(KeywordAnalyVo);
+        return getDataTable(keywordAnalyVo);
+    }
+
+    /**
+     * 关键词趋势可视化分析页面
+     */
+    @PostMapping("/getKeywordEchartsData")
+    @RequiresPermissions("compdata:stadvertising:analysis")
+    @ResponseBody
+    public TableDataInfo getKeywordEchartsVo(Stadvertising stadvertising) throws IllegalAccessException {
+        startPage();
+        //TODO
+        KeywordEchartsVo keywordAnalyVo = stadvertisingService.selectAdvertisingEchartsVo(stadvertising);
+        //return getDataTable(keywordAnalyVo);
+        return null;
     }
 
 }

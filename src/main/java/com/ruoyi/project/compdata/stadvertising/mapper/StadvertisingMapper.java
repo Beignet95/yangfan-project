@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.compdata.stadvertising.domain.Stadvertising;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsAnalyVo;
+import com.ruoyi.project.compdata.stadvertising.vo.KeywordEchartsVo;
 
 /**
  * ST广告数据源Mapper接口
@@ -66,4 +69,10 @@ public interface StadvertisingMapper
     int updateFinanceByOnlyCondition(Stadvertising stadvertising);
 
     int selectCount(Stadvertising stadvertising);
+
+    List<KeywordAnalyVo> selectKeywordAnalysisData(KeywordAnalyVo keywordAnalyVo);
+
+    Integer selectTotalOrder(KeywordAnalyVo keywordAnalyVo);
+
+    List<KeywordEchartsAnalyVo> selectAdvertisingEchartsVo(Stadvertising stadvertising);
 }
