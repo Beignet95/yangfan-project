@@ -31,18 +31,24 @@ public class ProductPrincipal extends BaseEntity
     @Excel(name = "标准SKU")
     private String sku;
 
+    /** SKU */
+    @Excel(name = "SKU")
+    private String platformSku;
+
+    /** 品名 */
+    //@Excel(name = "品名")
+    private String productName;
+
     /** 型号 */
     @Excel(name = "型号")
     private String type;
 
-    /** 广告负责人 */
-    @Excel(name = "广告负责人")
+    /** 负责人 */
+    @Excel(name = "负责人")
     private String principal;
 
     /** 类型 */
     @Excel(name = "类型",readConverterExp = "1=主推,2=清货")
     private Integer chargeType;
-
-
 
 }

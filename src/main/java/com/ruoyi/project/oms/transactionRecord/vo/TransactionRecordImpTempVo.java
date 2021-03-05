@@ -1,21 +1,22 @@
 package com.ruoyi.project.oms.transactionRecord.domain;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
-import com.ruoyi.framework.aspectj.lang.annotation.Excel;
-import com.ruoyi.framework.web.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.math.BigDecimal;
-import java.util.Date;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import com.ruoyi.framework.aspectj.lang.annotation.Excel;
+import com.ruoyi.framework.web.domain.BaseEntity;
 
 /**
  * 交易数据对象 oms_transaction_record
- * 
+ *
  * @author Beignet
  * @date 2021-02-23
  */
@@ -24,37 +25,44 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TransactionRecord2 extends BaseEntity
+public class TransactionRecordImpTempVo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
     private Long id;
 
+    /** 账号 */
+    //@Excel(name = "账号")
+    private String account;
+
+    /** 站点 */
+    //@Excel(name = "站点")
+    private String site;
+
     /** date/time */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "date/time", width = 30, dateFormat = "d MMM yyyy HH:mm:ss 'UTC'")
-    @CsvBindByPosition(position = 1)
-    private Date time;
+    @Excel(name = "date/time", width = 30)
+    @CsvBindByPosition(position = 0)
+    private String time;
 
     /** settlement id */
     @Excel(name = "settlement id")
-    @CsvBindByPosition(position = 2)
+    @CsvBindByPosition(position = 1)
     private String settlementId;
 
     /** type */
     @Excel(name = "type")
-    @CsvBindByPosition(position = 3)
+    @CsvBindByPosition(position = 2)
     private String type;
 
     /** order id */
     @Excel(name = "order id")
-    @CsvBindByPosition(position = 4)
+    @CsvBindByPosition(position = 3)
     private String orderId;
 
     /** sku */
     @Excel(name = "sku")
-    @CsvBindByPosition(position = 5)
+    @CsvBindByPosition(position = 4)
     private String sku;
 
     /** description */
@@ -63,107 +71,107 @@ public class TransactionRecord2 extends BaseEntity
 
     /** quantity */
     @Excel(name = "quantity")
-    @CsvBindByPosition(position = 7)
+    @CsvBindByPosition(position = 6)
     private Long quantity;
 
     /** marketplace */
     @Excel(name = "marketplace")
-    @CsvBindByPosition(position = 8)
+    @CsvBindByPosition(position = 7)
     private String marketplace;
 
     /** fulfilment */
     @Excel(name = "fulfilment")
-    @CsvBindByPosition(position = 9)
+    @CsvBindByPosition(position = 8)
     private String fulfilment;
 
     /** order city */
     @Excel(name = "order city")
-    @CsvBindByPosition(position = 10)
+    @CsvBindByPosition(position = 9)
     private String orderCity;
 
     /** order state */
     @Excel(name = "order state")
-    @CsvBindByPosition(position = 11)
+    @CsvBindByPosition(position = 10)
     private String orderState;
 
     /** order postal */
     @Excel(name = "order postal")
-    @CsvBindByPosition(position = 12)
+    @CsvBindByPosition(position = 11)
     private String orderPostal;
 
     /** tax collection model */
     @Excel(name = "tax collection model")
-    @CsvBindByPosition(position = 13)
+    @CsvBindByPosition(position = 12)
     private String taxCollectionModel;
 
     /** product sales */
     @Excel(name = "product sales")
-    @CsvBindByPosition(position = 14)
+    @CsvBindByPosition(position = 13)
     private BigDecimal productSales;
 
     /** product sales tax */
     @Excel(name = "product sales tax")
-    @CsvBindByPosition(position = 15)
+    @CsvBindByPosition(position = 14)
     private BigDecimal productSalesTax;
 
     /** postage credits */
     @Excel(name = "postage credits")
-    @CsvBindByPosition(position = 16)
+    @CsvBindByPosition(position = 15)
     private BigDecimal postageCredits;
 
     /** shipping credits tax */
     @Excel(name = "shipping credits tax")
-    @CsvBindByPosition(position = 17)
+    @CsvBindByPosition(position = 16)
     private BigDecimal shippingCreditsTax;
 
     /** gift wrap credits */
     @Excel(name = "gift wrap credits")
-    @CsvBindByPosition(position = 18)
+    @CsvBindByPosition(position = 17)
     private BigDecimal giftWrapCredits;
 
     /** giftwrap credits tax */
     @Excel(name = "giftwrap credits tax")
-    @CsvBindByPosition(position = 19)
+    @CsvBindByPosition(position = 18)
     private BigDecimal giftwrapCreditsTax;
 
     /** promotional rebates */
     @Excel(name = "promotional rebates")
-    @CsvBindByPosition(position = 20)
+    @CsvBindByPosition(position = 19)
     private BigDecimal promotionalRebates;
 
     /** promotional rebates tax */
     @Excel(name = "promotional rebates tax")
-    @CsvBindByPosition(position = 21)
+    @CsvBindByPosition(position = 20)
     private BigDecimal promotionalRebatesTax;
 
     /** marketplace withheld tax */
     @Excel(name = "marketplace withheld tax")
-    @CsvBindByPosition(position = 22)
+    @CsvBindByPosition(position = 21)
     private BigDecimal marketplaceWithheldTax;
 
     /** selling fees */
     @Excel(name = "selling fees")
-    @CsvBindByPosition(position = 23)
+    @CsvBindByPosition(position = 22)
     private BigDecimal sellingFees;
 
     /** fba fees */
     @Excel(name = "fba fees")
-    @CsvBindByPosition(position = 24)
+    @CsvBindByPosition(position = 23)
     private BigDecimal fbaFees;
 
     /** other transaction fees */
     @Excel(name = "other transaction fees")
-    @CsvBindByPosition(position = 25)
+    @CsvBindByPosition(position = 24)
     private BigDecimal otherTransactionFees;
 
     /** other */
     @Excel(name = "other")
-    @CsvBindByPosition(position = 26)
+    @CsvBindByPosition(position = 25)
     private BigDecimal other;
 
     /** total */
     @Excel(name = "total")
-    @CsvBindByPosition(position = 27)
+    @CsvBindByPosition(position = 26)
     private BigDecimal total;
 
 

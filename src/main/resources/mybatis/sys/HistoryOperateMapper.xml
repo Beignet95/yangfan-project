@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.historyoperate.mapper.HistoryOperateMapper">
+    
+    <resultMap type="HistoryOperate" id="HistoryOperateResult">
+        <result property="id"    column="id"    />
+        <result property="repeatCode"    column="repeat_code"    />
+    </resultMap>
+
+    <sql id="selectHistoryOperateVo">
+        select id, repeat_code from sys_history_operate
+    </sql>
+
+    <select id="selectHistoryOperateList" parameterType="HistoryOperate" resultMap="HistoryOperateResult">
+        <include refid="selectHistoryOperateVo"/>
+        <where>  
+            <if test="repeatCode != null  and repeatCode != ''"> and repeat_code = #{repeatCode}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectHistoryOperateById" parameterType="Long" resultMap="HistoryOperateResult">
+        <include refid="selectHistoryOperateVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertHistoryOperate" parameterType="HistoryOperate" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_history_operate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repeatCode != null and repeatCode != ''">repeat_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repeatCode != null and repeatCode != ''">#{repeatCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHistoryOperate" parameterType="HistoryOperate">
+        update sys_history_operate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repeatCode != null and repeatCode != ''">repeat_code = #{repeatCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHistoryOperateById" parameterType="Long">
+        delete from sys_history_operate where id = #{id}
+    </delete>
+
+    <delete id="deleteHistoryOperateByIds" parameterType="String">
+        delete from sys_history_operate where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectHistoryOperateByOnlyCondition" parameterType="HistoryOperate" resultMap="HistoryOperateResult">
+        <include refid="selectHistoryOperateVo"/>
+        where
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateHistoryOperateByOnlyCondition" parameterType="HistoryOperate">
+        update sys_history_operate
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="repeatCode != null and repeatCode != ''">repeat_code = #{repeatCode},</if>
+                                    </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

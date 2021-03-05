@@ -45,12 +45,16 @@ public class MainText {
         } catch (IOException | CsvValidationException ex) {
             ex.printStackTrace();
         }
+
+        testUTCtime();
     }
-    public  void testUTCtime() throws ParseException {
+    public static void testUTCtime() throws ParseException {
         //字符串转Date
         //String stringDate = "Thu Oct 16 07:13:48 GMT 2015";//
-        String stringDate = "24 Feb 2021 06:18:24 UTC";
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'UTC'",Locale.US);
+        String stringDate = "02.01.2021 01:13:33 UTC";
+        //SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'UTC'",Locale.US);
+        Locale locale = new Locale("FR","");
+        SimpleDateFormat sdf = new SimpleDateFormat("d.MM.yyyy HH:mm:ss 'UTC'",locale);
         Date date =sdf.parse(stringDate);
         System.out.println(date.toString());
     }

@@ -2,6 +2,8 @@ package com.ruoyi.project.system.dict.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -231,6 +233,14 @@ public class DictTypeServiceImpl implements IDictTypeService
             }
         }
         return ztrees;
+    }
+
+    @Override
+    public Map<String, String> getDictDataAsMapByType(String typecode) {
+        List<DictData> dictDataList = this.selectDictDataByType(typecode);
+        Map<String,String> dictMap = dictDataList.stream().collect(Collectors.toMap(DictData::getDictLabel,
+                DictData::getDictValue, (key1, key2) -> key2));
+        return dictMap;
     }
 
     public String transDictName(DictType dictType)

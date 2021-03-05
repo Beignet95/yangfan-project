@@ -212,4 +212,14 @@ public class ${ClassName}Controller extends BaseController
         String message = ${className}Service.import${ClassName}(${businessName}List, updateSupport);
         return AjaxResult.success(message);
     }
+
+    //导出 导入模板
+    @RequiresPermissions("${permissionPrefix}:import")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<${ClassName}> util = new ExcelUtil<${ClassName}>(${ClassName}.class);
+        return util.importTemplateExcel("${functionName}");
+    }
 }

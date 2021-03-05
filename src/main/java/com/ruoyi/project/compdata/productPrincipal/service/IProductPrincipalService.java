@@ -1,6 +1,8 @@
 package com.ruoyi.project.compdata.productPrincipal.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.project.compdata.productPrincipal.domain.ProductPrincipal;
 
 /**
@@ -68,4 +70,10 @@ public interface IProductPrincipalService
     public String importProductPrincipal(List<ProductPrincipal> productPrincipalList, boolean isUpdateSupport);
 
 
+    /**
+     * Map<String, List<ProductPrincipal>>
+     * String key platformSku
+     * @return
+     */
+    Map<String, ProductPrincipal> getProductPrincipalMap();
 }

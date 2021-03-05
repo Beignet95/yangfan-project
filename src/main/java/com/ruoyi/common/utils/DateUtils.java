@@ -221,18 +221,46 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 //        System.out.println("本月为："+curMonthStr+",上月为："+preMonthStr);
     }
 
+    public static Date parseUTCDate4CSV(Object str){
+       return parseUTCDate4CSV(str,null);
+    }
+
     /**
      * 日期型字符串转化为日期 格式
      */
-    public static Date parseUTCDate4CSV(Object str)
+    public static Date parseUTCDate4CSV(Object str,Locale locale)
+    {
+       return parseUTCDate4CSV(str,locale,null);
+    }
+
+    /**
+     * 日期型字符串转化为日期 格式
+     */
+    public static Date parseUTCDate4CSV(Object str,Locale locale,String formatStr)
     {
         if (str == null)
         {
             return null;
         }
+        if(locale==null){
+            locale = Locale.CHINA;
+        }
+        if(locale.getLanguage().toUpperCase().equals("UK")||locale.getLanguage().toUpperCase().equals("US")||locale.getLanguage().toUpperCase().equals("EN")){
+            locale = new Locale("en");
+        }
         try
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'UTC'", Locale.US);
+            //String formatStr = "d MMM yyyy HH:mm:ss 'UTC'";
+            //TODO Feb 1, 2021 12:28:04 AM PST
+            if(StringUtils.isEmpty(formatStr)){
+                formatStr = "d MMM yyyy HH:mm:ss 'UTC'";
+            }
+            //String formatStr = "MMM d',' yyyy HH:mm:ss a 'PST'";
+            if (locale.getLanguage().toLowerCase().equals("de")){
+                //SimpleDateFormat sdf = new SimpleDateFormat("d.MM.yyyy HH:mm:ss 'UTC'",locale);
+                formatStr = "d.MM.yyyy HH:mm:ss 'UTC'";
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat(formatStr, locale);
             Date date =sdf.parse((String) str);
             return date;
         }

@@ -225,12 +225,7 @@
 
     <select id="selectUserByOnlyCondition" parameterType="Finance" resultMap="FinanceResult">
         <include refid="selectFinanceVo"/>
-        <where>
-            <if test="month != null  and month != ''"> and month = #{month}</if>
-            <if test="site != null  and site != ''"> and site = #{site}</if>
-            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
-            <if test="type != null  and type != ''"> and type = #{type}</if>
-        </where>
+        where and month = #{month} and site = #{site} and principal = #{principal} and type = #{type}
     </select>
 
     <select id="selectFinanceAgg" parameterType="Finance" resultType="com.ruoyi.project.compdata.finance.vo.FinanceAnalyVo">
@@ -329,12 +324,7 @@
             <if test="mixedVat2 != null">mixed_vat2 = #{mixedVat2},</if>
             <if test="clearBrokerFee != null">clear_broker_fee = #{clearBrokerFee},</if>
         </trim>
-        <where>
-        <if test="month != null  and month != ''"> and month = #{month}</if>
-        <if test="site != null  and site != ''"> and site = #{site}</if>
-        <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
-        <if test="type != null  and type != ''"> and type = #{type}</if>
-        </where>
+        where and month = #{month} and site = #{site} and principal = #{principal} and type = #{type}
     </update>
 
     <select id="selectDistinctColumn" resultType="java.lang.String" parameterType="java.util.Map">

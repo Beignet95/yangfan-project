@@ -1,6 +1,8 @@
 package com.ruoyi.project.compdata.productPrincipal.controller;
 
 import java.util.List;
+
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -136,5 +138,15 @@ public class ProductPrincipalController extends BaseController
         List<ProductPrincipal> productPrincipalList = util.importExcel(StringUtils.EMPTY,file.getInputStream());
         String message = productPrincipalService.importProductPrincipal(productPrincipalList, updateSupport);
         return AjaxResult.success(message);
+    }
+
+    //导出 导入模板
+    @RequiresPermissions("compdata:productPrincipal:view")
+    @GetMapping("/importTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<ProductPrincipal> util = new ExcelUtil<ProductPrincipal>(ProductPrincipal.class);
+        return util.importTemplateExcel("sku关系表");
     }
 }

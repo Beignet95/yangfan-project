@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.asinMsku.mapper.AsinMskuMapper">
+    
+    <resultMap type="AsinMsku" id="AsinMskuResult">
+        <result property="id"    column="id"    />
+        <result property="asin"    column="asin"    />
+        <result property="msku"    column="msku"    />
+    </resultMap>
+
+    <sql id="selectAsinMskuVo">
+        select id, asin, msku from pms_asin_msku
+    </sql>
+
+    <select id="selectAsinMskuList" parameterType="AsinMsku" resultMap="AsinMskuResult">
+        <include refid="selectAsinMskuVo"/>
+        <where>  
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="msku != null  and msku != ''"> and msku = #{msku}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectAsinMskuById" parameterType="Long" resultMap="AsinMskuResult">
+        <include refid="selectAsinMskuVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAsinMsku" parameterType="AsinMsku" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_asin_msku
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="msku != null and msku != ''">msku,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="msku != null and msku != ''">#{msku},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAsinMsku" parameterType="AsinMsku">
+        update pms_asin_msku
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="msku != null and msku != ''">msku = #{msku},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAsinMskuById" parameterType="Long">
+        delete from pms_asin_msku where id = #{id}
+    </delete>
+
+    <delete id="deleteAsinMskuByIds" parameterType="String">
+        delete from pms_asin_msku where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectAsinMskuByOnlyCondition" parameterType="AsinMsku" resultMap="AsinMskuResult">
+        <include refid="selectAsinMskuVo"/>
+        where msku = #{msku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateAsinMskuByOnlyCondition" parameterType="AsinMsku">
+        update pms_asin_msku
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="msku != null and msku != ''">msku = #{msku},</if>
+        </trim>
+        where msku = #{msku}
+    </update>
+
+
+
+</mapper>

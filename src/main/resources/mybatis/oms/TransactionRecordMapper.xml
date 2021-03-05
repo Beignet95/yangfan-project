@@ -3,9 +3,11 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.oms.transactionRecord.mapper.TransactionRecordMapper">
-    
+
     <resultMap type="TransactionRecord" id="TransactionRecordResult">
         <result property="id"    column="id"    />
+        <result property="account"    column="account"    />
+        <result property="site"    column="site"    />
         <result property="time"    column="time"    />
         <result property="settlementId"    column="settlement_id"    />
         <result property="type"    column="type"    />
@@ -33,6 +35,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="otherTransactionFees"    column="other_transaction_fees"    />
         <result property="other"    column="other"    />
         <result property="total"    column="total"    />
+        <result property="standardSku"    column="standard_sku"    />
+        <result property="spu"    column="spu"    />
+        <result property="principal"    column="principal"    />
+        <result property="chargType"    column="charg_type"    />
+        <result property="spareField"    column="spare_field"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -40,12 +47,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTransactionRecordVo">
-        select id, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, create_by, create_time, update_by, update_time from oms_transaction_record
+        select id, account, site, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, standard_sku, spu, principal, charg_type, spare_field, create_by, create_time, update_by, update_time from oms_transaction_record
     </sql>
 
     <select id="selectTransactionRecordList" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
         <include refid="selectTransactionRecordVo"/>
-        <where>  
+        <where>
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="time != null "> and time = #{time}</if>
             <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -73,19 +82,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherTransactionFees != null "> and other_transaction_fees = #{otherTransactionFees}</if>
             <if test="other != null "> and other = #{other}</if>
             <if test="total != null "> and total = #{total}</if>
+            <if test="standardSku != null  and standardSku != ''"> and standard_sku = #{standardSku}</if>
+            <if test="spu != null  and spu != ''"> and spu = #{spu}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="chargType != null "> and charg_type = #{chargType}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectTransactionRecordById" parameterType="Long" resultMap="TransactionRecordResult">
         <include refid="selectTransactionRecordVo"/>
         where id = #{id}
     </select>
-        
-    <insert id="insertTransactionRecord" parameterType="TransactionRecord">
+
+    <insert id="insertTransactionRecord" parameterType="TransactionRecord" useGeneratedKeys="true" keyProperty="id">
         insert into oms_transaction_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">id,</if>
+            <if test="account != null and account != ''">account,</if>
+            <if test="site != null and site != ''">site,</if>
             <if test="time != null">time,</if>
             <if test="settlementId != null">settlement_id,</if>
             <if test="type != null">type,</if>
@@ -113,13 +128,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherTransactionFees != null">other_transaction_fees,</if>
             <if test="other != null">other,</if>
             <if test="total != null">total,</if>
+            <if test="standardSku != null">standard_sku,</if>
+            <if test="spu != null">spu,</if>
+            <if test="principal != null">principal,</if>
+            <if test="chargType != null">charg_type,</if>
+            <if test="spareField != null">spare_field,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{id},</if>
+            <if test="account != null and account != ''">#{account},</if>
+            <if test="site != null and site != ''">#{site},</if>
             <if test="time != null">#{time},</if>
             <if test="settlementId != null">#{settlementId},</if>
             <if test="type != null">#{type},</if>
@@ -147,16 +168,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherTransactionFees != null">#{otherTransactionFees},</if>
             <if test="other != null">#{other},</if>
             <if test="total != null">#{total},</if>
+            <if test="standardSku != null">#{standardSku},</if>
+            <if test="spu != null">#{spu},</if>
+            <if test="principal != null">#{principal},</if>
+            <if test="chargType != null">#{chargType},</if>
+            <if test="spareField != null">#{spareField},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateTransactionRecord" parameterType="TransactionRecord">
         update oms_transaction_record
         <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
             <if test="time != null">time = #{time},</if>
             <if test="settlementId != null">settlement_id = #{settlementId},</if>
             <if test="type != null">type = #{type},</if>
@@ -184,6 +212,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherTransactionFees != null">other_transaction_fees = #{otherTransactionFees},</if>
             <if test="other != null">other = #{other},</if>
             <if test="total != null">total = #{total},</if>
+            <if test="standardSku != null">standard_sku = #{standardSku},</if>
+            <if test="spu != null">spu = #{spu},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="chargType != null">charg_type = #{chargType},</if>
+            <if test="spareField != null">spare_field = #{spareField},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -197,7 +230,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteTransactionRecordByIds" parameterType="String">
-        delete from oms_transaction_record where id in 
+        delete from oms_transaction_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -206,13 +239,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
     <select id="selectTransactionRecordByOnlyCondition" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
         <include refid="selectTransactionRecordVo"/>
-        where time=#{time} and order_id=#{orderId} and sku=#{sku}
+        where time=#{time} and order_id=#{orderId} and sku=#{sku} and total=#{total}
     </select>
 
     <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
     <update id="updateTransactionRecordByOnlyCondition" parameterType="TransactionRecord">
         update oms_transaction_record
         <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
             <if test="time != null">time = #{time},</if>
             <if test="settlementId != null">settlement_id = #{settlementId},</if>
             <if test="type != null">type = #{type},</if>
@@ -240,12 +275,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherTransactionFees != null">other_transaction_fees = #{otherTransactionFees},</if>
             <if test="other != null">other = #{other},</if>
             <if test="total != null">total = #{total},</if>
+            <if test="standardSku != null">standard_sku = #{standardSku},</if>
+            <if test="spu != null">spu = #{spu},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="chargType != null">charg_type = #{chargType},</if>
+            <if test="spareField != null">spare_field = #{spareField},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
-        where time=#{time} and order_id=#{orderId} and sku=#{sku}
+        where time=#{time} and order_id=#{orderId} and sku=#{sku} and total=#{total}
     </update>
+
+    <select id="selectTransactionAnaly" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
+        SELECT principal,type,spu,standard_sku,site,account,
+sum(quantity) as quantity,
+sum(product_sales) as product_sales,
+SUM(product_sales_tax) as product_sales_tax,
+SUM(postage_credits) as postage_credits,
+SUM(shipping_credits_tax) as shipping_credits_tax,
+SUM(gift_wrap_credits) as gift_wrap_credits,
+SUM(giftwrap_credits_tax) as giftwrap_credits_tax,
+SUM(promotional_rebates) as promotional_rebates,
+sum(promotional_rebates_tax) as promotional_rebates_tax,
+SUM(marketplace_withheld_tax) as marketplace_withheld_tax,
+SUM(selling_fees) as selling_fees,
+SUM(fba_fees) as fba_fees,
+sum(other_transaction_fees) as other_transaction_fees,
+SUM(other) as other,
+SUM(total) as total
+from oms_transaction_record
+        <where>
+            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+        </where>
+GROUP BY principal,type,spu,standard_sku,site,account
+
+    </select>
+
 
 </mapper>

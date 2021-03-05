@@ -75,6 +75,7 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
+                importTemplateUrl: prefix + "/importTemplate",
                 modalName: "产品负责人映射",
                 columns: [{
                     checkbox: true
@@ -83,6 +84,10 @@
                     field: 'id',
                     title: '主键',
                     visible: false
+                },
+                {
+                    field: 'platformSku',
+                    title: 'SKU'
                 },
                 {
                     field: 'sku',
@@ -94,7 +99,7 @@
                 },
                 {
                     field: 'principal',
-                    title: '广告负责人'
+                    title: '负责人'
                 },
                 {
                     field: 'chargeType',

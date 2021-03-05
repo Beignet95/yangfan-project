@@ -106,6 +106,7 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 importUrl: prefix + "/importData",
+                importTemplateUrl: prefix + "/importTemplate",
                 modalName: "${functionName}",
                 columns: [{
                     checkbox: true

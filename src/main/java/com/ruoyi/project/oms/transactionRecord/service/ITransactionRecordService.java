@@ -2,6 +2,8 @@ package com.ruoyi.project.oms.transactionRecord.service;
 
 import java.util.List;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
+import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
+import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
 
 /**
  * 交易数据Service接口
@@ -65,7 +67,15 @@ public interface ITransactionRecordService
      * @param ids 需要导入的数据List
      * @return 结果
      */
-    public String importTransactionRecord(List<TransactionRecord> transactionRecordList, boolean isUpdateSupport);
+    public String importTransactionRecord(List<TransactionRecordImpTempVo> impTempVos,
+                                          boolean isUpdateSupport, String account, String site,String spare);
 
+    /**
+     * 查询交易总数据汇列表
+     *
+     * @param transactionRecord 交易汇总数据
+     * @return 交易总数据集合
+     */
+    public List<FinanceVo> selectTransactionAnaly(TransactionRecord transactionRecord);
 
 }

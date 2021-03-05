@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.productinfoReation.mapper.ProductinfoRelationMapper">
+    
+    <resultMap type="ProductinfoRelation" id="ProductinfoRelationResult">
+        <result property="id"    column="id"    />
+        <result property="asin"    column="asin"    />
+        <result property="principal"    column="principal"    />
+        <result property="type"    column="type"    />
+        <result property="sku"    column="sku"    />
+    </resultMap>
+
+    <sql id="selectProductinfoRelationVo">
+        select id, asin, principal, type, sku from pms_productinfo_relation
+    </sql>
+
+    <select id="selectProductinfoRelationList" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">
+        <include refid="selectProductinfoRelationVo"/>
+        <where>  
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectProductinfoRelationById" parameterType="Long" resultMap="ProductinfoRelationResult">
+        <include refid="selectProductinfoRelationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProductinfoRelation" parameterType="ProductinfoRelation" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_productinfo_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="principal != null and principal != ''">principal,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="sku != null and sku != ''">sku,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="principal != null and principal != ''">#{principal},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="sku != null and sku != ''">#{sku},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProductinfoRelation" parameterType="ProductinfoRelation">
+        update pms_productinfo_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProductinfoRelationById" parameterType="Long">
+        delete from pms_productinfo_relation where id = #{id}
+    </delete>
+
+    <delete id="deleteProductinfoRelationByIds" parameterType="String">
+        delete from pms_productinfo_relation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectProductinfoRelationByOnlyCondition" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">
+        <include refid="selectProductinfoRelationVo"/>
+        where asin = #{asin} and sku = #{sku}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateProductinfoRelationByOnlyCondition" parameterType="ProductinfoRelation">
+        update pms_productinfo_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
+        </trim>
+        where asin = #{asin} and sku = #{sku}
+    </update>
+
+    <select id="selectMskuProductinfoRelationVoList" resultType="MskuProductinfoRelationVo">
+        SELECT pr.sku,pr.principal,pr.type,am.msku from pms_productinfo_relation pr left JOIN pms_asin_msku am on pr.asin=am.asin
+    </select>
+
+</mapper>

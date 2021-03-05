@@ -81,8 +81,14 @@
                     visible: false
                 },
                 {
+                    field: 'site',
+                    title: '站点',
+                    class: 'W60'
+                },
+                {
                     field: 'time',
-                    title: 'date/time'
+                    title: 'date/time',
+                    class: 'W80'
                 },
                 {
                     field: 'settlementId',
@@ -207,9 +213,18 @@
 <script id="importTpl" type="text/template">
     <form enctype="multipart/form-data" class="mt20 mb10">
         <div class="col-xs-offset-1">
+            <input type="text" name="account" th:value="H4-EU" style="width: 50px;">
+            站点：<select name="site">
+                <option value="">--请选择--</option>
+                <option value="H4-UK">H4-UK</option>
+                <option value="H4-DE">H4-DE</option>
+                <option value="H4-FR">H4-FR</option>
+                <option value="H4-IT">H4-IT</option>
+                <option value="H4-ES">H4-ES</option>
+            </select>
             <input type="file" id="file" name="file"/>
             <div class="mt10 pt5">
-                <input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+                <input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的数据
                 &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
             </div>
             <font color="red" class="pull-left mt10">

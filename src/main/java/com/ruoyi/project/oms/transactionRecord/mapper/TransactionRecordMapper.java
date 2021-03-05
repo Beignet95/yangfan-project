@@ -74,4 +74,6 @@ public interface TransactionRecordMapper
      * @return ${subTable.functionName}对象
      */
     public TransactionRecord selectTransactionRecordByOnlyCondition(TransactionRecord transactionRecord);
+
+    public List<TransactionRecord> selectTransactionAnaly(TransactionRecord transactionRecord);
 }

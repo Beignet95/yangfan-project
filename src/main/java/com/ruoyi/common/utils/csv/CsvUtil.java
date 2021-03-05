@@ -4,6 +4,7 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import com.opencsv.bean.CsvBindByPosition;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -46,26 +47,25 @@ public class CsvUtil<T> {
         InputStreamReader is = new InputStreamReader(inputStream);
         CSVReader csvReader = new CSVReader(is);
         String[] cols;
-
-        String line = "";
-        String everyLine = "";
         int rowNum=0;
         Map<Integer, Field> fieldsMap = new HashMap<Integer, Field>();
-        List<String> allString = new ArrayList<>();
+
         while ((cols = csvReader.readNext()) != null)  //读取到的内容给line变量
         {
             if(noImportRowNum==rowNum) {
-                //TODO 设置列
                 // 定义一个map用于存放excel列的序号和field.
-                Map<String, Integer> cellMap = new HashMap<String, Integer>();
+                //Map<String, Integer> cellMap = new HashMap<String, Integer>();
+                Map<Integer, String> cellMap = new HashMap<Integer, String>();
                 // 获取表头
                 for (int i = 0; i < cols.length; i++) {
                     String cell = cols[i];
                     if (StringUtils.isNotNull(cell)) {
                         String value = cell;
-                        cellMap.put(value, i);
+                        //cellMap.put(value, i);
+                        cellMap.put(i, value);
                     } else {
-                        cellMap.put(null, i);
+                        //cellMap.put(null, i);
+                        cellMap.put(i, null);
                     }
                 }
                 // 有数据时才处理 得到类的所有field.
@@ -73,15 +73,25 @@ public class CsvUtil<T> {
                 // 定义一个map用于存放列的序号和field.
                 for (int col = 0; col < allFields.length; col++) {
                     Field field = allFields[col];
-                    Excel attr = field.getAnnotation(Excel.class);
-                    if (attr != null && (attr.type() == Excel.Type.ALL || attr.type() == type)) {
-                        // 设置类的私有字段属性可访问.
+                    //Excel attr = field.getAnnotation(Excel.class);
+//                    if (attr != null && (attr.type() == Excel.Type.ALL || attr.type() == type)) {
+//                        // 设置类的私有字段属性可访问.
+//                        field.setAccessible(true);
+//                        Integer column = cellMap.get(attr.name());
+//                        if (column != null) {
+//                            fieldsMap.put(column, field);
+//                        }
+//                    }
+                    CsvBindByPosition position = field.getAnnotation(CsvBindByPosition.class);
+                    if(position!=null){
                         field.setAccessible(true);
-                        Integer column = cellMap.get(attr.name());
+                        Integer column = position.position();
                         if (column != null) {
                             fieldsMap.put(column, field);
                         }
+
                     }
+
                 }
             }
 
@@ -93,11 +103,6 @@ public class CsvUtil<T> {
                     for (Map.Entry<Integer, Field> entry : fieldsMap.entrySet())
                     {
                         Object val = cols[entry.getKey()];
-                        // 如果不存在实例则新建.
-                        if(val.equals("202-6325398-8700301")){
-                            System.out.println(val);
-
-                        }
                         entity = (entity == null ? clazz.newInstance() : entity);
                         // 从map中得到对应列的field.
                         Field field = fieldsMap.get(entry.getKey());
@@ -139,14 +144,17 @@ public class CsvUtil<T> {
                         }
                         else if (Double.TYPE == fieldType || Double.class == fieldType)
                         {
+                            val = val.toString().replace(",",".");
                             val = Convert.toDouble(val);
                         }
                         else if (Float.TYPE == fieldType || Float.class == fieldType)
                         {
+                            val = val.toString().replace(",",".");
                             val = Convert.toFloat(val);
                         }
                         else if (BigDecimal.class == fieldType)
                         {
+                            val = val.toString().replace(",",".");
                             val = Convert.toBigDecimal(val);
                         }
                         else if (Date.class == fieldType)
@@ -182,17 +190,11 @@ public class CsvUtil<T> {
                             }
                             ReflectUtils.invokeSetter(entity, propertyName, val);
                         }
-
                     }
                     list.add(entity);
-
                 }
-            System.out.println(everyLine);
-            allString.add(everyLine);
             rowNum++;
             }
-
-        System.out.println("csv表格中所有行数："+allString.size());
         return  list;
     }
 }

@@ -4,6 +4,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.exception.BusinessException;
@@ -165,5 +169,12 @@ public class ProductPrincipalServiceImpl implements IProductPrincipalService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Override
+    public Map<String, ProductPrincipal> getProductPrincipalMap() {
+        List<ProductPrincipal> productPrincipalList = this.selectProductPrincipalList(null);
+        Map<String, ProductPrincipal> maps = productPrincipalList.stream().collect(Collectors.toMap(ProductPrincipal::getPlatformSku, Function.identity()));
+        return maps;
     }
 }

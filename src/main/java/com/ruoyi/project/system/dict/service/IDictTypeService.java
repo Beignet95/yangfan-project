@@ -1,6 +1,8 @@
 package com.ruoyi.project.system.dict.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.framework.web.domain.Ztree;
 import com.ruoyi.project.system.dict.domain.DictData;
 import com.ruoyi.project.system.dict.domain.DictType;
@@ -96,4 +98,13 @@ public interface IDictTypeService
      * @return 所有字典类型
      */
     public List<Ztree> selectDictTree(DictType dictType);
+
+    /**
+     * 获取字段map
+     * 标签为key
+     * 值为value
+     * @param typecode 字典类型
+     * @return
+     */
+    Map<String,String> getDictDataAsMapByType(String typecode);
 }

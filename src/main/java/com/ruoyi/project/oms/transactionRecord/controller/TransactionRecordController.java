@@ -6,7 +6,13 @@ import java.util.List;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
+import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.csv.CsvUtil;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
+import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
+import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
+import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,6 +53,13 @@ public class TransactionRecordController extends BaseController
     public String transactionRecord()
     {
         return prefix + "/transactionRecord";
+    }
+
+    @RequiresPermissions("oms:transactionRecord:view")
+    @GetMapping("/US")
+    public String transactionRecordOfUS()
+    {
+        return prefix + "/transactionRecord-us";
     }
 
     /**
@@ -136,11 +149,61 @@ public class TransactionRecordController extends BaseController
     @RequiresPermissions("oms:transactionRecord:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport,String account,String site,String spareField) throws Exception
     {
-        CsvUtil<TransactionRecord> util = new CsvUtil<TransactionRecord>(TransactionRecord.class);
-        List<TransactionRecord> transactionRecordList = util.importCvs(file.getInputStream(),7);
-        String message = transactionRecordService.importTransactionRecord(transactionRecordList, updateSupport);
+
+        if (StringUtils.isEmpty(account)||StringUtils.isEmpty(site)) throw new BusinessException("账号和站点都不能为空！");
+
+        if(site.equals("H4-DE")){
+
+        }
+
+        CsvUtil<TransactionRecordImpTempVo> util = new CsvUtil<TransactionRecordImpTempVo>(TransactionRecordImpTempVo.class);
+        List<TransactionRecordImpTempVo> impTempVos = util.importCvs(file.getInputStream(),7);
+        String message = transactionRecordService.importTransactionRecord(impTempVos, updateSupport,account,site,spareField);
         return AjaxResult.success(message);
     }
+
+    /**
+     * 交易记录分析页面
+     */
+    @GetMapping("/analysis")
+    @RequiresPermissions("oms:transactionRecord:analysis")
+    public String analysis(ModelMap mmap)
+    {
+        return prefix + "/analysis";
+    }
+
+    /**
+     * 获取交易记录分析数据
+     * @param advertisingAnalyParamVo
+     * @param mmap
+     * @return
+     */
+    @PostMapping("/getAnalysisData")
+    @RequiresPermissions("oms:transactionRecord:analysis")
+    @ResponseBody
+    public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap)
+    {
+        List<FinanceVo> financeVos = transactionRecordService.selectTransactionAnaly(transactionRecord);
+        return getDataTable(financeVos);
+    }
+
+
+    //
+    /**
+     * 导出交易数据列表
+     */
+    @RequiresPermissions("oms:transactionRecord:export")
+    @Log(title = "交易数据", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportGatherData")
+    @ResponseBody
+    public AjaxResult exportGatherData(TransactionRecord transactionRecord)
+    {
+        List<FinanceVo> list = transactionRecordService.selectTransactionAnaly(transactionRecord);
+        ExcelUtil<FinanceVo> util = new ExcelUtil<FinanceVo>(FinanceVo.class);
+        return util.exportExcel(list, "财务汇总数据");
+    }
+
+
 }
