@@ -166,4 +166,12 @@ public class HistoryOperateServiceImpl implements IHistoryOperateService
         }
         return successMsg.toString();
     }
+
+    @Override
+    public boolean checkIsExitHistoryOperate(String hocode) {
+        HistoryOperate ho = new HistoryOperate();
+        ho.setRepeatCode(hocode);
+        List<HistoryOperate> hoList = historyOperateMapper.selectHistoryOperateList(ho);
+        return hoList.size()>0;
+    }
 }

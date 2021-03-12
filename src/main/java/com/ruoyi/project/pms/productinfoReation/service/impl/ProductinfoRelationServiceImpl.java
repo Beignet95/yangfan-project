@@ -3,6 +3,9 @@ package com.ruoyi.project.pms.productinfoReation.service.impl;
 import java.util.List;
 
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.String2MapVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
@@ -173,9 +176,43 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
 
     @Override
     public Map<String, MskuProductinfoRelationVo> getSkuMskuMap() {
-        List<MskuProductinfoRelationVo> mskuProductinfoRelationVos = mskuProductinfoRelationVos = productinfoRelationMapper.selectMskuProductinfoRelationVoList();
-        Map<String,MskuProductinfoRelationVo> map = mskuProductinfoRelationVos.stream().collect(Collectors.toMap(
+        List<MskuProductinfoRelationVo> mskuProductinfoRelationVos = productinfoRelationMapper.selectMskuProductinfoRelationVoList();
+        Map<String, MskuProductinfoRelationVo> map = mskuProductinfoRelationVos.stream().collect(Collectors.toMap(
                 MskuProductinfoRelationVo::getMsku, Function.identity(),(entity1, entity2) -> entity1));
+        return map;
+    }
+
+    @Override
+    public Map<String, String> getPasinSkuMap() {
+        List<String2MapVo> skuPasinList = productinfoRelationMapper.selectPasinSkuList();
+        Map<String,String> map  = skuPasinList.stream().collect(Collectors.toMap(String2MapVo::getValue1, String2MapVo::getValue2,(entity1, entity2) -> entity1));
+        return map;
+    }
+
+    @Override
+    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList() {
+        return productinfoRelationMapper.selectMskuProductinfoRelationVoList();
+    }
+
+    @Override
+    public Map<String, PasinProductinfoRelationVo> getPasinProductinfoRelationVoMap() {
+        List<PasinProductinfoRelationVo> skuPasinList = productinfoRelationMapper.selectPasinProductinfoRelationVoList();
+        Map<String,PasinProductinfoRelationVo> map  = skuPasinList.stream().collect(Collectors.toMap(PasinProductinfoRelationVo::getParentAsin,Function.identity(),(entity1, entity2) -> entity1));
+        return map;
+    }
+
+    @Override
+    public Map<String, ProductinfoRelationVo> getCouponProductinfoRelationVoMap() {
+        List<ProductinfoRelationVo> couponProductinfoRelationVoList = productinfoRelationMapper.selectCouponProductinfoRelationVo();
+        Map<String, ProductinfoRelationVo> map= couponProductinfoRelationVoList.stream().collect(Collectors.toMap(ProductinfoRelationVo::getGeneralField,Function.identity(),(entity1, entity2) -> entity1));
+        return map;
+    }
+
+    @Override
+    public Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap() {
+        List<MskuProductinfoRelationVo> voList  = this.selectMskuProductinfoRelationVoList();
+        Map<String, MskuProductinfoRelationVo> map =
+                voList.stream().collect(Collectors.toMap(MskuProductinfoRelationVo::getMsku,Function.identity(),(entity1, entity2) -> entity1));
         return map;
     }
 }

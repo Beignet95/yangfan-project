@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
 
 /**
  * 产品信息映射Service接口
@@ -72,4 +74,25 @@ public interface IProductinfoRelationService
 
     public Map<String, MskuProductinfoRelationVo> getSkuMskuMap();
 
+    /**
+     * 获取标准SKU与父ASIN的关系Map
+     * @return
+     */
+    public Map<String, String> getPasinSkuMap();
+
+    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList();
+
+    /**
+     * 获取父ASIN与商品的关系Map
+     * @return
+     */
+    Map<String, PasinProductinfoRelationVo> getPasinProductinfoRelationVoMap();
+
+    /**
+     * 获取Coupon与商品的关系Map
+     * @return
+     */
+    Map<String, ProductinfoRelationVo> getCouponProductinfoRelationVoMap();
+
+    Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap();
 }

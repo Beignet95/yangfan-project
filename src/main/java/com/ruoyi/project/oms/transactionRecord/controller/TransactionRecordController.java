@@ -62,6 +62,13 @@ public class TransactionRecordController extends BaseController
         return prefix + "/transactionRecord-us";
     }
 
+    @RequiresPermissions("oms:transactionRecord:view")
+    @GetMapping("/truckRecord")
+    public String truckRecord()
+    {
+        return prefix + "/transactionRecord-truckrecord";
+    }
+
     /**
      * 查询交易数据列表
      */
@@ -203,6 +210,17 @@ public class TransactionRecordController extends BaseController
         List<FinanceVo> list = transactionRecordService.selectTransactionAnaly(transactionRecord);
         ExcelUtil<FinanceVo> util = new ExcelUtil<FinanceVo>(FinanceVo.class);
         return util.exportExcel(list, "财务汇总数据");
+    }
+
+    /**
+     * 查询卡车详细
+     */
+    @RequiresPermissions("oms:transactionRecord:view")
+    @GetMapping("/detail/{truckRecordId}")
+    public String detail(@PathVariable("truckRecordId") Long truckRecordId, ModelMap mmap)
+    {
+        mmap.put("truckRecordId", truckRecordId);
+        return "lms/truckService/truckService";
     }
 
 

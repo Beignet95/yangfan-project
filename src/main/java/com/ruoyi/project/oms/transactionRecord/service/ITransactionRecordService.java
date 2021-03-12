@@ -1,9 +1,13 @@
 package com.ruoyi.project.oms.transactionRecord.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
 import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
 
 /**
  * 交易数据Service接口
@@ -77,5 +81,21 @@ public interface ITransactionRecordService
      * @return 交易总数据集合
      */
     public List<FinanceVo> selectTransactionAnaly(TransactionRecord transactionRecord);
+
+    /**
+     * @param removalType 移除类型
+     * @return Map<String, BigDecimal>
+     *     key 标准SKU
+     *     value 移除费
+     */
+    public Map<String, BigDecimal> getSkuRemovalFeeMap(String removalType);
+
+    /**
+     * @param
+     * @return Map<String, BigDecimal>
+     *     key 标准SKU
+     *     value 退款服务费
+     */
+    public Map<String, BigDecimal> getSkuRefundServiceFeeMap(TransactionRecord transactionRecord);
 
 }

@@ -5,18 +5,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.common.utils.Arith;
 import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
 import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
-import com.ruoyi.project.compdata.productPrincipal.domain.ProductPrincipal;
 import com.ruoyi.project.compdata.productPrincipal.service.IProductPrincipalService;
+import com.ruoyi.project.compdata.truckService.domain.TruckService;
+import com.ruoyi.project.compdata.truckService.service.ITruckServiceService;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
 import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
-import com.ruoyi.project.pms.badcommodity.domain.BadCommodity;
-import com.ruoyi.project.pms.badcommodity.domain.BadCommodityRepeat;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuRefundServiceFee;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
 import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
-import com.ruoyi.project.system.dict.domain.DictData;
+import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.StringBigDecimalMapVo;
+import com.ruoyi.project.pms.skuCoupon.service.ISkuCouponService;
+import com.ruoyi.project.sms.storageRecord.service.IStorageRecordService;
 import com.ruoyi.project.system.dict.service.IDictTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +35,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.exception.BusinessException;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.project.oms.transactionRecord.mapper.TransactionRecordMapper;
@@ -65,6 +70,15 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
 
     @Autowired
     private IProductinfoRelationService productinfoRelationService;
+
+    @Autowired
+    private ITruckServiceService truckServiceService;
+
+    @Autowired
+    private IStorageRecordService storageRecordService;
+
+    @Autowired
+    private ISkuCouponService skuCouponService;
 
     /**
      * 查询交易数据
@@ -162,7 +176,10 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         String history_operate_code = "";
         HistoryOperate ho = new HistoryOperate();
 
-        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap =  productinfoRelationService.getSkuMskuMap();
+        Map relationMap = getAndCheackProductionRelation(impTempVos);
+        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap = (Map<String, MskuProductinfoRelationVo>) relationMap.get("mskuProductinfoRelationVoMap");
+        Map<String, String> conponSkuMap = (Map<String, String>) relationMap.get("couponSkuMap");
+        Map<String, String> pasinSkuMap = (Map<String, String>) relationMap.get("pasinSkuMap");
 
         successNum = impTempVos.size();
 
@@ -173,9 +190,6 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             BeanUtils.copyProperties(impTempVo,transactionRecord);
 
             if(StringUtils.isNotEmpty(impTempVo.getSku())){
-                if(mskuProductinfoRelationVoMap.get(impTempVo.getSku())==null){
-                    throw new BusinessException("SKU与标准SKU的映射不全，请检查！缺失msku为："+impTempVo.getSku()+"的映射");
-                }
                 MskuProductinfoRelationVo mprMap = mskuProductinfoRelationVoMap.get(impTempVo.getSku());
                 transactionRecord.setStandardSku(mprMap.getSku());//标准sku
                 transactionRecord.setSpu(mprMap.getType());//型号
@@ -183,10 +197,26 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                 //transactionRecord.setChargType(mprMap.getChargeType());
             }
 
+            String description = transactionRecord.getDescription();
+            if(StringUtils.isNotEmpty(description)&&description.startsWith("Save")&&StringUtils.isEmpty(transactionRecord.getStandardSku())){
+                String standardSku = conponSkuMap.get(description);
+                //skuProductinfoRelationVoMap.get(standardSku);
+                transactionRecord.setStandardSku(standardSku);
+            }
+
+            if(StringUtils.isNotEmpty(description)&&description.startsWith("Early")&&StringUtils.isEmpty(transactionRecord.getStandardSku())){
+                String[] strs = description.split(" ");
+                if(strs.length>0){
+                    String pasin = strs[strs.length-1];
+                    String standardSku = pasinSkuMap.get(pasin);
+                    transactionRecord.setStandardSku(standardSku);
+                }
+            }
+
             String language = "";
             String timeFormatStr = null;
             try{
-                if("US".equals(site)){
+                if(site.endsWith("US")){
                     language = "en";
                     timeFormatStr = "MMM d',' yyyy HH:mm:ss a 'PST'";
                     transactionRecord.setSpareField(spareField);
@@ -201,7 +231,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             Date time = DateUtils.parseUTCDate4CSV(impTempVo.getTime(), locale,timeFormatStr);//因为欧洲各国时间不一样，所以在此层处理
             transactionRecord.setTime(time);
             if(StringUtils.isEmpty(history_operate_code)){
-                history_operate_code = HISTORY_OPERARE_PREFIX+":"+site+":"+time.getMonth()+spareField;
+                String monthStr = DateUtils.parseDateToStr("yyyy-MM",time);
+                history_operate_code = HISTORY_OPERARE_PREFIX+":"+site+":"+monthStr+spareField;
                 ho.setRepeatCode(history_operate_code);
                 List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
                 if(hoRes.size()>0) throw new BusinessException(time.getMonth()+"月份，站点为"+site+"的数据导入操作已被锁定！你可能已经导入过数据了！");
@@ -272,27 +303,71 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         return successMsg.toString();
     }
 
+    private Map getAndCheackProductionRelation(List<TransactionRecordImpTempVo> impTempVos) {
+        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap = productinfoRelationService.getMskuProductinfoRelationVoMap();
+        Map<String, String> couponSkuMap = skuCouponService.getCouponSkuMap();
+        Map<String, String> pasinSkuMap = productinfoRelationService.getPasinSkuMap();
+
+        StringBuilder mskuProductinfoRelationWarnMsg = new StringBuilder();
+        StringBuilder conponSkuWarnMsg = new StringBuilder();
+        StringBuilder pasinSkuWarnMsg = new StringBuilder();
+        for (TransactionRecordImpTempVo impTempVo : impTempVos) {
+            String msku = impTempVo.getSku();
+            String description = impTempVo.getDescription();
+            if (StringUtils.isNotEmpty(msku)) {
+                if (!mskuProductinfoRelationVoMap.containsKey(msku)) mskuProductinfoRelationWarnMsg.append("msku " + msku + "缺失产品信息关系！<br/>");
+            }
+            if (StringUtils.isEmpty(msku)) {
+                if (description.startsWith("Early")) {
+                    String[] strs = description.split(" ");
+                    if (strs.length > 0) {
+                        String pasin = strs[strs.length - 1];
+                        if (!pasinSkuMap.containsKey(pasin)) conponSkuWarnMsg.append("捆绑ASIN：" + pasin + "缺少相关映射关系！<br/>");
+                    }
+                }
+                if (description.startsWith("Save")) {
+                    if (!couponSkuMap.containsKey(description))
+                        conponSkuWarnMsg.append("Coupon Title：" + description + "缺少相关映射关系！<br/>");
+                }
+            }
+        }
+        StringBuilder warnMsg = mskuProductinfoRelationWarnMsg.append(conponSkuWarnMsg).append(pasinSkuWarnMsg);
+        if (warnMsg.length()!=0) {
+            throw new BusinessException(warnMsg.toString());
+        } else {
+            Map map = new HashMap();
+            map.put("mskuProductinfoRelationVoMap",mskuProductinfoRelationVoMap);
+            map.put("couponSkuMap",couponSkuMap);
+            map.put("pasinSkuMap",pasinSkuMap);
+            return map;
+        }
+    }
+
     @Override
     public List<FinanceVo> selectTransactionAnaly(TransactionRecord transactionRecord) {
 
         String preMonthStr = (String)transactionRecord.getParams().get("month");
+        Date time = null;
         if(StringUtils.isNotEmpty(preMonthStr)){
             SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月");
             Calendar c = Calendar.getInstance();
-            Date date = null;
             try {
                 // 注意格式需要与上面一致，不然会出现异常
-                date = format.parse(preMonthStr);
+                time = format.parse(preMonthStr);
                 c.set(Calendar.DAY_OF_MONTH, 0);
                 Date endTime = c.getTime();//最后一天
                 Map params = new HashMap();
-                params.put("startTime",date);
+                params.put("startTime",time);
                 params.put("endTime",endTime);
                 transactionRecord.setParams(params);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+
+        StringBuilder warnMsg = new StringBuilder();
+        //获取卡车服务记录map
+        Map<String,BigDecimal> truckFeeMap =  this.getTruckServiceFeeMap(transactionRecord);
 
         transactionRecord.setFulfilment("Amazon");
         List<TransactionRecord> amazonRecordGather = transactionRecordMapper.selectTransactionAnaly(transactionRecord);
@@ -340,9 +415,68 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         if(feeAdjustmentRecords!=null&&feeAdjustmentRecords.size()>0){
             feeAdjustmentRecordMap = feeAdjustmentRecords.stream().collect(Collectors.toMap(k->k.getSite()+k.getStandardSku(), Function.identity()));
         }
+        //从卡车服务模块  获取卡车服务费
+        Map<String,Long> tructServiceFeeMap = truckServiceService.getTructServiceFeeMap(null);
+
+        //从仓储模块 获取每个标准SKU对应的总仓储费
+        Map<String,BigDecimal> skuStorageFeeMap = storageRecordService.getSkuStorageFeeMapByMonth(time);
+        //标准SKU对应退货移除费Map
+        Map<String,BigDecimal> returnSkuRemovalFeeMap = this.getSkuRemovalFeeMap("Return");
+        //标准SKU对应破损移除费Map
+        Map<String,BigDecimal> disposalSkuRemovalFeeMap = this.getSkuRemovalFeeMap("Disposal");
+        //总数量
+        transactionRecord.setDescription(null);
+        transactionRecord.setFulfilment(null);
+        transactionRecord.setType("Order");
+        TransactionRecord orderRecordGather = transactionRecordMapper.selectGatherRecord(transactionRecord);
+        Long totalQuantity = 0l;
+        BigDecimal totalSales = new BigDecimal(0);
+        if(orderRecordGather!=null){
+            totalQuantity = orderRecordGather.getQuantity();
+            totalSales = orderRecordGather.getProductSales();
+        }
+        //TODO amazonRecordGather
+        amazonRecordGatherMap.get("amazonRecordGatherMap");
+
+        //早期 数据
+        Map<String,BigDecimal> skuEarlyFeeMap = this.getSkuEarlyFeeMap(transactionRecord,warnMsg);
+
+        //手续费数据
+        Map<String,BigDecimal> skuCouponFeeMap = this.getSkuCouponFeeMap(transactionRecord);
 
         List<TransactionRecord> orderRecordAnalys = amazonRecordGatherMap.get("Order");
         if(orderRecordAnalys==null) return new ArrayList<>();
+
+        //TODO 总店租(待确定）
+        transactionRecord.setDescription("Subscription");
+        transactionRecord.setType(null);
+        transactionRecord.getParams().remove("descriptionCompareSign");
+        TransactionRecord shopRentRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
+        BigDecimal perSkuShopRent = (shopRentRecord!=null)?shopRentRecord.getOther():new BigDecimal(0);
+
+        //其他服务费 Manual Processing Fee
+        transactionRecord.setDescription("Manual Processing Fee");
+        TransactionRecord otherTransactionGaterRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
+        BigDecimal totalOtherServiceFee = (otherTransactionGaterRecord!=null)
+                ? otherTransactionGaterRecord.getOtherTransactionFees():new BigDecimal(0);
+
+        //TODO 平台调整费 FBA Inventory Reimbursement - General Adjustment
+        transactionRecord.setDescription("FBA Inventory Reimbursement - General Adjustment");
+        TransactionRecord platformAdjustmentRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
+        BigDecimal platformAdjustmentFee = (platformAdjustmentRecord!=null)
+                ? platformAdjustmentRecord.getOther():new BigDecimal(0);
+
+        //平台退款服务费
+        transactionRecord.setDescription(null);
+        Map<String,BigDecimal> skuRefundServiceFeeMap = this.getSkuRefundServiceFeeMap(transactionRecord);
+
+        //sku平台服务调整费
+        transactionRecord.setType("Adjustment");
+        transactionRecord.setDescription("FBA Inventory Reimbursement - General Adjustment");
+        Map<String,BigDecimal> skuAdjustmentFeeMap = this.getSkuAdjustmentFeeMap(transactionRecord);
+
+        //TODO 账号平台服务调整费
+        transactionRecord.setDescription("");
 
         List<FinanceVo> financeVos = new ArrayList<>();
         for(TransactionRecord orderRecord:orderRecordAnalys){
@@ -451,11 +585,100 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             financeVo.setOtherTransactionFeeRefunds(otherTransactionFeeRefunds);
             financeVo.setOtherTransactionFee(otherTransactionFee);
 
+            //仓储费（0.79%）
+            //BigDecimal fbaInventoryAndInboundServicesFees = new BigDecimal(0);
+            BigDecimal truckServiceFee = (truckFeeMap.get(standardSku)!=null)?truckFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setTruckServiceFee(truckServiceFee);
+            BigDecimal storageFee = (skuStorageFeeMap.get(standardSku)!=null)?skuStorageFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setStorageFee(storageFee.multiply(new BigDecimal(-1)));//整数取负
+            BigDecimal returnRemovalFee = (returnSkuRemovalFeeMap.get(standardSku)!=null)?returnSkuRemovalFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setReturnRemovalFee(returnRemovalFee);
+            BigDecimal disposalRemovalFee = (disposalSkuRemovalFeeMap.get(standardSku)!=null)?disposalSkuRemovalFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setDisposalRemovalFee(disposalRemovalFee);
+            BigDecimal fbaInventoryAndInboundServicesFees = truckServiceFee.add(storageFee).add(returnRemovalFee).add(disposalRemovalFee);
+            financeVo.setFbaInventoryAndInboundServicesFees(fbaInventoryAndInboundServicesFees);
 
+            //TODO 运输标签费
 
+            //平台服务费 totalQuantity
+            financeVo.setShopRent(perSkuShopRent);
+            BigDecimal earlyFee = (skuEarlyFeeMap.get(standardSku)!=null)?skuEarlyFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setEarlyFee(earlyFee);
             financeVos.add(financeVo);
+            BigDecimal otherServiceFee = orderRecord.getProductSales().divide(totalSales,4).multiply(totalOtherServiceFee);
+            financeVo.setOtherServiceFee(otherServiceFee);
+            BigDecimal refundServiceFee = (skuRefundServiceFeeMap.get(standardSku)!=null)?skuRefundServiceFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setRefundAdministrationFees(refundServiceFee);
+            BigDecimal adjustments = (skuAdjustmentFeeMap.get(standardSku)!=null)?skuAdjustmentFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setAdjustments(adjustments);
+            BigDecimal couponFee =  (skuCouponFeeMap.get(standardSku)!=null)?skuCouponFeeMap.get(standardSku):new BigDecimal(0);
+            financeVo.setCouponFee(couponFee);
         }
         return financeVos;
+    }
+
+    private Map<String, BigDecimal> getSkuCouponFeeMap(TransactionRecord transactionRecord) {
+        transactionRecord.setDescription("Save%");
+        //transactionRecordMapper.selectSkuEarlyFeeGatherList 适用与获取手续费
+        List<SkuFee> skuCouponFeeList = transactionRecordMapper.selectSkuEarlyFeeGatherList(transactionRecord);
+        Map<String, BigDecimal> map = skuCouponFeeList.stream().collect(Collectors.toMap(SkuFee::getSku,SkuFee::getFee));
+        return map;
+    }
+
+    private Map<String,BigDecimal> getSkuAdjustmentFeeMap(TransactionRecord transactionRecord) {
+        List<SkuFee> skuAdjustmentFeeList = transactionRecordMapper.selectSkuAdjustmentFeeList(transactionRecord);
+        Map<String,BigDecimal> map = skuAdjustmentFeeList.stream().collect(Collectors.toMap(SkuFee::getSku,SkuFee::getFee));
+        return map;
+    }
+
+    private Map<String, BigDecimal> getSkuEarlyFeeMap(TransactionRecord transactionRecord,StringBuilder warnMsg) {
+        transactionRecord.setDescription("Early%");
+        transactionRecord.setFulfilment(null);
+        transactionRecord.setType(null);
+        Map params = transactionRecord.getParams();
+        params.put("descriptionCompareSign","like");
+        transactionRecord.setParams(params);
+        List<SkuFee> earlyRecordList = transactionRecordMapper.selectSkuEarlyFeeGatherList(transactionRecord);
+        Map<String, BigDecimal> map = earlyRecordList.stream().collect(Collectors.toMap(SkuFee::getSku,SkuFee::getFee));
+        return map;
+    }
+
+    @Override
+    public Map<String, BigDecimal> getSkuRemovalFeeMap(String removalType) {
+        List<SkuRemovalFee> skuRemovalFeeList = transactionRecordMapper.selectSkuRemovalFeeList(removalType);
+        Map<String,BigDecimal> skuRemovalFeeMap = skuRemovalFeeList.stream().collect(Collectors.toMap(SkuRemovalFee::getSku,SkuRemovalFee::getRemovalFee));
+        return skuRemovalFeeMap;
+    }
+
+    @Override
+    public Map<String, BigDecimal> getSkuRefundServiceFeeMap(TransactionRecord transactionRecord) {
+        List<SkuRefundServiceFee> skuRefundServiceFeeList = transactionRecordMapper.selectSkuRefundServiceFeeList(transactionRecord);
+        Map<String, BigDecimal> map = skuRefundServiceFeeList.stream().collect(Collectors.toMap(SkuRefundServiceFee::getSku,SkuRefundServiceFee::getRefundServiceFee));
+        return map;
+    }
+
+    private Map<String,BigDecimal> getTruckServiceFeeMap(TransactionRecord transactionRecord) {
+        transactionRecord.setDescription("FBA Amazon-Partnered Carrier Shipment Fee");
+        List<TransactionRecord> truckFeeRecords = this.selectTransactionRecordList(transactionRecord);
+        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap =  productinfoRelationService.getSkuMskuMap();
+        Map<String,BigDecimal> truckFeeMap = new HashMap();
+        for (TransactionRecord record:truckFeeRecords){
+            //获取卡车上货物的数量
+            TruckService tsParam = new TruckService();
+            tsParam.setTruckRecordId(record.getId());
+            List<TruckService> tsList = truckServiceService.selectTruckServiceList(tsParam);
+            Long totalNum = 0l;
+            for(TruckService ts:tsList){
+                totalNum+=ts.getShipped();
+            }
+            for(TruckService ts:tsList){
+                Double rate = Arith.div(ts.getShipped().doubleValue(),totalNum.doubleValue());
+                BigDecimal tFee = new BigDecimal(Arith.mul(rate,record.getOther().doubleValue()));
+                String standardSku = mskuProductinfoRelationVoMap.get(ts.getMsku()).getSku();
+                truckFeeMap.put(standardSku,tFee);
+            }
+        }
+        return truckFeeMap;
     }
 
     private TransactionRecordImpTempVo mergeRepeatRecord(Map<String,List<TransactionRecordImpTempVo>> recordGroupsMap,String orderId){

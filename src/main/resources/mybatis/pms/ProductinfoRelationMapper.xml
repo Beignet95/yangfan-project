@@ -92,4 +92,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT pr.sku,pr.principal,pr.type,am.msku from pms_productinfo_relation pr left JOIN pms_asin_msku am on pr.asin=am.asin
     </select>
 
+    <select id="selectPasinProductinfoRelationVoList" resultType="PasinProductinfoRelationVo">
+        select ap.parent_asin as parentAsin,pr.principal,pr.type,pr.sku from pms_asin_pasin ap INNER JOIN pms_productinfo_relation pr ON ap.asin=pr.asin
+    </select>
+
+    <select id="selectCouponProductinfoRelationVo" resultType="ProductinfoRelationVo">
+        select sc.coupon_title as generalField,pr.principal,pr.type,pr.sku from pms_sku_coupon sc INNER JOIN pms_productinfo_relation pr ON sc.sku=pr.sku
+    </select>
+
+
+    <select id="selectPasinSkuList" resultType="String2MapVo">
+        select ap.parent_asin as value1,pr.sku as value2 from pms_asin_pasin ap INNER JOIN pms_productinfo_relation pr ON ap.asin=pr.asin
+    </select>
+
 </mapper>

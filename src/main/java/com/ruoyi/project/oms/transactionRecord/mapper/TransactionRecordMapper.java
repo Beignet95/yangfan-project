@@ -1,7 +1,13 @@
 package com.ruoyi.project.oms.transactionRecord.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuRefundServiceFee;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
 
 /**
  * 交易数据Mapper接口
@@ -76,4 +82,22 @@ public interface TransactionRecordMapper
     public TransactionRecord selectTransactionRecordByOnlyCondition(TransactionRecord transactionRecord);
 
     public List<TransactionRecord> selectTransactionAnaly(TransactionRecord transactionRecord);
+
+    /**
+     * @param removalType 移除类型
+     * @return 标准SKU对应的移除费
+     */
+    public List<SkuRemovalFee> selectSkuRemovalFeeList(String removalType);
+
+    public TransactionRecord selectGatherRecord(TransactionRecord transactionRecord);
+
+    /**
+     * @param
+     * @return 标准SKU对应的退款服务费
+     */
+    public List<SkuRefundServiceFee> selectSkuRefundServiceFeeList(TransactionRecord transactionRecord);
+
+    List<SkuFee> selectSkuAdjustmentFeeList(TransactionRecord transactionRecord);
+
+    List<SkuFee> selectSkuEarlyFeeGatherList(TransactionRecord transactionRecord);
 }

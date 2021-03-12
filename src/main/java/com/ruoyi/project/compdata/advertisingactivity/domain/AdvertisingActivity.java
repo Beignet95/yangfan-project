@@ -38,6 +38,7 @@ public class AdvertisingActivity extends BaseEntity
     private String sku;
 
     /** 店铺 */
+    @Excel(name = "店铺")
     private String storeCode;
 
     /** 广告专员 */
@@ -48,12 +49,7 @@ public class AdvertisingActivity extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
             .append("activity", getActivity())
-            .append("asin", getAsin())
-            .append("sku", getSku())
-            .append("storeCode", getStoreCode())
-            .append("commissioner", getCommissioner())
             .toString();
     }
 }

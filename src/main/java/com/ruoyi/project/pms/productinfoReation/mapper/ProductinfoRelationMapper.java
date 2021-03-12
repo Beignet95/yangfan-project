@@ -3,6 +3,9 @@ package com.ruoyi.project.pms.productinfoReation.mapper;
 import java.util.List;
 
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
+import com.ruoyi.project.pms.productinfoReation.vo.String2MapVo;
 
 /**
  * 产品信息映射Mapper接口
@@ -81,4 +84,24 @@ public interface ProductinfoRelationMapper
      * @return
      */
     public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList();
+
+    /**
+     * 获取标准sku与父asin的关系
+     * @return
+     */
+    public List<String2MapVo> selectSkuPasinList();
+
+    /**
+     * 获取标准sku与产品关联信息（ProductRelationInfo）的关系
+     * @return
+     */
+    List<String2MapVo> selectPasinSkuList();
+
+    /**
+     * 获取coupon与产品关联信息（ProductRelationInfo）的关系
+     * @return
+     */
+    List<ProductinfoRelationVo> selectCouponProductinfoRelationVo();
+
+    List<PasinProductinfoRelationVo> selectPasinProductinfoRelationVoList();
 }

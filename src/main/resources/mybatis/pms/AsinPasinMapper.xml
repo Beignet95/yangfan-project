@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.asinPasin.mapper.AsinPasinMapper">
+    
+    <resultMap type="AsinPasin" id="AsinPasinResult">
+        <result property="id"    column="id"    />
+        <result property="asin"    column="asin"    />
+        <result property="parentAsin"    column="parent_asin"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAsinPasinVo">
+        select id, asin, parent_asin, create_by, create_time, update_by, update_time from pms_asin_pasin
+    </sql>
+
+    <select id="selectAsinPasinList" parameterType="AsinPasin" resultMap="AsinPasinResult">
+        <include refid="selectAsinPasinVo"/>
+        <where>  
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="parentAsin != null  and parentAsin != ''"> and parent_asin = #{parentAsin}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectAsinPasinById" parameterType="Long" resultMap="AsinPasinResult">
+        <include refid="selectAsinPasinVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAsinPasin" parameterType="AsinPasin" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_asin_pasin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="parentAsin != null and parentAsin != ''">parent_asin,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="parentAsin != null and parentAsin != ''">#{parentAsin},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAsinPasin" parameterType="AsinPasin">
+        update pms_asin_pasin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="parentAsin != null and parentAsin != ''">parent_asin = #{parentAsin},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAsinPasinById" parameterType="Long">
+        delete from pms_asin_pasin where id = #{id}
+    </delete>
+
+    <delete id="deleteAsinPasinByIds" parameterType="String">
+        delete from pms_asin_pasin where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectAsinPasinByOnlyCondition" parameterType="AsinPasin" resultMap="AsinPasinResult">
+        <include refid="selectAsinPasinVo"/>
+        where asin = #{asin} and parent_asin = #{parentAsin}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateAsinPasinByOnlyCondition" parameterType="AsinPasin">
+        update pms_asin_pasin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="parentAsin != null and parentAsin != ''">parent_asin = #{parentAsin},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where asin = #{asin} and parent_asin = #{parentAsin}
+    </update>
+
+</mapper>

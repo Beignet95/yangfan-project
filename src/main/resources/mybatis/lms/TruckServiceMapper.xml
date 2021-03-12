@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.compdata.truckService.mapper.TruckServiceMapper">
+
+    <resultMap type="TruckService" id="TruckServiceResult">
+        <result property="id"    column="id"    />
+        <result property="truckRecordId"    column="truck_record_id"    />
+        <result property="account"    column="account"    />
+        <result property="site"    column="site"    />
+        <result property="month"    column="month"    />
+        <result property="msku"    column="msku"    />
+        <result property="asin"    column="asin"    />
+        <result property="shipped"    column="shipped"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTruckServiceVo">
+        select id, truck_record_id, account, site, month, msku, asin, shipped, create_by, create_time, update_by, update_time from lms_truck_service
+    </sql>
+
+    <select id="selectTruckServiceList" parameterType="TruckService" resultMap="TruckServiceResult">
+        <include refid="selectTruckServiceVo"/>
+        <where>
+            <if test="truckRecordId != null "> and truck_record_id = #{truckRecordId}</if>
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="msku != null  and msku != ''"> and msku = #{msku}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="shipped != null "> and shipped = #{shipped}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectTruckServiceById" parameterType="Long" resultMap="TruckServiceResult">
+        <include refid="selectTruckServiceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTruckService" parameterType="TruckService" useGeneratedKeys="true" keyProperty="id">
+        insert into lms_truck_service
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="truckRecordId != null">truck_record_id,</if>
+            <if test="account != null and account != ''">account,</if>
+            <if test="site != null and site != ''">site,</if>
+            <if test="month != null">month,</if>
+            <if test="msku != null and msku != ''">msku,</if>
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="shipped != null">shipped,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="truckRecordId != null">#{truckRecordId},</if>
+            <if test="account != null and account != ''">#{account},</if>
+            <if test="site != null and site != ''">#{site},</if>
+            <if test="month != null">#{month},</if>
+            <if test="msku != null and msku != ''">#{msku},</if>
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="shipped != null">#{shipped},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTruckService" parameterType="TruckService">
+        update lms_truck_service
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="truckRecordId != null">truck_record_id = #{truckRecordId},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="msku != null and msku != ''">msku = #{msku},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="shipped != null">shipped = #{shipped},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTruckServiceById" parameterType="Long">
+        delete from lms_truck_service where id = #{id}
+    </delete>
+
+    <delete id="deleteTruckServiceByIds" parameterType="String">
+        delete from lms_truck_service where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectTruckServiceByOnlyCondition" parameterType="TruckService" resultMap="TruckServiceResult">
+        <include refid="selectTruckServiceVo"/>
+        where `month`=#{month} and site=#{site} and msku=#{msku} and asin=#{asin}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateTruckServiceByOnlyCondition" parameterType="TruckService">
+        update lms_truck_service
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="msku != null and msku != ''">msku = #{msku},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="shipped != null and shipped != ''">shipped = #{shipped},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where `month`=#{month} and site=#{site} and msku=#{msku} and asin=#{asin}
+    </update>
+
+</mapper>

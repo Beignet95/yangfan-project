@@ -215,6 +215,22 @@ public class FinanceVo extends BaseEntity
     @Excel(name = "仓储费（0.79%）")
     private BigDecimal fbaInventoryAndInboundServicesFees;
 
+    /** 卡车服务费 */
+    @Excel(name = "卡车服务费")
+    private BigDecimal truckServiceFee;
+
+    /** 仓储费 */
+    @Excel(name = "仓储费")
+    private BigDecimal storageFee;
+
+    /** 退货移除费 */
+    @Excel(name = "退货移除费")
+    private BigDecimal returnRemovalFee;
+
+    /** 破损库存销毁手续费 */
+    @Excel(name = "破损库存销毁手续费")
+    private BigDecimal disposalRemovalFee;
+
     /** 运输标签费 */
     @Excel(name = "运输标签费")
     private BigDecimal shippingLabelFee;
@@ -238,6 +254,33 @@ public class FinanceVo extends BaseEntity
     /** 平台服务费 */
     @Excel(name = "平台服务费")
     private BigDecimal serviceFees;
+
+    //店租-(Service Fee-Subscription 按照表格中标准sku数目摊分）
+    /** 店租 */
+    @Excel(name = "店租")
+    private BigDecimal shopRent;
+
+    /** BD */
+    @Excel(name = "BD")
+    private BigDecimal bdDealFee;
+
+    /** LD */
+    @Excel(name = "LD")
+    private BigDecimal ldDealFee;
+
+    /** 早期 */
+    @Excel(name = "早期")
+    private BigDecimal earlyFee;
+
+    /** 手续费 */
+    @Excel(name = "手续费")
+    private BigDecimal couponFee;
+
+    /** 其他服务费 */
+    @Excel(name = "其他服务费")
+    private BigDecimal otherServiceFee;
+
+
 
     //30. Refund administration fees
     /** 平台退款服务费 */

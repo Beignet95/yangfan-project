@@ -17,7 +17,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为80
-  port: 80
+  port: 81
   servlet:
     # 应用的访问路径
     context-path: /
@@ -150,5 +150,5 @@ gen:
   # 自动去除表前缀，默认是true
   autoRemovePre: true
   # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
-  tablePrefix: cpd_,pms_,oms_,sys_
+  tablePrefix: cpd_,pms_,oms_,sys_,lms_,sms_
 

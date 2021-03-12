@@ -159,7 +159,11 @@ public class CsvUtil<T> {
                         }
                         else if (Date.class == fieldType)
                         {
-                            if (val instanceof String)
+                            String dateFormat = field.getAnnotation(Excel.class).dateFormat();
+                            if(StringUtils.isNotEmpty(dateFormat)){
+                                val = DateUtils.parseDate(val);
+                            }
+                            else if (val instanceof String)
                             {
                                 val = DateUtils.parseUTCDate4CSV(val);
                             }

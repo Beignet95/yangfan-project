@@ -232,7 +232,7 @@ public class ExcelUtil<T>
                     }
                 }
             }
-            for (int i = noImportRowNum+1; i < rows; i++)
+            for (int i = noImportRowNum+1; i <= rows; i++)
             {
                 // 从第2行开始取数据,默认第一行是表头.
                 Row row = sheet.getRow(i);
@@ -357,6 +357,11 @@ public class ExcelUtil<T>
         this.init(null, sheetName, Type.IMPORT);
         return exportExcel();
     }
+    public AjaxResult importTemplateExcel(String sheetName,int noUseRowNum)
+    {
+        this.init(null, sheetName, Type.IMPORT);
+        return exportExcel(noUseRowNum);
+    }
 
     /**
      * 对list数据源将其里面的数据导入到excel表单
@@ -376,6 +381,69 @@ public class ExcelUtil<T>
 
                 // 产生一行
                 Row row = sheet.createRow(0);
+                int column = 0;
+                // 写入各个字段的列头名称
+                for (Object[] os : fields)
+                {
+                    Excel excel = (Excel) os[1];
+                    this.createCell(excel, row, column++);
+                }
+                if (Type.EXPORT.equals(type))
+                {
+                    fillExcelData(index, row);
+                    addStatisticsRow();
+                }
+            }
+            String filename = encodingFilename(sheetName);
+            out = new FileOutputStream(getAbsoluteFile(filename));
+            wb.write(out);
+            return AjaxResult.success(filename);
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new BusinessException("导出Excel失败，请联系网站管理员！");
+        }
+        finally
+        {
+            if (wb != null)
+            {
+                try
+                {
+                    wb.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+            if (out != null)
+            {
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public AjaxResult exportExcel(int noUseRowNum)
+    {
+        OutputStream out = null;
+        try
+        {
+            // 取出一共有多少个sheet.
+            double sheetNo = Math.ceil(list.size() / sheetSize);
+            for (int index = 0; index <= sheetNo; index++)
+            {
+                createSheet(sheetNo, index);
+
+                // 产生一行
+                Row row = sheet.createRow(noUseRowNum);
                 int column = 0;
                 // 写入各个字段的列头名称
                 for (Object[] os : fields)
@@ -1078,7 +1146,7 @@ public class ExcelUtil<T>
 
                         if("[$€-2]\\ #,##0.00;[Red][$€-2]\\ \\-#,##0.00".equals(formatString)) return val = "€"+ val;
 
-                        if ((Double) val % 1 > 0)
+                        if ((Double) val % 1 != 0)
                         {
                             val = new BigDecimal(val.toString());
                         }

@@ -4,47 +4,53 @@
     <th:block th:include="include :: header('修改广告活动映射')" />
 </head>
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-advertisingactivity-edit" th:object="${advertisingActivity}">
-            <input name="id" th:field="*{id}" type="hidden">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">广告活动：</label>
-                <div class="col-sm-8">
-                    <input name="activity" th:field="*{activity}" class="form-control" type="text">
-                </div>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-activity-edit" th:object="${advertisingActivity}">
+        <input name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">广告活动：</label>
+            <div class="col-sm-8">
+                <input name="activity" th:field="*{activity}" class="form-control" type="text" required>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">ASIN：</label>
-                <div class="col-sm-8">
-                    <input name="asin" th:field="*{asin}" class="form-control" type="text">
-                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">ASIN：</label>
+            <div class="col-sm-8">
+                <input name="asin" th:field="*{asin}" class="form-control" type="text" required>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">标准SKU：</label>
-                <div class="col-sm-8">
-                    <input name="sku" th:field="*{sku}" class="form-control" type="text">
-                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">标准SKU：</label>
+            <div class="col-sm-8">
+                <input name="sku" th:field="*{sku}" class="form-control" type="text" required>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">广告专员：</label>
-                <div class="col-sm-8">
-                    <input name="commissioner" th:field="*{commissioner}" class="form-control" type="text">
-                </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">店铺：</label>
+            <div class="col-sm-8">
+                <input name="storeCode" th:field="*{storeCode}" class="form-control" type="text" required>
             </div>
-        </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-        var prefix = ctx + "compdata/advertisingactivity";
-        $("#form-advertisingactivity-edit").validate({
-            focusCleanup: true
-        });
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">广告专员：</label>
+            <div class="col-sm-8">
+                <input name="commissioner" th:field="*{commissioner}" class="form-control" type="text" required>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = ctx + "compdata/activity";
+    $("#form-activity-edit").validate({
+        focusCleanup: true
+    });
 
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-advertisingactivity-edit').serialize());
-            }
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-activity-edit').serialize());
         }
-    </script>
+    }
+</script>
 </body>
 </html>

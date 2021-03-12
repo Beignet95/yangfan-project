@@ -67,7 +67,7 @@ public class TransactionRecord extends BaseEntity
     private String sku;
 
     /** description */
-    //@Excel(name = "description")
+    @Excel(name = "description")
     private String description;
 
     /** quantity */

@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.compdata.advertisingactivity.mapper.AdvertisingActivityMapper">
-    
+
     <resultMap type="AdvertisingActivity" id="AdvertisingActivityResult">
         <result property="id"    column="id"    />
         <result property="activity"    column="activity"    />
@@ -11,54 +11,71 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sku"    column="sku"    />
         <result property="storeCode"    column="store_code"    />
         <result property="commissioner"    column="commissioner"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
     </resultMap>
 
     <sql id="selectAdvertisingActivityVo">
-        select id, activity, asin, sku, store_code, commissioner from cpd_advertising_activity
+        select id, activity, asin, sku, store_code, commissioner, create_by, create_time, update_by, update_time from cpd_advertising_activity
     </sql>
 
     <select id="selectAdvertisingActivityList" parameterType="AdvertisingActivity" resultMap="AdvertisingActivityResult">
         <include refid="selectAdvertisingActivityVo"/>
-        <where>  
-            <if test="activity != null  and activity != ''"> and activity like concat('%', #{activity}, '%')</if>
+        <where>
+            <if test="activity != null  and activity != ''"> and activity = #{activity}</if>
             <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="storeCode != null  and storeCode != ''"> and store_code = #{storeCode}</if>
             <if test="commissioner != null  and commissioner != ''"> and commissioner = #{commissioner}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectAdvertisingActivityById" parameterType="Long" resultMap="AdvertisingActivityResult">
         <include refid="selectAdvertisingActivityVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertAdvertisingActivity" parameterType="AdvertisingActivity" useGeneratedKeys="true" keyProperty="id">
         insert into cpd_advertising_activity
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="activity != null">activity,</if>
-            <if test="asin != null">asin,</if>
-            <if test="sku != null">sku,</if>
-            <if test="storeCode != null">store_code,</if>
-            <if test="commissioner != null">commissioner,</if>
-         </trim>
+            <if test="activity != null and activity != ''">activity,</if>
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="sku != null and sku != ''">sku,</if>
+            <if test="storeCode != null and storeCode != ''">store_code,</if>
+            <if test="commissioner != null and commissioner != ''">commissioner,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="activity != null">#{activity},</if>
-            <if test="asin != null">#{asin},</if>
-            <if test="sku != null">#{sku},</if>
-            <if test="storeCode != null">#{storeCode},</if>
-            <if test="commissioner != null">#{commissioner},</if>
-         </trim>
+            <if test="activity != null and activity != ''">#{activity},</if>
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="sku != null and sku != ''">#{sku},</if>
+            <if test="storeCode != null and storeCode != ''">#{storeCode},</if>
+            <if test="commissioner != null and commissioner != ''">#{commissioner},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
     </insert>
 
     <update id="updateAdvertisingActivity" parameterType="AdvertisingActivity">
         update cpd_advertising_activity
         <trim prefix="SET" suffixOverrides=",">
-            <if test="activity != null">activity = #{activity},</if>
-            <if test="asin != null">asin = #{asin},</if>
-            <if test="sku != null">sku = #{sku},</if>
-            <if test="storeCode != null">store_code = #{storeCode},</if>
-            <if test="commissioner != null">commissioner = #{commissioner},</if>
+            <if test="activity != null and activity != ''">activity = #{activity},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="storeCode != null and storeCode != ''">store_code = #{storeCode},</if>
+            <if test="commissioner != null and commissioner != ''">commissioner = #{commissioner},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>
@@ -68,13 +85,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAdvertisingActivityByIds" parameterType="String">
-        delete from cpd_advertising_activity where id in 
+        delete from cpd_advertising_activity where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-
-
 
     <select id="selectAdvertisingActivityByOnlyCondition" parameterType="AdvertisingActivity" resultMap="AdvertisingActivityResult">
         <include refid="selectAdvertisingActivityVo"/>
@@ -90,6 +105,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sku != null">sku = #{sku},</if>
             <if test="storeCode != null">store_code = #{storeCode},</if>
             <if test="commissioner != null">commissioner = #{commissioner},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
             where activity=#{activity}
     </update>

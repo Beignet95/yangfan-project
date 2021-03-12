@@ -67,5 +67,7 @@ public interface IHistoryOperateService
      */
     public String importHistoryOperate(List<HistoryOperate> historyOperateList, boolean isUpdateSupport);
 
+    public boolean checkIsExitHistoryOperate(String hocode);
+
 
 }

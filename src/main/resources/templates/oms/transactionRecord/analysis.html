@@ -19,12 +19,21 @@
                                 <label>站点：</label>
                                 <select class="form-control" style="width: 100px;display: inline;" name="site">
                                     <option value="">所有</option>
-                                    <option value="H4-UK">英国</option>
-                                    <option value="H4-DE">德国</option>
-                                    <option value="H4-FR">法国</option>
-                                    <option value="H4-IT">意大利</option>
-                                    <option value="H4-ES">西班牙</option>
-                                    <option value="US">美国</option>
+                                    <option value="H4-UK">H4-UK</option>
+                                    <option value="H4-DE">H4-DE</option>
+                                    <option value="H4-FR">H4-FR</option>
+                                    <option value="H4-IT">H4-IT</option>
+                                    <option value="H4-ES">H4-ES</option>
+                                    <option value="AGS-US">AGS-US</option>
+                                    <option value="AGS-CA">AGS-CA</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>类型：</label>
+                                <select class="form-control" style="width: 100px;display: inline;" name="spareField">
+                                    <option value="">所有</option>
+                                    <option value="IO">IO</option>
+                                    <option value="SO">SO</option>
                                 </select>
                             </li>
                             <li>
@@ -104,7 +113,7 @@
                 {
                     field: 'site',
                     title: '站点',
-                    class: 'W60'
+                    class: 'W80'
                 },
                 {
                     field: 'principal',
@@ -243,11 +252,11 @@
                         title: '仓储费（0.79%）'
                     },
                     {
-                        field: '***',
+                        field: 'truckServiceFee',
                         title: '卡车服务费'
                     },
                     {
-                        field: '***',
+                        field: 'storageFee',
                         title: '仓储费'
                     },
                     {
@@ -255,11 +264,11 @@
                         title: '长期仓储费'
                     },
                     {
-                        field: '***',
+                        field: 'returnRemovalFee',
                         title: '退货移除费'
                     },
                     {
-                        field: '***',
+                        field: 'disposalRemovalFee',
                         title: '破损库存销毁手续费'
                     },
                     {
@@ -283,7 +292,7 @@
                         title: '平台服务费'
                     },
                     {
-                        field: '***',
+                        field: 'shopRent',
                         title: '店租'
                     },
                     {
@@ -295,24 +304,24 @@
                         title: 'LD'
                     },
                     {
-                        field: '***',
+                        field: 'earlyFee',
                         title: '早期'
                     },
                     {
-                        field: '***',
+                        field: 'couponFee',
                         title: 'coupon\n' +
                             '手续费'
                     },
                     {
-                        field: '***',
+                        field: 'otherServiceFee',
                         title: '其他服务费'
                     },
                     {
-                        field: '***',
+                        field: 'refundAdministrationFees',
                         title: '平台退款服务费'
                     },
                     {
-                        field: '***',
+                        field: 'adjustments',
                         title: '平台服务调整费'
                     },
                     {

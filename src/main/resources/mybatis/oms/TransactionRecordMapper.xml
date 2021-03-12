@@ -60,7 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
-            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign==''"> and description = #{description}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign!=''"> and description like #{description}</if>
             <if test="quantity != null "> and quantity = #{quantity}</if>
             <if test="marketplace != null  and marketplace != ''"> and marketplace = #{marketplace}</if>
             <if test="fulfilment != null  and fulfilment != ''"> and fulfilment = #{fulfilment}</if>
@@ -313,10 +314,78 @@ from oms_transaction_record
             <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
         </where>
 GROUP BY principal,type,spu,standard_sku,site,account
 
     </select>
 
+    <select id="selectGatherRecord" parameterType="TransactionRecord" resultType="TransactionRecord">
+        SELECT sum(quantity) as quantity,
+               sum(product_sales) as productSales,
+               sum(other_transaction_fees) as otherTransactionFees
+               from oms_transaction_record
+        <where>
+            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="description != null">and description = #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        </where>
+    </select>
+
+    <select id="selectSkuRemovalFeeList" parameterType="String" resultType="SkuRemovalFee">
+        select pr.sku,sum(tr.other) as removalFee from pms_productinfo_relation pr LEFT JOIN pms_asin_msku am on pr.asin=am.asin LEFT JOIN oms_removal_detail rd on am.msku=rd.sku
+    LEFT JOIN oms_transaction_record tr ON tr.order_id=rd.order_id
+    where tr.order_id is not null and rd.order_type=#{orderType} group BY pr.sku
+    </select>
+
+    <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="SkuRefundServiceFee">
+        select tr.standard_sku as sku,SUM(rs.amount) as refundServiceFee from oms_transaction_record tr INNER JOIN oms_refund_servicefee rs on tr.order_id=rs.order_id
+        where type='Refund' and rs.payment_detail='Refund Administration Fee'
+            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="description != null and description != ''">and description = #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        GROUP BY tr.standard_sku
+    </select>
+
+
+    <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="SkuFee">
+        select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
+        <where>
+            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="description != null">and description = #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        </where>
+        GROUP BY standard_sku
+    </select>
+
+    <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="SkuFee">
+        select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
+        <where>
+            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="description != null  and description != ''"> and description like #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        </where>
+        GROUP BY standard_sku
+    </select>
 
 </mapper>

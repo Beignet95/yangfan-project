@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = RuoYiApplication.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 class IProductinfoRelationServiceTest {

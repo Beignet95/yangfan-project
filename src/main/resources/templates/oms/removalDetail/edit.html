@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改移除明细')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-removalDetail-edit" th:object="${removalDetail}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">order-id：</label>
+                <div class="col-sm-8">
+                    <input name="orderId" th:field="*{orderId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">order-type：</label>
+                <div class="col-sm-8">
+                    <input name="orderType" th:field="*{orderType}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">sku：</label>
+                <div class="col-sm-8">
+                    <input name="sku" th:field="*{sku}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">removal-fee：</label>
+                <div class="col-sm-8">
+                    <input name="removalFee" th:field="*{removalFee}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">currency：</label>
+                <div class="col-sm-8">
+                    <input name="currency" th:field="*{currency}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "oms/removalDetail";
+        $("#form-removalDetail-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-removalDetail-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

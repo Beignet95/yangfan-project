@@ -66,7 +66,8 @@ public class TransactionRecordImpTempVo extends BaseEntity
     private String sku;
 
     /** description */
-    //@Excel(name = "description")
+    @Excel(name = "description")
+    @CsvBindByPosition(position = 5)
     private String description;
 
     /** quantity */

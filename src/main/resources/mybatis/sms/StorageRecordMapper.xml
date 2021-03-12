@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.sms.storageRecord.mapper.StorageRecordMapper">
+    
+    <resultMap type="StorageRecord" id="StorageRecordResult">
+        <result property="id"    column="id"    />
+        <result property="month"    column="month"    />
+        <result property="account"    column="account"    />
+        <result property="countryCode"    column="country_code"    />
+        <result property="asin"    column="asin"    />
+        <result property="itemVolume"    column="item_volume"    />
+        <result property="currency"    column="currency"    />
+        <result property="storageFee"    column="storage_fee"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectStorageRecordVo">
+        select id, month, account, country_code, asin, item_volume, currency, storage_fee, create_by, create_time, update_by, update_time from sms_storage_record
+    </sql>
+
+    <select id="selectStorageRecordList" parameterType="StorageRecord" resultMap="StorageRecordResult">
+        <include refid="selectStorageRecordVo"/>
+        <where>  
+            <if test="month != null "> and month = #{month}</if>
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+            <if test="itemVolume != null "> and item_volume = #{itemVolume}</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="storageFee != null "> and storage_fee = #{storageFee}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectStorageRecordById" parameterType="Long" resultMap="StorageRecordResult">
+        <include refid="selectStorageRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertStorageRecord" parameterType="StorageRecord">
+        insert into sms_storage_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="month != null">month,</if>
+            <if test="account != null and account != ''">account,</if>
+            <if test="countryCode != null and countryCode != ''">country_code,</if>
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="itemVolume != null">item_volume,</if>
+            <if test="currency != null and currency != ''">currency,</if>
+            <if test="storageFee != null">storage_fee,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="month != null">#{month},</if>
+            <if test="account != null and account != ''">#{account},</if>
+            <if test="countryCode != null and countryCode != ''">#{countryCode},</if>
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="itemVolume != null">#{itemVolume},</if>
+            <if test="currency != null and currency != ''">#{currency},</if>
+            <if test="storageFee != null">#{storageFee},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStorageRecord" parameterType="StorageRecord">
+        update sms_storage_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="month != null">month = #{month},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="countryCode != null and countryCode != ''">country_code = #{countryCode},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="itemVolume != null">item_volume = #{itemVolume},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteStorageRecordById" parameterType="Long">
+        delete from sms_storage_record where id = #{id}
+    </delete>
+
+    <delete id="deleteStorageRecordByIds" parameterType="String">
+        delete from sms_storage_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectStorageRecordByOnlyCondition" parameterType="StorageRecord" resultMap="StorageRecordResult">
+        <include refid="selectStorageRecordVo"/>
+        where month = #{month} and account = #{account} and country_code = #{countryCode} and asin = #{asin}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateStorageRecordByOnlyCondition" parameterType="StorageRecord">
+        update sms_storage_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="month != null">month = #{month},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="countryCode != null and countryCode != ''">country_code = #{countryCode},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="itemVolume != null">item_volume = #{itemVolume},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where month = #{month} and account = #{account} and country_code = #{countryCode} and asin = #{asin}
+    </update>
+
+
+
+    <select id="selectSkuStorageFeeByMonth" parameterType="java.util.Date" resultType="SkuStorageFee">
+        select pr.sku,sum(sr.storage_fee) as storageFee from pms_productinfo_relation pr LEFT JOIN sms_storage_record sr on pr.asin=sr.asin
+        where sr.storage_fee is not null  group by pr.sku
+    </select>
+</mapper>
