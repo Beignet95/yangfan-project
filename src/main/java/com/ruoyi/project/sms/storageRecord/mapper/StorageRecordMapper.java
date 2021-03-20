@@ -82,4 +82,11 @@ public interface StorageRecordMapper
      * @return
      */
     public List<SkuStorageFee> selectSkuStorageFeeByMonth(Date time);
+
+    /**
+     * 获取仓储汇总数据
+     * @param storageRecord
+     * @return
+     */
+    List<StorageRecord> selectStorageRecordGather(StorageRecord storageRecord);
 }

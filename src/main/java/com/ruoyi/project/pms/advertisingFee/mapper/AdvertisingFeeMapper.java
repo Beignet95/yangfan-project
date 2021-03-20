@@ -1,6 +1,8 @@
 package com.ruoyi.project.pms.advertisingFee.mapper;
 
 import java.util.List;
+
+import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
 import com.ruoyi.project.pms.advertisingFee.domain.AdvertisingFee;
 
 /**
@@ -74,4 +76,6 @@ public interface AdvertisingFeeMapper
      * @return ${subTable.functionName}对象
      */
     public AdvertisingFee selectAdvertisingFeeByOnlyCondition(AdvertisingFee advertisingFee);
+
+    public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee AdvertisingFee);
 }

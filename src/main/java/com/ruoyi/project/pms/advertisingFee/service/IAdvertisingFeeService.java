@@ -1,7 +1,11 @@
 package com.ruoyi.project.pms.advertisingFee.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import com.ruoyi.project.pms.advertisingFee.domain.AdvertisingFee;
 
 /**
@@ -68,5 +72,7 @@ public interface IAdvertisingFeeService
      */
     public String importAdvertisingFee(List<AdvertisingFee> advertisingFeeList, boolean isUpdateSupport, Date month,String site);
 
+
+    public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee advertisingFee);
 
 }

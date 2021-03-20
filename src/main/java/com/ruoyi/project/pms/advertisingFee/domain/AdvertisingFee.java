@@ -47,6 +47,18 @@ public class AdvertisingFee extends BaseEntity
     @Excel(name = "Charge")
     private BigDecimal charge;
 
+    /** 标准SKU */
+    //@Excel(name = "标准SKU")
+    private String standardSku;
+
+    /** 型号 */
+    //@Excel(name = "型号")
+    private String spu;
+
+    /** 负责人 */
+    //@Excel(name = "负责人")
+    private String principal;
+
     public String toString(){
         return campaign;
     }

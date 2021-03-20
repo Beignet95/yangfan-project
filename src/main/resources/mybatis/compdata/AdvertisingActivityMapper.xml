@@ -113,4 +113,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where activity=#{activity}
     </update>
 
+    <select id="selectCampaignProductinfoRelationList" resultType="CampaignProductinfoRelation" parameterType="CampaignProductinfoRelation">
+        select aa.activity as campaign,pr.asin,pr.principal,pr.type,pr.sku from cpd_advertising_activity aa INNER JOIN pms_productinfo_relation pr
+        on pr.sku=aa.sku
+    </select>
+
 </mapper>

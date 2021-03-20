@@ -1,19 +1,23 @@
 package com.ruoyi.project.sms.storageRecord.service.impl;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
 import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import com.ruoyi.project.sms.storageRecord.vo.SkuStorageFee;
+import com.ruoyi.project.sms.storageRecord.vo.StorageRecordImpTempVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
-import java.util.Map;
+
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.exception.BusinessException;
@@ -124,18 +128,28 @@ public class StorageRecordServiceImpl implements IStorageRecordService
     /**
      * 导入仓储记录
      *
-     * @param storageRecordList 仓储记录List数据
+     * @param impTempVos 仓储记录List数据
      * @return 导入结果
      */
     @Override
     @Transactional
-    public String importStorageRecord(List<StorageRecord> storageRecordList, boolean isUpdateSupport,String account) {
-        if (StringUtils.isNull(storageRecordList) || storageRecordList.size() == 0)
+    public String importStorageRecord(List<StorageRecordImpTempVo> impTempVos, boolean isUpdateSupport, String account,String site) {
+        if (StringUtils.isNull(impTempVos) || impTempVos.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
         }
 
-        HistoryOperate ho = checkAndInterceptImp(storageRecordList.get(0),account);
+        HistoryOperate ho = checkAndInterceptImp(impTempVos.get(0),site);
+        if(StringUtils.isNotEmpty(site)&&site.contains("-")){
+            String[] siteStrs = site.split("-");
+            String countryCode = siteStrs[1];
+            impTempVos = impTempVos.stream().filter(s->countryCode.equals(s.getCountryCode())).collect(Collectors.toList());
+        }else throw new BusinessException("站点格式异常");
+        Map<String,ProductinfoRelation> relationMap = getAndCheackProductionRelation(impTempVos);
+
+        String timeFormatStr = "MMM-yy";
+        //Locale locale = new Locale(language,"");
+        Locale locale = new Locale("en","");
 
         int successNum = 0;
         int failureNum = 0;
@@ -143,45 +157,32 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         StringBuilder failureMsg = new StringBuilder();
         String operName = ShiroUtils.getLoginName();
 
-        for (StorageRecord storageRecord : storageRecordList)
+        for (StorageRecordImpTempVo impTempVo : impTempVos)
         {
             try
             {
+                StorageRecord storageRecord = new StorageRecord();
+                BeanUtils.copyProperties(impTempVo,storageRecord);
+
+                Date time = DateUtils.parseUTCDate4CSV(impTempVo.getMonth(), locale,timeFormatStr);//因为欧洲各国时间不一样，所以在此层处理
+                if(time==null) time = DateUtils.parseDate(impTempVo.getMonth());
+                storageRecord.setMonth(time);
+
+                ProductinfoRelation relation = relationMap.get(storageRecord.getAsin());
+                storageRecord.setSpu(relation.getType());
+                storageRecord.setStandardSku(relation.getSku());
+                storageRecord.setPrincipal(relation.getPrincipal());
+
                 storageRecord.setAccount(account);
                 storageRecord.setCreateBy(operName);
                 storageRecord.setCreateTime(new Date());
                 this.insertStorageRecord(storageRecord);
                 successNum++;
-//                StorageRecord domain = storageRecordMapper.selectStorageRecordByOnlyCondition(storageRecord);
-//                // 验证数据是否已经
-//                storageRecord.setAccount(account);
-//                StorageRecord domain = storageRecordMapper.selectStorageRecordByOnlyCondition(storageRecord);
-//                if (domain==null)
-//                {
-//                    storageRecord.setCreateBy(operName);
-//                    storageRecord.setCreateTime(new Date());
-//                    this.insertStorageRecord(storageRecord);
-//                    successNum++;
-//                    successMsg.append("<br/>" + successNum + "、"+ storageRecord.toString()+" 的数据导入成功");
-//                }
-//                else if (isUpdateSupport)
-//                {
-//                    storageRecord.setUpdateBy(operName);
-//                    storageRecord.setUpdateTime(new Date());
-//                    storageRecordMapper.updateStorageRecordByOnlyCondition(storageRecord);
-//                    successNum++;
-//                    successMsg.append("<br/>" + successNum + "、" + storageRecord.toString()+" 的数据更新成功");
-//                }
-//                else
-//                {
-//                    failureNum++;
-//                    failureMsg.append("<br/>" + failureNum + "、" + storageRecord.toString()+" 的数据已存在");
-//                }
             }
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、" + storageRecord.toString()+" 的数据导入失败：";
+                String msg = "<br/>" + failureNum + "、" + impTempVo.toString()+" 的数据导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }
@@ -193,10 +194,34 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         }
         else
         {
-            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条!");
             historyOperateService.insertHistoryOperate(ho);
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    private IProductinfoRelationService productinfoRelationService;
+    private Map<String,ProductinfoRelation> getAndCheackProductionRelation(List<StorageRecordImpTempVo> storageRecordList) {
+        StringBuilder warnMsg = new StringBuilder();
+        List<ProductinfoRelation> relationList = productinfoRelationService.selectProductinfoRelationList(null);
+        Map<String,ProductinfoRelation> asinRelationMap = relationList.stream().collect(Collectors
+                .toMap(ProductinfoRelation::getAsin, Function.identity(),(entity1, entity2) -> {
+                    String sku1 = entity1.getSku();
+                    String sku2 = entity2.getSku();
+                    if(sku1.length()>sku2.length()) return entity2;
+                    else if(sku1.length()<sku2.length()) return entity1;
+                    else if(sku1.compareTo(sku2)>0) return entity2;
+                    return entity1;
+                }));
+        int index = 1;
+        for(StorageRecordImpTempVo record:storageRecordList){
+            if(!asinRelationMap.containsKey(record.getAsin())) warnMsg.append(index+",ASIN:"+record.getAsin()+" 缺少相关的产品信息关系！<br/>");
+            index++;
+        }
+
+        if(warnMsg.length()>0) throw new BusinessException(warnMsg.toString());
+        else return asinRelationMap;
     }
 
     @Override
@@ -207,13 +232,18 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         return skuStorageMap;
     }
 
+    @Override
+    public List<StorageRecord> getStorageRecordGather(StorageRecord storageRecord) {
+        return storageRecordMapper.selectStorageRecordGather(storageRecord);
+    }
+
     /**
      *有存在过导入记录，则抛出异常
      * 否则返回一个HistoryOperate对象
      */
-    private HistoryOperate checkAndInterceptImp(StorageRecord storageRecord, String account) {
-            String timeStr = DateUtils.parseDateToStr("yyyy-MM",storageRecord.getMonth());
-            String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+timeStr;
+    private HistoryOperate checkAndInterceptImp(StorageRecordImpTempVo storageRecord, String account) {
+            //String timeStr = DateUtils.parseDateToStr("yyyy-MM",storageRecord.getMonth());
+            String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+storageRecord.getMonth();
             HistoryOperate ho = new HistoryOperate();
             ho.setRepeatCode(history_operate_code);
             List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);

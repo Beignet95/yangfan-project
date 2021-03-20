@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
-                    <div class="select-list">
+                    <div class="select-list"  id="searchArea">
                         <ul>
                             <li style="display: none;">
                                 <label>描述：</label>
@@ -16,15 +16,20 @@
                             </li>
                             <li>
                                 <label>时间：</label>
-                                <input type="text" class="time-input" placeholder="请选择date/time" name="time"/>
+                                <input type="text" class="time-input" style="width: 80px;" placeholder="开始时间" name="params[beginTime]"/>-
+                                <input type="text" class="time-input" style="width: 80px;" placeholder="结束时间" name="params[endTime]"/>
                             </li>
                             <li>
                                 <label>账号：</label>
-                                <input type="text" name="account"/>
+                                <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                                    <option value="">-请选择-</option>
+                                </select>
                             </li>
                             <li>
                                 <label>站点：</label>
-                                <input type="text" name="account"/>
+                                <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                                    <option value="">-请选择-</option>
+                                </select>
                             </li>
                             <li>
                                 <label>类型：</label>
@@ -67,6 +72,7 @@
         </div>
     </div>
     <th:block th:include="include :: footer" />
+     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var listFlag = [[${@permission.hasPermi('oms:transactionRecord:view')}]];
@@ -203,6 +209,20 @@
         function detail(truckRecordId) {
             var url = prefix + '/detail/' + truckRecordId;
             $.modal.openTab("卡车货物", url);
+        }
+
+        //渲染账号站点下拉框
+        initAccountSiteSearchArea();
+        function  initAccountSiteSearchArea() {
+            $.get("/ums/account/getJson4AccountSite",{},function(result){
+                //data = JSON.parse(result);
+                var data = eval('(' + result + ')');
+                $('#searchArea').cxSelect({
+                    selects: ['type', 'router'],
+                    jsonValue: 'v',
+                    data: data
+                });
+            });
         }
     </script>
 </body>

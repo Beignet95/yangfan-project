@@ -2,6 +2,7 @@ package com.ruoyi.project.pms.productinfoReation.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
 import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
 import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
@@ -31,7 +32,7 @@ import com.ruoyi.common.utils.text.Convert;
 @Service
 public class ProductinfoRelationServiceImpl implements IProductinfoRelationService 
 {
-    private static final Logger log = LoggerFactory.getLogger(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation.class);
+    private static final Logger log = LoggerFactory.getLogger(ProductinfoRelation.class);
 
     @Autowired
     private ProductinfoRelationMapper productinfoRelationMapper;
@@ -43,7 +44,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      * @return 产品信息映射
      */
     @Override
-    public com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation selectProductinfoRelationById(Long id)
+    public ProductinfoRelation selectProductinfoRelationById(Long id)
     {
         return productinfoRelationMapper.selectProductinfoRelationById(id);
     }
@@ -55,7 +56,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      * @return 产品信息映射
      */
     @Override
-    public List<com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation> selectProductinfoRelationList(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation)
+    public List<ProductinfoRelation> selectProductinfoRelationList(ProductinfoRelation productinfoRelation)
     {
         return productinfoRelationMapper.selectProductinfoRelationList(productinfoRelation);
     }
@@ -67,7 +68,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      * @return 结果
      */
     @Override
-    public int insertProductinfoRelation(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation)
+    public int insertProductinfoRelation(ProductinfoRelation productinfoRelation)
     {
         return productinfoRelationMapper.insertProductinfoRelation(productinfoRelation);
     }
@@ -79,7 +80,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      * @return 结果
      */
     @Override
-    public int updateProductinfoRelation(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation)
+    public int updateProductinfoRelation(ProductinfoRelation productinfoRelation)
     {
         return productinfoRelationMapper.updateProductinfoRelation(productinfoRelation);
     }
@@ -115,7 +116,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      * @return 导入结果
      */
     @Override
-    public String importProductinfoRelation(List<com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation> productinfoRelationList, boolean isUpdateSupport) {
+    public String importProductinfoRelation(List<ProductinfoRelation> productinfoRelationList, boolean isUpdateSupport) {
         //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(productinfoRelationList) || productinfoRelationList.size() == 0)
         {
@@ -126,12 +127,12 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
         String operName = ShiroUtils.getLoginName();
-        for (com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation : productinfoRelationList)
+        for (ProductinfoRelation productinfoRelation : productinfoRelationList)
         {
             try
             {
                 // 验证数据是否已经
-                com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation domain = productinfoRelationMapper.selectProductinfoRelationByOnlyCondition(productinfoRelation);
+                ProductinfoRelation domain = productinfoRelationMapper.selectProductinfoRelationByOnlyCondition(productinfoRelation);
                 if (domain==null)
                 {
                     productinfoRelation.setCreateBy(operName);
@@ -212,7 +213,19 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     public Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap() {
         List<MskuProductinfoRelationVo> voList  = this.selectMskuProductinfoRelationVoList();
         Map<String, MskuProductinfoRelationVo> map =
-                voList.stream().collect(Collectors.toMap(MskuProductinfoRelationVo::getMsku,Function.identity(),(entity1, entity2) -> entity1));
+                voList.stream().collect(Collectors.toMap(MskuProductinfoRelationVo::getMsku,Function.identity(),(entity1, entity2) -> {
+                    String sku1 = entity1.getSku();
+                    String sku2 = entity2.getSku();
+                    if(sku1.length()>sku2.length()) return entity2;
+                    else if(sku1.length()<sku2.length()) return entity1;
+                    else if(sku1.compareTo(sku2)>0) return entity2;
+                    return entity1;
+                }));
         return map;
+    }
+
+    @Override
+    public Map<String, MskuProductinfoRelationVo> getAsinProductinfoRelationVoMap() {
+        return null;
     }
 }

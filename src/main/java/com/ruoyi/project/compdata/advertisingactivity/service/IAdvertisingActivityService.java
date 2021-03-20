@@ -2,6 +2,7 @@ package com.ruoyi.project.compdata.advertisingactivity.service;
 
 import java.util.List;
 import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity;
+import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
 
 /**
  * 广告活动映射Service接口
@@ -62,4 +63,7 @@ public interface IAdvertisingActivityService
     String importAdvertisingActivity(List<AdvertisingActivity> advertisingActivityList, boolean updateSupport);
 
     AdvertisingActivity selectAdvertisingActivityByOnlyCondition(AdvertisingActivity advertisingActivity);
+
+    List<CampaignProductinfoRelation> selectCampaignProductinfoRelationList(CampaignProductinfoRelation campaignProductinfoRelation);
+
 }

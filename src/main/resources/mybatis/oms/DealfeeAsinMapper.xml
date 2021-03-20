@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.oms.dealfeeAsin.mapper.DealfeeAsinMapper">
+    
+    <resultMap type="DealfeeAsin" id="DealfeeAsinResult">
+        <result property="id"    column="id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="description"    column="description"    />
+        <result property="asin"    column="asin"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDealfeeAsinVo">
+        select id, record_id, description, asin, create_by, create_time, update_by, update_time from oms_dealfee_asin
+    </sql>
+
+    <select id="selectDealfeeAsinList" parameterType="DealfeeAsin" resultMap="DealfeeAsinResult">
+        <include refid="selectDealfeeAsinVo"/>
+        <where>  
+            <if test="recordId != null "> and record_id = #{recordId}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectDealfeeAsinById" parameterType="Long" resultMap="DealfeeAsinResult">
+        <include refid="selectDealfeeAsinVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDealfeeAsin" parameterType="DealfeeAsin" useGeneratedKeys="true" keyProperty="id">
+        insert into oms_dealfee_asin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">record_id,</if>
+            <if test="description != null and description != ''">description,</if>
+            <if test="asin != null and asin != ''">asin,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">#{recordId},</if>
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="asin != null and asin != ''">#{asin},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDealfeeAsin" parameterType="DealfeeAsin">
+        update oms_dealfee_asin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDealfeeAsinById" parameterType="Long">
+        delete from oms_dealfee_asin where id = #{id}
+    </delete>
+
+    <delete id="deleteDealfeeAsinByIds" parameterType="String">
+        delete from oms_dealfee_asin where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectDealfeeAsinByOnlyCondition" parameterType="DealfeeAsin" resultMap="DealfeeAsinResult">
+        <include refid="selectDealfeeAsinVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateDealfeeAsinByOnlyCondition" parameterType="DealfeeAsin">
+        update oms_dealfee_asin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="asin != null and asin != ''">asin = #{asin},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+</mapper>

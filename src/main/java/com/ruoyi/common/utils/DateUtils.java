@@ -269,4 +269,20 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
             return null;
         }
     }
+
+    /**
+     *
+     * 描述:获取下一个月的第一天.
+     *
+     * @return
+     */
+    public static String getPerFirstDayOfMonth(Date date) {
+        SimpleDateFormat dft = new SimpleDateFormat("yyyyMMdd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        return dft.format(calendar.getTime());
+    }
+
+
 }

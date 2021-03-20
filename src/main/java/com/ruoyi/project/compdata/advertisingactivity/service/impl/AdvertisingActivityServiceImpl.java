@@ -6,7 +6,7 @@ import java.util.List;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
-import com.ruoyi.project.compdata.finance.domain.Finance;
+import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,9 +121,7 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
             {
 
                 /**关键列为null时直接跳过**/
-                if(StringUtils.isEmpty(advertisingActivity.getActivity())||StringUtils.isEmpty(advertisingActivity.getAsin())||
-                        StringUtils.isEmpty(advertisingActivity.getSku())||StringUtils.isEmpty(advertisingActivity.getCommissioner())
-                        ||StringUtils.isEmpty(advertisingActivity.getStoreCode())){
+                if(StringUtils.isEmpty(advertisingActivity.getActivity())|| StringUtils.isEmpty(advertisingActivity.getSku())){
                     failureMsg.append("<br/>" + successNum + "、"+advertisingActivity.getActivity()+"的数据有空列！");
                     failureNum++;
                     continue;
@@ -142,7 +140,7 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
                     advertisingActivity.setCreateTime(new Date());
                     this.insertAdvertisingActivity(advertisingActivity);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、"+ advertisingActivity.getCommissioner()+"的广告活动"+advertisingActivity.getActivity()+" 的数据导入成功");
+                    successMsg.append("<br/>" + successNum + "、"+ advertisingActivity.getActivity()+"的广告活动"+advertisingActivity.getActivity()+" 的数据导入成功");
                 }
                 else if (updateSupport)
                 {
@@ -150,18 +148,18 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
                     advertisingActivity.setUpdateTime(new Date());
                     advertisingActivityMapper.updateAdvertisingActivityByOnlyCondition(advertisingActivity);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、" + advertisingActivity.getCommissioner()+"的广告活动"+advertisingActivity.getActivity()+" 的数据更新成功");
+                    successMsg.append("<br/>" + successNum + "、" + advertisingActivity.getActivity()+"的广告活动"+advertisingActivity.getActivity()+" 的数据更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、" + advertisingActivity.getCommissioner()+"的广告活动"+advertisingActivity.getActivity()+" 的数据已存在");
+                    failureMsg.append("<br/>" + failureNum + "、" + advertisingActivity.getActivity()+"的广告活动"+advertisingActivity.getActivity()+" 的数据已存在");
                 }
             }
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、" + advertisingActivity.getCommissioner()+"的广告活动"+advertisingActivity.getActivity()+ " 的数据导入失败：";
+                String msg = "<br/>" + failureNum + "、" + advertisingActivity.getActivity()+"的广告活动"+advertisingActivity.getActivity()+ " 的数据导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }
@@ -181,5 +179,10 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
     @Override
     public AdvertisingActivity selectAdvertisingActivityByOnlyCondition(AdvertisingActivity advertisingActivity) {
         return advertisingActivityMapper.selectAdvertisingActivityByOnlyCondition(advertisingActivity);
+    }
+
+    @Override
+    public List<CampaignProductinfoRelation> selectCampaignProductinfoRelationList(CampaignProductinfoRelation CampaignProductinfoRelation) {
+        return advertisingActivityMapper.selectCampaignProductinfoRelationList(CampaignProductinfoRelation);
     }
 }

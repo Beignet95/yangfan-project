@@ -10,7 +10,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 
 /**
- * 财务数据对象 cpd_finance
+ * 交易汇总实体
  *
  * @author Beignet
  * @date 2021-01-14
@@ -162,7 +162,7 @@ public class FinanceVo extends BaseEntity
     private BigDecimal selfdeliveryCommission;
 
     //18. Seller fulfilled selling fees
-    /** 自配送销售佣金） */
+    /** 自配送销售佣金 */
     @Excel(name = "自配送销售佣金")
     private BigDecimal sellerFulfilledSellingFees;
 
@@ -222,6 +222,10 @@ public class FinanceVo extends BaseEntity
     /** 仓储费 */
     @Excel(name = "仓储费")
     private BigDecimal storageFee;
+
+    /** 长期仓储费 */
+    @Excel(name = "长期仓储费")
+    private BigDecimal longtimeStorageFee;
 
     /** 退货移除费 */
     @Excel(name = "退货移除费")
@@ -305,6 +309,10 @@ public class FinanceVo extends BaseEntity
     /** 广告费退款 */
     @Excel(name = "广告费退款")
     private BigDecimal refundForAdvertiser;
+
+    /** 混合增值税 */
+    @Excel(name = "混合增值税")
+    private BigDecimal mixedVat;
 
     //34. Liquidations brokerage fee
     /** 清算经纪费 */

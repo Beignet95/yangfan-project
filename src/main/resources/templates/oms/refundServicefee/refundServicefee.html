@@ -44,7 +44,7 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:refundServicefee:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
-                <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="oms:refundServicefee:export">
+                <a class="btn btn-info" onclick="$.table.importExcel(null,400,300)" shiro:hasPermission="oms:refundServicefee:export">
                     <i class="fa fa-upload"></i> 导入
                 </a>
             </div>
@@ -116,6 +116,9 @@
                 <input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
                 &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
             </div>
+            <font color="red" class="pull-left mt10">
+                注意：此模块只会导入Payment Detail为Refund Administration Fee的数据！其他数据会被系统自动过滤！
+            </font>
             <font color="red" class="pull-left mt10">
                 提示：仅允许导入“xls”,“xlsm”或“xlsx”格式文件！
             </font>

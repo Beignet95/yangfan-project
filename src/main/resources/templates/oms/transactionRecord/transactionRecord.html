@@ -8,11 +8,24 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
-                    <div class="select-list">
+                    <div class="select-list"  id="searchArea">
                         <ul>
                             <li>
                                 <label>时间：</label>
-                                <input type="text" class="time-input" placeholder="请选择date/time" name="time"/>
+                                <input type="text" class="time-input" style="width: 80px;" placeholder="开始时间" name="params[beginTime]"/>-
+                                <input type="text" class="time-input" style="width: 80px;" placeholder="结束时间" name="params[endTime]"/>
+                            </li>
+                            <li>
+                                <label>账号：</label>
+                                <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                                    <option value="">-请选择-</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>站点：</label>
+                                <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                                    <option value="">-请选择-</option>
+                                </select>
                             </li>
                             <li>
                                 <label>型号：</label>
@@ -48,7 +61,7 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:transactionRecord:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
-                <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="oms:transactionRecord:export">
+                <a class="btn btn-info" onclick="importExcel()" shiro:hasPermission="oms:transactionRecord:export">
                     <i class="fa fa-upload"></i> 导入
                 </a>
             </div>
@@ -58,6 +71,7 @@
         </div>
     </div>
     <th:block th:include="include :: footer" />
+     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:transactionRecord:remove')}]];
@@ -209,6 +223,77 @@
             };
             $.table.init(options);
         });
+
+        //弹出导入框
+        function importExcel(formId, width, height) {
+            table.set();
+            var _width = $.common.isEmpty(width) ? "400" : width;
+            var _height = $.common.isEmpty(height) ? "230" : height;
+            layer.open({
+                type: 2,
+                area: [_width + 'px', _height + 'px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '导入' + table.options.modalName + '数据',
+                content: prefix + "/showImportPage?showSpareField=true",
+                //url: prefix + "/showImportPage",
+                btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                btn1: function(index, layero){
+                    //var file = layero.find('#file').val();
+                    var body = layer.getChildFrame('body', index); //得到iframe页的body内容
+                    var file = body.find("#file").val();
+
+                    if (file == '' || (!$.common.endWith(file, '.csv'))){
+                        $.modal.msgWarning("请选择后缀为 “csv”的文件。");
+                        return false;
+                    }
+                    var index = layer.load(2, {shade: false});
+                    $.modal.disable();
+                    var formData = new FormData(body.find('form')[0]);
+                    $.ajax({
+                        url: table.options.importUrl,
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success: function (result) {
+                            if (result.code == web_status.SUCCESS) {
+                                $.modal.closeAll();
+                                $.modal.alertSuccess(result.msg);
+                                $.table.refresh();
+                            } else if (result.code == web_status.WARNING) {
+                                layer.close(index);
+                                $.modal.enable();
+                                $.modal.alertWarning(result.msg)
+                            } else {
+                                layer.close(index);
+                                $.modal.enable();
+                                $.modal.alertError(result.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        //渲染账号站点下拉框
+        initAccountSiteSearchArea();
+        function  initAccountSiteSearchArea() {
+            $.get("/ums/account/getJson4AccountSite",{},function(result){
+                //data = JSON.parse(result);
+                var data = eval('(' + result + ')');
+                $('#searchArea').cxSelect({
+                    selects: ['type', 'router'],
+                    jsonValue: 'v',
+                    data: data
+                });
+            });
+        }
     </script>
 </body>
 <!-- 导入区域 -->

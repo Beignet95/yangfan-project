@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.sms.storageRecord.mapper.StorageRecordMapper">
-    
+
     <resultMap type="StorageRecord" id="StorageRecordResult">
         <result property="id"    column="id"    />
         <result property="month"    column="month"    />
@@ -13,6 +13,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="itemVolume"    column="item_volume"    />
         <result property="currency"    column="currency"    />
         <result property="storageFee"    column="storage_fee"    />
+        <result property="standardSku"    column="standard_sku"    />
+        <result property="spu"    column="spu"    />
+        <result property="principal"    column="principal"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -20,12 +23,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectStorageRecordVo">
-        select id, month, account, country_code, asin, item_volume, currency, storage_fee, create_by, create_time, update_by, update_time from sms_storage_record
+        select id, month, account, country_code, asin, item_volume, currency, storage_fee, standard_sku, spu, principal, create_by, create_time, update_by, update_time from sms_storage_record
     </sql>
 
     <select id="selectStorageRecordList" parameterType="StorageRecord" resultMap="StorageRecordResult">
         <include refid="selectStorageRecordVo"/>
-        <where>  
+        <where>
             <if test="month != null "> and month = #{month}</if>
             <if test="account != null  and account != ''"> and account = #{account}</if>
             <if test="countryCode != null  and countryCode != ''"> and country_code = #{countryCode}</if>
@@ -33,19 +36,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="itemVolume != null "> and item_volume = #{itemVolume}</if>
             <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
             <if test="storageFee != null "> and storage_fee = #{storageFee}</if>
+            <if test="standardSku != null  and standardSku != ''"> and standard_sku = #{standardSku}</if>
+            <if test="spu != null  and spu != ''"> and spu = #{spu}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectStorageRecordById" parameterType="Long" resultMap="StorageRecordResult">
         <include refid="selectStorageRecordVo"/>
         where id = #{id}
     </select>
-        
-    <insert id="insertStorageRecord" parameterType="StorageRecord">
+
+    <insert id="insertStorageRecord" parameterType="StorageRecord" useGeneratedKeys="true" keyProperty="id">
         insert into sms_storage_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">id,</if>
             <if test="month != null">month,</if>
             <if test="account != null and account != ''">account,</if>
             <if test="countryCode != null and countryCode != ''">country_code,</if>
@@ -53,13 +58,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="itemVolume != null">item_volume,</if>
             <if test="currency != null and currency != ''">currency,</if>
             <if test="storageFee != null">storage_fee,</if>
+            <if test="standardSku != null">standard_sku,</if>
+            <if test="spu != null">spu,</if>
+            <if test="principal != null">principal,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">#{id},</if>
             <if test="month != null">#{month},</if>
             <if test="account != null and account != ''">#{account},</if>
             <if test="countryCode != null and countryCode != ''">#{countryCode},</if>
@@ -67,11 +74,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="itemVolume != null">#{itemVolume},</if>
             <if test="currency != null and currency != ''">#{currency},</if>
             <if test="storageFee != null">#{storageFee},</if>
+            <if test="standardSku != null">#{standardSku},</if>
+            <if test="spu != null">#{spu},</if>
+            <if test="principal != null">#{principal},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateStorageRecord" parameterType="StorageRecord">
@@ -84,6 +94,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="itemVolume != null">item_volume = #{itemVolume},</if>
             <if test="currency != null and currency != ''">currency = #{currency},</if>
             <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="standardSku != null">standard_sku = #{standardSku},</if>
+            <if test="spu != null">spu = #{spu},</if>
+            <if test="principal != null">principal = #{principal},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -97,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteStorageRecordByIds" parameterType="String">
-        delete from sms_storage_record where id in 
+        delete from sms_storage_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -120,6 +133,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="itemVolume != null">item_volume = #{itemVolume},</if>
             <if test="currency != null and currency != ''">currency = #{currency},</if>
             <if test="storageFee != null">storage_fee = #{storageFee},</if>
+            <if test="standardSku != null">standard_sku = #{standardSku},</if>
+            <if test="spu != null">spu = #{spu},</if>
+            <if test="principal != null">principal = #{principal},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -131,7 +147,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <select id="selectSkuStorageFeeByMonth" parameterType="java.util.Date" resultType="SkuStorageFee">
-        select pr.sku,sum(sr.storage_fee) as storageFee from pms_productinfo_relation pr LEFT JOIN sms_storage_record sr on pr.asin=sr.asin
-        where sr.storage_fee is not null  group by pr.sku
+        select standard_sku as sku,sum(storage_fee) as storageFee from sms_storage_record where month =#{month}  group by standard_sku
     </select>
+
+    <select id="selectStorageRecordGather" parameterType="StorageRecord" resultType="StorageRecord">
+         select standard_sku as standardSku,principal,account,country_code as countryCode,sum(storage_fee) as storageFee
+         from sms_storage_record where month =#{month}   group by standard_sku,principal,account,country_code
+    </select>
+
+
 </mapper>

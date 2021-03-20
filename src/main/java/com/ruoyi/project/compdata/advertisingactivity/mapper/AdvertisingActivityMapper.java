@@ -2,6 +2,7 @@ package com.ruoyi.project.compdata.advertisingactivity.mapper;
 
 import java.util.List;
 import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity;
+import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
 
 /**
  * 广告活动映射Mapper接口
@@ -72,4 +73,12 @@ public interface AdvertisingActivityMapper
      * @return
      */
     int updateAdvertisingActivityByOnlyCondition(AdvertisingActivity advertisingActivity);
+
+    /**
+     * 获取广告词对应的Productinfo关系
+     * @param skuAdvertisingFee
+     * @return
+     */
+
+    List<CampaignProductinfoRelation> selectCampaignProductinfoRelationList(CampaignProductinfoRelation campaignProductinfoRelation);
 }

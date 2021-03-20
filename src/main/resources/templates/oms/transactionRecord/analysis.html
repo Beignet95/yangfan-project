@@ -9,47 +9,33 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
-                    <div class="select-list">
+                    <div class="select-list" id="searchArea">
                         <ul>
                             <li>
-                                <label>时间：</label>
+                                <label>月份：</label>
                                 <input type="text" class="form-control" placeholder="请选择月份" name="params[month]" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
+                                <label>账号：</label>
+                                <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                                    <option value="">-请选择-</option>
+                                </select>
+                            </li>
+                            <li>
                                 <label>站点：</label>
-                                <select class="form-control" style="width: 100px;display: inline;" name="site">
-                                    <option value="">所有</option>
-                                    <option value="H4-UK">H4-UK</option>
-                                    <option value="H4-DE">H4-DE</option>
-                                    <option value="H4-FR">H4-FR</option>
-                                    <option value="H4-IT">H4-IT</option>
-                                    <option value="H4-ES">H4-ES</option>
-                                    <option value="AGS-US">AGS-US</option>
-                                    <option value="AGS-CA">AGS-CA</option>
+                                <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                                    <option value="">-请选择-</option>
                                 </select>
                             </li>
                             <li>
                                 <label>类型：</label>
                                 <select class="form-control" style="width: 100px;display: inline;" name="spareField">
-                                    <option value="">所有</option>
-                                    <option value="IO">IO</option>
                                     <option value="SO">SO</option>
+                                    <option value="IO">IO</option>
                                 </select>
                             </li>
                             <li>
-                                <label>型号：</label>
-                                <input type="text" name="type"/>
-                            </li>
-                            <li>
-                                <label>order id：</label>
-                                <input type="text" name="orderId"/>
-                            </li>
-                            <li>
-                                <label>sku：</label>
-                                <input type="text" name="sku"/>
-                            </li>
-                            <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="tableSearch()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                             </li>
                         </ul>
@@ -81,6 +67,8 @@
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: datetimepicker-js" />
+     <th:block th:include="include :: bootstrap-table-fixed-columns-js" />
+     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:transactionRecord:remove')}]];
@@ -95,10 +83,17 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/exportGatherData",
                 importUrl: prefix + "/importData",
+                fixedColumns: true,
+                fixedNumber: 6,
+                fixedRightNumber: 0,
                 height: 800,
                 modalName: "交易数据",
-                columns: [{
-                    checkbox: true
+                responseHandler: responseHandler,
+                columns: [
+                {
+                    title: '全选',
+                    field: '',
+                    visible: false,
                 },
                 {
                     field: 'id',
@@ -134,7 +129,10 @@
                 },
                     {
                         field: 'salesRevenue',
-                        title: '销售收入(含自配送）'
+                        title: '销售收入(含自配送）',
+                        cellStyle: function (value, row, index) {
+                                return { css: { "background-color": "yellow" } }
+                        },
                     },
                 {
                     field: 'productSalesOfSeller',
@@ -154,7 +152,10 @@
                 },
                     {
                         field: 'finalFreight',
-                        title: '尾程运费信用'
+                        title: '尾程运费信用',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'shippingCredits',
@@ -166,7 +167,10 @@
                     },
                     {
                         field: 'packagingFee',
-                        title: '包装费'
+                        title: '包装费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'giftWrapCredits',
@@ -178,7 +182,10 @@
                     },
                     {
                         field: 'promotionFee',
-                        title: '促销费'
+                        title: '促销费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'promotionalRebates',
@@ -190,7 +197,10 @@
                     },
                     {
                         field: 'platformRefund',
-                        title: '平台退款'
+                        title: '平台退款',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'guaranteeClaims',
@@ -202,19 +212,28 @@
                     },
                     {
                         field: 'shippingReimbursement',
-                        title: '尾程运费退回'
+                        title: '尾程运费退回',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'reimbursement',
-                        title: '其他'
+                        title: '其他',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'selfdeliveryCommission',
-                        title: '销售佣金(含自配送）'
+                        title: '销售佣金(含自配送）',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'sellerFulfilledSellingFees',
-                        title: '自配送销售佣金'
+                        title: '自配送销售佣金',
                     },
                     {
                         field: 'fbaSellingFees',
@@ -225,7 +244,10 @@
                         title: 'FBA销售退款佣金'
                     },{
                         field: 'finalFreightReturn',
-                        title: '尾程运费退回'
+                        title: '尾程运费退回',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'fbaTransactionFees',
@@ -237,7 +259,10 @@
                     },
                     {
                         field: 'otherTransactionFee',
-                        title: '其他交易费'
+                        title: '其他交易费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'othertransactionFees',
@@ -249,7 +274,10 @@
                     },
                     {
                         field: 'fbaInventoryAndInboundServicesFees',
-                        title: '仓储费（0.79%）'
+                        title: '仓储费（0.79%）',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'truckServiceFee',
@@ -260,7 +288,7 @@
                         title: '仓储费'
                     },
                     {
-                        field: '***',
+                        field: 'longtimeStorageFee',
                         title: '长期仓储费'
                     },
                     {
@@ -272,23 +300,26 @@
                         title: '破损库存销毁手续费'
                     },
                     {
-                        field: '***',
+                        field: 'shippingLabelFee',
+                        title: '运输标签费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
+                    },
+                    {
+                        field: 'ShippingLabelPurchases',
                         title: '运输标签费'
                     },
                     {
-                        field: '***',
-                        title: '运输标签费'
-                    },
-                    {
-                        field: '***',
+                        field: 'ShippingLabelRefunds',
                         title: '运输标签费退款'
                     },
                     {
-                        field: '***',
+                        field: 'carrierShippingLabelAdjustments',
                         title: '承运人运输标签调整'
                     },
                     {
-                        field: '***',
+                        field: 'serviceFees',
                         title: '平台服务费'
                     },
                     {
@@ -296,11 +327,11 @@
                         title: '店租'
                     },
                     {
-                        field: '***',
+                        field: 'bdDealFee',
                         title: 'BD'
                     },
                     {
-                        field: '***',
+                        field: 'ldDealFee',
                         title: 'LD'
                     },
                     {
@@ -318,30 +349,39 @@
                     },
                     {
                         field: 'refundAdministrationFees',
-                        title: '平台退款服务费'
+                        title: '平台退款服务费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
                         field: 'adjustments',
-                        title: '平台服务调整费'
+                        title: '平台服务调整费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
-                        field: '***',
-                        title: '广告费（3.32%）'
+                        field: 'advertisingFee',
+                        title: '广告费（3.32%）',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
                     },
                     {
-                        field: '***',
+                        field: 'costOfAdvertising',
                         title: '广告费'
                     },
                     {
-                        field: '***',
+                        field: 'refundForAdvertiser',
                         title: '广告费退款'
                     },
                     {
-                        field: '***',
+                        field: 'mixedVat',
                         title: '混合增值税'
                     },
                     {
-                        field: '***',
+                        field: 'liquidationsBrokerageFee',
                         title: '清算经纪费'
                     },
                     //
@@ -358,6 +398,8 @@
                 ]
             };
             $.table.init(options);
+
+            initAccountSite();
         });
 
         //设置时间选择器
@@ -390,6 +432,72 @@
             //Last_month = ((Last_month == 0) ? (12) : (Last_month));
             //渲染页面上方输入月份的input
             $("#month").val(year+"年"+Last_month+"月");
+        }
+
+        function tableSearch(){
+            if($("select[name='site']").val()==''){
+                $.modal.msgWarning("site请选择查看的站点");
+                return;
+            }
+            $.table.search();
+        }
+
+        var checkOne = $(".dropdown-menu li input");
+        var checkAll = checkOne.eq(0);
+        checkAll.off('click').on('click', function () {
+            alert();
+            var flag = checkAll.prop("checked");
+            checkOne.each(function(i){
+                if (i>0){
+                    var $this = $(this);
+                    if (flag) {
+                        if (!$this.prop('checked')) {
+                            $this.click();
+                        }
+                    } else {
+                        if ($this.prop('checked')) {
+                            $this.click();
+                        }
+                    }
+                }
+            });
+        });
+        checkOne.on('click', function () {
+            var len = checkOne.length;
+            var _l = 0;
+            checkOne.each(function(i){
+                if (i>0){
+                    if ($(this).prop('checked')) {
+                        _l++;
+                    }
+                }
+            });
+            if (_l === len-1){
+                checkAll.prop("checked", true)
+            } else {
+                checkAll.prop("checked", false)
+            }
+        });
+
+        //当所有数据被加载时触发
+        function responseHandler(res){
+            console.log("res:"+res);
+            if(res.code==0&&res.msg!=null){
+                $.modal.alertWarning(res.msg);
+            }
+        }
+
+        //渲染下拉框
+        function  initAccountSite() {
+            $.get("/ums/account/getJson4AccountSite",{},function(result){
+                //data = JSON.parse(result);
+                var data = eval('(' + result + ')');
+                $('#searchArea').cxSelect({
+                    selects: ['type', 'router'],
+                    jsonValue: 'v',
+                    data: data
+                });
+            });
         }
     </script>
 </body>

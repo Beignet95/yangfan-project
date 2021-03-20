@@ -2,21 +2,30 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('广告费费用列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="gray-bg">
 <div class="container-div">
     <div class="row">
         <div class="col-sm-12 search-collapse">
             <form id="formId">
-                <div class="select-list">
+                <div class="select-list" id="searchArea">
                     <ul>
                         <li>
                             <label>月份：</label>
-                            <input type="text" class="time-input" placeholder="请选择月份" name="month"/>
+                            <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
+                        </li>
+                        <li>
+                            <label>账号：</label>
+                            <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                                <option value="">-请选择-</option>
+                            </select>
                         </li>
                         <li>
                             <label>站点：</label>
-                            <input type="text" name="site"/>
+                            <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                                <option value="">-请选择-</option>
+                            </select>
                         </li>
                         <li>
                             <label>Campaign：</label>
@@ -48,7 +57,7 @@
             <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="pms:advertisingFee:export">
                 <i class="fa fa-download"></i> 导出
             </a>
-            <a class="btn btn-info" onclick="$.table.importExcel('importTpl',600,300)" shiro:hasPermission="pms:advertisingFee:export">
+            <a class="btn btn-info" onclick="importExcel('importTpl',600,300)" shiro:hasPermission="pms:advertisingFee:export">
                 <i class="fa fa-upload"></i> 导入
             </a>
         </div>
@@ -58,12 +67,16 @@
     </div>
 </div>
 <th:block th:include="include :: footer" />
+<th:block th:include="include :: datetimepicker-js" />
+<th:block th:include="include :: jquery-cxselect-js" />
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('pms:advertisingFee:edit')}]];
     var removeFlag = [[${@permission.hasPermi('pms:advertisingFee:remove')}]];
     var prefix = ctx + "pms/advertisingFee";
 
     $(function() {
+        init_month();
+
         var options = {
             url: prefix + "/list",
             createUrl: prefix + "/add",
@@ -110,6 +123,108 @@
         };
         $.table.init(options);
     });
+
+    //弹出导入框
+    function importExcel(formId, width, height) {
+        table.set();
+        var _width = $.common.isEmpty(width) ? "400" : width;
+        var _height = $.common.isEmpty(height) ? "230" : height;
+        layer.open({
+            type: 2,
+            area: [_width + 'px', _height + 'px'],
+            fix: false,
+            //不固定
+            maxmin: true,
+            shade: 0.3,
+            title: '导入' + table.options.modalName + '数据',
+            content: prefix + "/showImportPage",
+            btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
+            // 弹层外区域关闭
+            shadeClose: true,
+            btn1: function(index, layero){
+                var body = layer.getChildFrame('body', index); //得到iframe页的body内容
+                var file = body.find("#file").val();
+
+                if (file == '' || (!$.common.endWith(file, '.xls')&&!$.common.endWith(file, '.xlsx')
+                    &&!$.common.endWith(file, '.xlsm'))){
+                    $.modal.msgWarning("请选择后缀为 “xls”,“xlsx”或“xlsm”的文件。");
+                    return false;
+                }
+                var index = layer.load(2, {shade: false});
+                $.modal.disable();
+                var formData = new FormData(body.find('form')[0]);
+                $.ajax({
+                    url: table.options.importUrl,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.code == web_status.SUCCESS) {
+                            $.modal.closeAll();
+                            $.modal.alertSuccess(result.msg);
+                            $.table.refresh();
+                        } else if (result.code == web_status.WARNING) {
+                            layer.close(index);
+                            $.modal.enable();
+                            $.modal.alertWarning(result.msg)
+                        } else {
+                            layer.close(index);
+                            $.modal.enable();
+                            $.modal.alertError(result.msg);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //设置时间选择器
+    $("#month").datetimepicker({
+        format: 'yyyy-mm',
+        weekStart : 1,
+        todayBtn : true,
+        autoclose : 1,
+        startView : 'year',
+        maxView:'decade',
+        minView :'year',
+        forceParse : false,
+        pickerPosition: "bottom-left"
+
+    });
+
+    //此方法用于填充本月于面上方输入月份的input
+    function init_month(){
+        var myDate = new Date();
+        //获取当前年
+        var year=myDate.getFullYear();
+
+        var Last_month = new Date().getMonth();
+
+        if(Last_month==0){
+            Last_month=12;
+            year--;
+        }
+
+        //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+        //渲染页面上方输入月份的input
+        $("#month").val(year+"-"+Last_month);
+    }
+
+    //渲染账号站点下拉框
+    initAccountSite();
+    function  initAccountSite() {
+        $.get("/ums/account/getJson4AccountSite",{},function(result){
+            //data = JSON.parse(result);
+            var data = eval('(' + result + ')');
+            $('#searchArea').cxSelect({
+                selects: ['type', 'router'],
+                jsonValue: 'v',
+                data: data
+            });
+        });
+    }
 </script>
 </body>
 <!-- 导入区域 -->

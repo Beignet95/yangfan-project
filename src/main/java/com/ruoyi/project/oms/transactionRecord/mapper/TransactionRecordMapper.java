@@ -1,10 +1,9 @@
 package com.ruoyi.project.oms.transactionRecord.mapper;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
+import com.ruoyi.project.oms.transactionRecord.vo.BLDTransactionRecordVo;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuRefundServiceFee;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
@@ -100,4 +99,12 @@ public interface TransactionRecordMapper
     List<SkuFee> selectSkuAdjustmentFeeList(TransactionRecord transactionRecord);
 
     List<SkuFee> selectSkuEarlyFeeGatherList(TransactionRecord transactionRecord);
+
+    List<SkuFee> selectSkuBDOrLdFeeList(TransactionRecord transactionRecord);
+
+    List<BLDTransactionRecordVo> selectBLDTransactionReocordVoList(BLDTransactionRecordVo vo);
+
+    List<TransactionRecord>  selectQuantityAnaly(TransactionRecord transactionRecord);
+
+    int updateAdjustmentRecordByOrderId(TransactionRecord record);
 }

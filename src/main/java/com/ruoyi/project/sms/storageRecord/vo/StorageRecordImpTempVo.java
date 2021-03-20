@@ -1,0 +1,80 @@
+package com.ruoyi.project.sms.storageRecord.vo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.opencsv.bean.CsvBindByPosition;
+import com.ruoyi.framework.aspectj.lang.annotation.Excel;
+import com.ruoyi.framework.web.domain.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 仓储记录对象 sms_storage_record
+ * 
+ * @author Beignet
+ * @date 2021-03-06
+ */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class StorageRecordImpTempVo extends BaseEntity
+{
+    private static final long serialVersionUID = 1L;
+
+    /** 主键 */
+    private Long id;
+
+    /** month-of-charge */
+    //@JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "month-of-charge")
+    @CsvBindByPosition(position = 17)
+    private String month;
+
+    /** account */
+    @Excel(name = "account")
+    private String account;
+
+    /** country-code */
+    @Excel(name = "country-code")
+    @CsvBindByPosition(position = 4)
+    private String countryCode;
+
+    /** asin */
+    @Excel(name = "asin")
+    @CsvBindByPosition(position = 0)
+    private String asin;
+
+    /** item-volume */
+    @Excel(name = "item-volume")
+    @CsvBindByPosition(position = 11)
+    private BigDecimal itemVolume;
+
+    /** currency */
+    @Excel(name = "currency")
+    @CsvBindByPosition(position = 19)
+    private String currency;
+
+    /** estimated-monthly-storage-fee */
+    @Excel(name = "estimated-monthly-storage-fee")
+    @CsvBindByPosition(position = 20)
+    private BigDecimal storageFee;
+
+    /** 标准SKU */
+    //@Excel(name = "标准SKU")
+    private String standardSku;
+
+    /** 型号 */
+    //@Excel(name = "型号")
+    private String spu;
+
+    /** 负责人 */
+    //@Excel(name = "负责人")
+    private String principal;
+
+}

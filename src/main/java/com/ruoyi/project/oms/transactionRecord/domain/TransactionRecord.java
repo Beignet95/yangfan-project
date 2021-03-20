@@ -54,7 +54,7 @@ public class TransactionRecord extends BaseEntity
     /** type */
     @Excel(name = "type")
     @CsvBindByPosition(position = 2)
-    private String type;
+    private Integer type;
 
     /** order id */
     @Excel(name = "order id")
@@ -194,6 +194,25 @@ public class TransactionRecord extends BaseEntity
     /** 备用字段 */
     //@Excel(name = "备用字段")
     private String spareField;
+
+    //初始化数字，防止计算判断过于复杂
+    public void initNumber(){
+        this.productSales = new BigDecimal(0);
+        this.productSalesTax = new BigDecimal(0);
+        this.postageCredits = new BigDecimal(0);
+        this.shippingCreditsTax = new BigDecimal(0);
+        this.giftWrapCredits = new BigDecimal(0);
+        this.giftwrapCreditsTax = new BigDecimal(0);
+        this.promotionalRebates = new BigDecimal(0);
+        this.promotionalRebatesTax = new BigDecimal(0);
+        this.marketplaceWithheldTax = new BigDecimal(0);
+        this.sellingFees = new BigDecimal(0);
+        this.fbaFees = new BigDecimal(0);
+        this.otherTransactionFees = new BigDecimal(0);
+        this.other = new BigDecimal(0);
+        this.total = new BigDecimal(0);
+
+    }
 
 
 

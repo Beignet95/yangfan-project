@@ -66,6 +66,16 @@ public class StorageRecord extends BaseEntity
     @CsvBindByPosition(position = 20)
     private BigDecimal storageFee;
 
+    /** 标准SKU */
+    //@Excel(name = "标准SKU")
+    private String standardSku;
 
+    /** 型号 */
+    //@Excel(name = "型号")
+    private String spu;
+
+    /** 负责人 */
+    //@Excel(name = "负责人")
+    private String principal;
 
 }

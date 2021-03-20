@@ -95,4 +95,6 @@ public interface IProductinfoRelationService
     Map<String, ProductinfoRelationVo> getCouponProductinfoRelationVoMap();
 
     Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap();
+
+    Map<String, MskuProductinfoRelationVo> getAsinProductinfoRelationVoMap();
 }

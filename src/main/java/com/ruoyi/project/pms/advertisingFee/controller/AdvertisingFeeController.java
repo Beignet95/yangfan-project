@@ -138,20 +138,7 @@ public class AdvertisingFeeController extends BaseController
     @RequiresPermissions("pms:advertisingFee:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport,String site) throws Exception {
-
-        String filename =  file.getOriginalFilename();
-        Date month;
-        if(filename.contains("-")){
-            String[] strs = filename.split("-");
-            String timeAndSuffix = strs[strs.length-1];
-            String timeStr = timeAndSuffix.split("\\.")[0];
-            try{
-                month = DateUtils.parseDate(timeStr,"yyyy年MM月");
-            }catch (ParseException e){
-                throw new BusinessException("文件名后面必须加上格式为 -yyyy年MM月 的格式的时间信息！");
-            }
-        }else throw new BusinessException("文件名后面必须加上格式为 -yyyy年MM月 的格式的时间信息！");
+    public AjaxResult importData(MultipartFile file,Date month, boolean updateSupport,String site) throws Exception {
         if(StringUtils.isEmpty(site)) throw new BusinessException("请输入站点编码！");
 
         ExcelUtil<AdvertisingFee> util = new ExcelUtil<AdvertisingFee>(AdvertisingFee.class);
@@ -168,5 +155,15 @@ public class AdvertisingFeeController extends BaseController
     {
         ExcelUtil<AdvertisingFee> util = new ExcelUtil<AdvertisingFee>(AdvertisingFee.class);
         return util.importTemplateExcel("广告费费用",NO_USE_ROWNUM);
+    }
+
+    /**
+     * 展示导入框
+     */
+    @GetMapping("/showImportPage")
+    public String showImportPage(boolean showSpareField,ModelMap mmap)
+    {
+        mmap.addAttribute("showSpareField",showSpareField);
+        return prefix + "/import";
     }
 }

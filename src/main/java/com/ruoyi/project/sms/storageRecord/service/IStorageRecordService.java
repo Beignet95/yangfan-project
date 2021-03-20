@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.project.sms.storageRecord.domain.StorageRecord;
+import com.ruoyi.project.sms.storageRecord.vo.StorageRecordImpTempVo;
 
 /**
  * 仓储记录Service接口
@@ -69,7 +70,7 @@ public interface IStorageRecordService
      * @param ids 需要导入的数据List
      * @return 结果
      */
-    public String importStorageRecord(List<StorageRecord> storageRecordList, boolean isUpdateSupport,String account);
+    public String importStorageRecord(List<StorageRecordImpTempVo> storageRecordImpTempVos, boolean isUpdateSupport, String account,String site);
 
     /**
      *获取一个Map<String, BigDecimal>
@@ -79,5 +80,14 @@ public interface IStorageRecordService
      * @return
      */
     public Map<String, BigDecimal> getSkuStorageFeeMapByMonth(Date month);
+
+    /**
+     * 获取仓储汇总列表
+     *     String 标准SKU
+     *     BigDecimal 对应标准SKU的总仓储费
+     *     @param month 月份
+     * @return
+     */
+    public List<StorageRecord> getStorageRecordGather(StorageRecord storageRecord);
 
 }

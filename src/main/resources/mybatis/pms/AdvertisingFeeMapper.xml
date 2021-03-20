@@ -10,6 +10,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="site"    column="site"    />
         <result property="campaign"    column="campaign"    />
         <result property="charge"    column="charge"    />
+        <result property="standardSku"    column="standard_sku"    />
+        <result property="spu"    column="spu"    />
+        <result property="principal"    column="principal"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -17,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAdvertisingFeeVo">
-        select id, month, site, campaign, charge, create_by, create_time, update_by, update_time from pms_advertising_fee
+        select id, month, site, campaign, charge, standard_sku, spu, principal, create_by, create_time, update_by, update_time from pms_advertising_fee
     </sql>
 
     <select id="selectAdvertisingFeeList" parameterType="AdvertisingFee" resultMap="AdvertisingFeeResult">
@@ -27,6 +30,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="campaign != null  and campaign != ''"> and campaign = #{campaign}</if>
             <if test="charge != null "> and charge = #{charge}</if>
+            <if test="standardSku != null  and standardSku != ''"> and standard_sku = #{standardSku}</if>
+            <if test="spu != null  and spu != ''"> and spu = #{spu}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
         </where>
         order by id desc
     </select>
@@ -43,6 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="site != null and site != ''">site,</if>
             <if test="campaign != null and campaign != ''">campaign,</if>
             <if test="charge != null">charge,</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku,</if>
+            <if test="spu != null and spu != ''">spu,</if>
+            <if test="principal != null and principal != ''">principal,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -53,6 +62,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="site != null and site != ''">#{site},</if>
             <if test="campaign != null and campaign != ''">#{campaign},</if>
             <if test="charge != null">#{charge},</if>
+            <if test="standardSku != null and standardSku != ''">#{standardSku},</if>
+            <if test="spu != null and spu != ''">#{spu},</if>
+            <if test="principal != null and principal != ''">#{principal},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -67,6 +79,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="site != null and site != ''">site = #{site},</if>
             <if test="campaign != null and campaign != ''">campaign = #{campaign},</if>
             <if test="charge != null">charge = #{charge},</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku = #{standardSku},</if>
+            <if test="spu != null and spu != ''">spu = #{spu},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -100,6 +115,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="site != null and site != ''">site = #{site},</if>
             <if test="campaign != null and campaign != ''">campaign = #{campaign},</if>
             <if test="charge != null">charge = #{charge},</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku = #{standardSku},</if>
+            <if test="spu != null and spu != ''">spu = #{spu},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -107,5 +125,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where month = #{month} and site = #{site} and campaign = #{campaign}
     </update>
+
+
+    <select id="selectSkuAdvertisingFeeList" parameterType="AdvertisingFee" resultType="AdvertisingFee">
+        select standard_sku as standardSku,principal,site,sum(charge) as charge
+         from pms_advertising_fee
+        where month = #{month} and site = #{site} group by standard_sku,principal,site
+    </select>
 
 </mapper>

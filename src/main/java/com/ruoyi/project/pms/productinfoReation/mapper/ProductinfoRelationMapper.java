@@ -2,6 +2,7 @@ package com.ruoyi.project.pms.productinfoReation.mapper;
 
 import java.util.List;
 
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
 import com.ruoyi.project.pms.productinfoReation.vo.PasinProductinfoRelationVo;
 import com.ruoyi.project.pms.productinfoReation.vo.ProductinfoRelationVo;
@@ -21,7 +22,7 @@ public interface ProductinfoRelationMapper
      * @param id 产品信息映射ID
      * @return 产品信息映射
      */
-    public com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation selectProductinfoRelationById(Long id);
+    public ProductinfoRelation selectProductinfoRelationById(Long id);
 
     /**
      * 查询产品信息映射列表
@@ -29,7 +30,7 @@ public interface ProductinfoRelationMapper
      * @param productinfoRelation 产品信息映射
      * @return 产品信息映射集合
      */
-    public List<com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation> selectProductinfoRelationList(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation);
+    public List<ProductinfoRelation> selectProductinfoRelationList(ProductinfoRelation productinfoRelation);
 
     /**
      * 新增产品信息映射
@@ -37,7 +38,7 @@ public interface ProductinfoRelationMapper
      * @param productinfoRelation 产品信息映射
      * @return 结果
      */
-    public int insertProductinfoRelation(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation);
+    public int insertProductinfoRelation(ProductinfoRelation productinfoRelation);
 
     /**
      * 修改产品信息映射
@@ -45,7 +46,7 @@ public interface ProductinfoRelationMapper
      * @param productinfoRelation 产品信息映射
      * @return 结果
      */
-    public int updateProductinfoRelation(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation);
+    public int updateProductinfoRelation(ProductinfoRelation productinfoRelation);
 
     /**
      * 删除产品信息映射
@@ -69,7 +70,7 @@ public interface ProductinfoRelationMapper
      * @param ProductinfoRelation ${subTable.functionName}
      * @return 结果
      */
-    public int updateProductinfoRelationByOnlyCondition(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation);
+    public int updateProductinfoRelationByOnlyCondition(ProductinfoRelation productinfoRelation);
 
     /**
      * 通过除ID外的唯一条件查询${subTable.functionName}信息
@@ -77,7 +78,7 @@ public interface ProductinfoRelationMapper
      * @param ProductinfoRelation ${subTable.functionName}
      * @return ${subTable.functionName}对象
      */
-    public com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation selectProductinfoRelationByOnlyCondition(com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation productinfoRelation);
+    public com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation selectProductinfoRelationByOnlyCondition(ProductinfoRelation productinfoRelation);
 
     /**
      * 获取标准SKU与MSKU关系

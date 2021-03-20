@@ -1,18 +1,16 @@
 package com.ruoyi.project.oms.transactionRecord.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.csv.CsvUtil;
-import com.ruoyi.project.compdata.advertising.vo.AdvertisingAnalyParamVo;
-import com.ruoyi.project.compdata.advertising.vo.AdvertisingEchartsVo;
-import com.ruoyi.project.compdata.advertising.vo.AdvertisingTempVo;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
+import com.ruoyi.project.oms.transactionRecord.vo.BLDTransactionRecordVo;
 import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
+import com.ruoyi.project.oms.transactionRecord.vo.OrderIdSku;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,6 +65,20 @@ public class TransactionRecordController extends BaseController
     public String truckRecord()
     {
         return prefix + "/transactionRecord-truckrecord";
+    }
+
+    @RequiresPermissions("oms:transactionRecord:view")
+    @GetMapping("/BDAndLDReocord")
+    public String BDAndLDReocord()
+    {
+        return prefix + "/transactionRecord-bdandldrecord";
+    }
+
+    @RequiresPermissions("oms:transactionRecord:view")
+    @GetMapping("/feeAdjustmentReocord")
+    public String feeAdjustmentReocord()
+    {
+        return prefix + "/transactionRecord-fee-adjustment-record";
     }
 
     /**
@@ -159,11 +171,8 @@ public class TransactionRecordController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport,String account,String site,String spareField) throws Exception
     {
 
-        if (StringUtils.isEmpty(account)||StringUtils.isEmpty(site)) throw new BusinessException("账号和站点都不能为空！");
-
-        if(site.equals("H4-DE")){
-
-        }
+        if (StringUtils.isEmpty(account)||StringUtils.isEmpty(site)||StringUtils.isEmpty(spareField))
+            throw new BusinessException("账号和站点都不能为空！");
 
         CsvUtil<TransactionRecordImpTempVo> util = new CsvUtil<TransactionRecordImpTempVo>(TransactionRecordImpTempVo.class);
         List<TransactionRecordImpTempVo> impTempVos = util.importCvs(file.getInputStream(),7);
@@ -192,8 +201,28 @@ public class TransactionRecordController extends BaseController
     @ResponseBody
     public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap)
     {
-        List<FinanceVo> financeVos = transactionRecordService.selectTransactionAnaly(transactionRecord);
-        return getDataTable(financeVos);
+        if(checkParams(transactionRecord)){
+            Map resultMap = transactionRecordService.selectTransactionAnaly(transactionRecord);
+            List<FinanceVo> financeVos = (List<FinanceVo>) resultMap.get("data");
+            String msg = (String) resultMap.get("msg");
+            TableDataInfo tableDataInfo = getDataTable(financeVos==null?new ArrayList<FinanceVo>():financeVos);
+            tableDataInfo.setMsg(msg);
+            return tableDataInfo;
+        }else return getDataTable(new ArrayList<TransactionRecord>());
+
+    }
+
+    private boolean checkParams(TransactionRecord transactionRecord) {
+        String site = transactionRecord.getSite();
+        if(StringUtils.isNotEmpty(site)){
+            if(site.endsWith("US")||site.endsWith("CA")){
+                return StringUtils.isNotEmpty(transactionRecord.getSpareField());
+            }else {
+                return true;
+            }
+        }else {
+            return false;
+        }
     }
 
 
@@ -207,7 +236,7 @@ public class TransactionRecordController extends BaseController
     @ResponseBody
     public AjaxResult exportGatherData(TransactionRecord transactionRecord)
     {
-        List<FinanceVo> list = transactionRecordService.selectTransactionAnaly(transactionRecord);
+        List<FinanceVo> list = (List<FinanceVo>) transactionRecordService.selectTransactionAnaly(transactionRecord).get("data");
         ExcelUtil<FinanceVo> util = new ExcelUtil<FinanceVo>(FinanceVo.class);
         return util.exportExcel(list, "财务汇总数据");
     }
@@ -221,6 +250,93 @@ public class TransactionRecordController extends BaseController
     {
         mmap.put("truckRecordId", truckRecordId);
         return "lms/truckService/truckService";
+    }
+
+    /**
+     * 查询BD与LD记录数据列表
+     */
+    @RequiresPermissions("oms:transactionRecord:list")
+    @PostMapping("/BLDTransactionReocordVoList")
+    @ResponseBody
+    public TableDataInfo BLDTransactionReocordVoList(BLDTransactionRecordVo vo)
+    {
+        startPage();
+        List<BLDTransactionRecordVo> list = transactionRecordService.selectBLDTransactionReocordVoList(vo);
+        return getDataTable(list);
+    }
+
+    /**
+     *  BLD记录与ASIN关联
+     */
+    /**
+     * 查询BD与LD记录数据列表
+     */
+    @Log(title = "关联或修改关联ASIN", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("oms:transactionRecord:list")
+    @PostMapping("/BLDRecordrelateASIN")
+    @ResponseBody
+    public AjaxResult BLDRecordrelateASIN(Long recordId,String asin)
+    {
+        return toAjax(transactionRecordService.BLDRecordrelateASIN(recordId,asin));
+    }
+
+
+    /**
+     * 导出交易数据列表
+     */
+    @RequiresPermissions("oms:transactionRecord:export")
+    @Log(title = "交易数据", businessType = BusinessType.EXPORT)
+    @PostMapping("/exportOrderIdStrs")
+    @ResponseBody
+    public AjaxResult exportOrderIdStrs(TransactionRecord transactionRecord)
+    {
+        String orderIdStrs =  transactionRecordService.exportOrderIdStrs(transactionRecord);
+        return AjaxResult.success("操作成功",orderIdStrs);
+    }
+
+    //导出 订单号与SKU关系模板
+    @RequiresPermissions("oms:transactionRecord:export")
+    @GetMapping("/importOrderIdSkuTemplate")
+    @ResponseBody
+    public AjaxResult importTemplate()
+    {
+        ExcelUtil<OrderIdSku> util = new ExcelUtil<OrderIdSku>(OrderIdSku.class);
+        return util.importTemplateExcel("订单号与SKU关系");
+    }
+
+    @Log(title = "订单SKU关系导入", businessType = BusinessType.IMPORT)
+    @RequiresPermissions("oms:transactionRecord:import")
+    @PostMapping("/importOrderSku4FeeAdjustmentOrder")
+    @ResponseBody
+    public AjaxResult importOrderSku4FeeAdjustmentOrder(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<OrderIdSku> util = new ExcelUtil<OrderIdSku>(OrderIdSku.class);
+        List<OrderIdSku> impTempVos = util.importExcel(StringUtils.EMPTY,file.getInputStream());
+        String message = transactionRecordService.importOrderSku4FeeAdjustmentOrder(impTempVos, updateSupport);
+        return AjaxResult.success(message);
+    }
+
+    /**
+     * 查询交易数据列表
+     */
+    @RequiresPermissions("oms:transactionRecord:list")
+    @PostMapping("/feeAdjustmentRecordlist")
+    @ResponseBody
+    public TableDataInfo feeAdjustmentRecordlist(TransactionRecord transactionRecord)
+    {
+        startPage();
+        List<TransactionRecord> list = transactionRecordService.selectTransactionRecordList(transactionRecord);
+        return getDataTable(list);
+    }
+
+    /**
+     * 展示导入框
+     */
+    @GetMapping("/showImportPage")
+    public String showImportPage(boolean showSpareField,ModelMap mmap)
+    {
+        mmap.addAttribute("showSpareField",showSpareField);
+        return prefix + "/import";
     }
 
 

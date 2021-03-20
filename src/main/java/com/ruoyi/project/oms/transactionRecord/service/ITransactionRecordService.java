@@ -6,8 +6,9 @@ import java.util.Map;
 
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
+import com.ruoyi.project.oms.transactionRecord.vo.BLDTransactionRecordVo;
 import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
-import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
+import com.ruoyi.project.oms.transactionRecord.vo.OrderIdSku;
 
 /**
  * 交易数据Service接口
@@ -80,7 +81,7 @@ public interface ITransactionRecordService
      * @param transactionRecord 交易汇总数据
      * @return 交易总数据集合
      */
-    public List<FinanceVo> selectTransactionAnaly(TransactionRecord transactionRecord);
+    public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord);
 
     /**
      * @param removalType 移除类型
@@ -98,4 +99,11 @@ public interface ITransactionRecordService
      */
     public Map<String, BigDecimal> getSkuRefundServiceFeeMap(TransactionRecord transactionRecord);
 
+    List<BLDTransactionRecordVo> selectBLDTransactionReocordVoList(BLDTransactionRecordVo vo);
+
+    int BLDRecordrelateASIN(Long recordId, String asin);
+
+    String exportOrderIdStrs(TransactionRecord transactionRecord);
+
+    String importOrderSku4FeeAdjustmentOrder(List<OrderIdSku> impTempVos, boolean updateSupport);
 }

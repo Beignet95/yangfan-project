@@ -1,5 +1,6 @@
 package com.ruoyi.project.pms.advertisingFee.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.List;
 
@@ -8,11 +9,15 @@ import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity
 import com.ruoyi.project.compdata.advertisingactivity.service.IAdvertisingActivityService;
 import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
 import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
+import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
+import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -142,7 +147,7 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
             throw new BusinessException("导入数据不能为空！");
         }
 
-        checkAdvertisingActivity(advertisingFeeList);//校验广告活动数据是否完整，避免分析数据不准确
+        Map<String,CampaignProductinfoRelation> campProdinfoRelaMap =  checkAndGetAdvertisingActivity(advertisingFeeList);//校验广告活动数据是否完整，避免分析数据不准确
 
         int successNum = 0;
         int failureNum = 0;
@@ -153,11 +158,19 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         {
             try
             {
+                //广告词和广告费用为null时，不做任何操作
+                if(StringUtils.isEmpty(advertisingFee.getCampaign())&&StringUtils.isEmpty(advertisingFee.getStandardSku())) continue;
+
                 // 验证数据是否已经
                 advertisingFee.setMonth(month);//先设置好时间，再查询
                 advertisingFee.setSite(site);
-                if (StringUtils.isEmpty(advertisingFee.getCampaign())||advertisingFee.getCharge()==null) continue;
 
+                CampaignProductinfoRelation cpr = campProdinfoRelaMap.get(advertisingFee.getCampaign());
+                advertisingFee.setSpu(cpr.getType());
+                advertisingFee.setStandardSku(cpr.getSku());
+                advertisingFee.setPrincipal(cpr.getPrincipal());
+
+                if (StringUtils.isEmpty(advertisingFee.getCampaign())||advertisingFee.getCharge()==null) continue;
                     advertisingFee.setCreateBy(operName);
                     advertisingFee.setCreateTime(new Date());
                     this.insertAdvertisingFee(advertisingFee);
@@ -185,22 +198,52 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         return successMsg.toString();
     }
 
+    @Override
+    public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee advertisingFee) {
+        List<AdvertisingFee> skuAdvertisingFeeList = advertisingFeeMapper.selectSkuAdvertisingFeeList(advertisingFee);
+        return skuAdvertisingFeeList;
+    }
+
     @Autowired
     IAdvertisingActivityService advertisingActivityService;
 
-    private void checkAdvertisingActivity(List<AdvertisingFee> advertisingFeeList) {
-       List<AdvertisingActivity> activityList = advertisingActivityService.selectAdvertisingActivityList(null);
-       Map<String,String> map = activityList.stream().collect(Collectors.toMap(AdvertisingActivity::getActivity,AdvertisingActivity::getSku));
+    private Map<String, CampaignProductinfoRelation> checkAndGetAdvertisingActivity(List<AdvertisingFee> advertisingFeeList) {
+       List<AdvertisingActivity> activityList =  advertisingActivityService.selectAdvertisingActivityList(null);
+       List<CampaignProductinfoRelation> cprList = advertisingActivityService.selectCampaignProductinfoRelationList(null);
+       Map<String,CampaignProductinfoRelation> map = cprList.stream().collect(
+               Collectors.toMap(CampaignProductinfoRelation::getCampaign,Function.identity(),(entity1, entity2) -> {
+                   String sku1 = entity1.getSku();
+                   String sku2 = entity2.getSku();
+                   if(sku1.length()>sku2.length()) return entity2;
+                   else if(sku1.length()<sku2.length()) return entity1;
+                   else if(sku1.compareTo(sku2)>0) return entity2;
+                   return entity1;
+               }));
+        Map<String,AdvertisingActivity> activityMap = activityList.stream()
+                .collect(Collectors.toMap(AdvertisingActivity::getActivity,Function.identity(),(entity1, entity2) ->entity1));
 
        StringBuilder warnMsg = new StringBuilder();
-       int index=1;
+       StringBuilder warnMsg2 = new StringBuilder();
        for (AdvertisingFee advertisingFee:advertisingFeeList){
            String campaign = advertisingFee.getCampaign();
-           if(StringUtils.isNotEmpty(campaign)&&!map.containsKey(advertisingFee.getCampaign())){
-               warnMsg.append(index+", "+advertisingFee.getCampaign()+"  广告词缺少广告活动映射！<br/>");
+           if(StringUtils.isNotEmpty(campaign)){
+               if(!activityMap.containsKey(advertisingFee.getCampaign())){
+                   warnMsg.append(advertisingFee.getCampaign()+"<br/>");
+               }else if(!map.containsKey(advertisingFee.getCampaign())){
+                   warnMsg2.append(advertisingFee.getCampaign()+"<br/>");
+               }
            }
-           index++;
        }
-       if(warnMsg.length()>0) throw new BusinessException(warnMsg.toString());
+       if(warnMsg.length()>0) {
+           warnMsg.insert(0,"以下广告词缺少广告映射关系:<br/>");
+       }
+       if(warnMsg2.length()>0){
+           warnMsg2.insert(0,"以下广告词缺少产品信息关系:<br/>");
+       }
+       warnMsg.append(warnMsg2);
+       if(warnMsg.length()>0){
+            throw new BusinessException(warnMsg.toString());
+       }
+       return map;
     }
 }

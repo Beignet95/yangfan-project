@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.utils.csv.CsvUtil;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
+import com.ruoyi.project.sms.storageRecord.vo.StorageRecordImpTempVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -133,11 +134,11 @@ public class StorageRecordController extends BaseController
     @RequiresPermissions("sms:storageRecord:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport,String account) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport,String account,String site) throws Exception
     {
-        CsvUtil<StorageRecord> util = new CsvUtil<StorageRecord>(StorageRecord.class);
-        List<StorageRecord> imps = util.importCvs(file.getInputStream(),0);
-        String message = storageRecordService.importStorageRecord(imps, updateSupport,account);
+        CsvUtil<StorageRecordImpTempVo> util = new CsvUtil<StorageRecordImpTempVo>(StorageRecordImpTempVo.class);
+        List<StorageRecordImpTempVo> imps = util.importCvs(file.getInputStream(),0);
+        String message = storageRecordService.importStorageRecord(imps, updateSupport,account,site);
         return AjaxResult.success(message);
     }
 
@@ -149,5 +150,15 @@ public class StorageRecordController extends BaseController
     {
         ExcelUtil<StorageRecord> util = new ExcelUtil<StorageRecord>(StorageRecord.class);
         return util.importTemplateExcel("仓储记录");
+    }
+
+    /**
+     * 展示导入框
+     */
+    @GetMapping("/showImportPage")
+    public String showImportPage(boolean showSpareField,ModelMap mmap)
+    {
+        mmap.addAttribute("showSpareField",showSpareField);
+        return prefix + "/import";
     }
 }

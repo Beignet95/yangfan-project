@@ -7,11 +7,13 @@ import java.util.Date;
 
 public class MathTest {
     public static void main(String[] args) {
-        if((Double) 0.9 % 1 > 0){
-            System.out.println("true");
-        }else {
-            System.out.println("false");
-        }
+
+        BigDecimal totalPrice = new BigDecimal("-155.63");
+        BigDecimal salePrice = new BigDecimal("-141.04");
+        totalPrice = totalPrice.add(salePrice);
+        System.out.println(">>>>>>>>totalPrice:"+totalPrice);
+
+
     }
 
     void test1(){

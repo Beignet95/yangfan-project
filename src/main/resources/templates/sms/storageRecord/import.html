@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('导入交易记录')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+         <form enctype="multipart/form-data" class="mt20 mb10">
+             <div class="col-xs-offset-1">
+                 <div id="element" class="">
+                         账号：<select class="type" data-first-title="请选择" name="account">
+                             <option value="">请选择</option>
+                         </select>
+                         站点：<select class="router" data-first-title="请选择" name="site">
+                             <option value="">请选择</option>
+                         </select>
+                 </div>
+                 <input type="file" id="file" name="file"/>
+                 <font color="red" class="pull-left mt10">
+                     提示：仅允许导入“csv”格式文件！
+                 </font>
+             </div>
+         </form>
+    </div>
+     <th:block th:include="include :: footer" />
+     <th:block th:include="include :: jquery-cxselect-js" />
+    <script th:inline="javascript">
+        //var data = [{"n":"Q4","s":[{"n":"Q4-US","v":"Q4-US"},{"n":"Q4-CA","v":"Q4-CA"}],"v":"Q4"},{"n":"AGS","s":[{"n":"AGS-US","v":"AGS-US"},{"n":"AGS-CA","v":"AGS-CA"}],"v":"AGS"}];
+        $(function() {
+            initSelect();
+            initSpareField();
+        });
+        //渲染下拉框
+        function  initSelect() {
+            $.get("/ums/account/getJson4AccountSite",{},function(result){
+                //data = JSON.parse(result);
+                var data = eval('(' + result + ')');
+                $('#element').cxSelect({
+                    selects: ['type', 'router'],
+                    jsonValue: 'v',
+                    data: data
+                });
+            });
+        }
+        //渲染类型
+        function initSpareField(){
+            if([[${showSpareField}]]){
+                $("#element").append($('#spareFieldTpl').html());
+            }
+        }
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month() {
+            var myDate = new Date();
+            //获取当前年
+            var year = myDate.getFullYear();
+
+            var Last_month = new Date().getMonth();
+
+            if (Last_month == 0) {
+                Last_month = 12;
+                year--;
+            }
+        }
+
+
+
+    </script>
+</body>
+<!-- 导入区域 -->
+<script id="spareFieldTpl" type="text/template">
+    <span>类型：</span><select class="spareFieldClass" data-first-title="请选择" name="spareField">
+        <option value="SO">SO</option>
+        <option value="IO">IO</option>
+    </select>
+</script>
+</html>

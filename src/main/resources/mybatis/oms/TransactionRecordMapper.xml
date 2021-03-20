@@ -46,6 +46,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="BLDTransactionRecordVo" id="BLDTransactionRecordVoResult">
+        <result property="id"    column="id"    />
+        <result property="account"    column="account"    />
+        <result property="site"    column="site"    />
+        <result property="time"    column="time"    />
+        <result property="settlementId"    column="settlement_id"    />
+        <result property="type"    column="type"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="sku"    column="sku"    />
+        <result property="description"    column="description"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="marketplace"    column="marketplace"    />
+        <result property="fulfilment"    column="fulfilment"    />
+        <result property="orderCity"    column="order_city"    />
+        <result property="orderState"    column="order_state"    />
+        <result property="orderPostal"    column="order_postal"    />
+        <result property="taxCollectionModel"    column="tax_collection_model"    />
+        <result property="productSales"    column="product_sales"    />
+        <result property="productSalesTax"    column="product_sales_tax"    />
+        <result property="postageCredits"    column="postage_credits"    />
+        <result property="shippingCreditsTax"    column="shipping_credits_tax"    />
+        <result property="giftWrapCredits"    column="gift_wrap_credits"    />
+        <result property="giftwrapCreditsTax"    column="giftwrap_credits_tax"    />
+        <result property="promotionalRebates"    column="promotional_rebates"    />
+        <result property="promotionalRebatesTax"    column="promotional_rebates_tax"    />
+        <result property="marketplaceWithheldTax"    column="marketplace_withheld_tax"    />
+        <result property="sellingFees"    column="selling_fees"    />
+        <result property="fbaFees"    column="fba_fees"    />
+        <result property="otherTransactionFees"    column="other_transaction_fees"    />
+        <result property="other"    column="other"    />
+        <result property="total"    column="total"    />
+        <result property="standardSku"    column="standard_sku"    />
+        <result property="spu"    column="spu"    />
+        <result property="principal"    column="principal"    />
+        <result property="chargType"    column="charg_type"    />
+        <result property="spareField"    column="spare_field"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="asin"    column="asin"    />
+    </resultMap>
+
     <sql id="selectTransactionRecordVo">
         select id, account, site, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, standard_sku, spu, principal, charg_type, spare_field, create_by, create_time, update_by, update_time from oms_transaction_record
     </sql>
@@ -55,7 +98,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="account != null  and account != ''"> and account = #{account}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
-            <if test="time != null "> and time = #{time}</if>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
@@ -88,6 +132,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
             <if test="chargType != null "> and charg_type = #{chargType}</if>
             <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+            <if test="params.standardSku != null and params.standardSku == 'empty'"> and standard_sku is null</if>
+            <if test="params.standardSku != null and params.standardSku == 'noEmpty'"> and standard_sku is not null</if>
         </where>
         order by id desc
     </select>
@@ -291,7 +337,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectTransactionAnaly" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
         SELECT principal,type,spu,standard_sku,site,account,
-sum(quantity) as quantity,
 sum(product_sales) as product_sales,
 SUM(product_sales_tax) as product_sales_tax,
 SUM(postage_credits) as postage_credits,
@@ -308,11 +353,11 @@ SUM(other) as other,
 SUM(total) as total
 from oms_transaction_record
         <where>
-            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
-            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != ''"> and fulfilment = #{fulfilment}</if>
+<!--            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>-->
             <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
         </where>
@@ -320,16 +365,32 @@ GROUP BY principal,type,spu,standard_sku,site,account
 
     </select>
 
+    <select id="selectQuantityAnaly" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
+        SELECT principal,spu,standard_sku,site,account,
+        sum(quantity) as quantity
+        from oms_transaction_record
+         <where>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        and length(sku) &gt; 3
+        </where>
+        GROUP BY principal,spu,standard_sku,site,account
+
+    </select>
+
     <select id="selectGatherRecord" parameterType="TransactionRecord" resultType="TransactionRecord">
         SELECT sum(quantity) as quantity,
                sum(product_sales) as productSales,
-               sum(other_transaction_fees) as otherTransactionFees
+               sum(other_transaction_fees) as otherTransactionFees,
+               sum(other) as other
                from oms_transaction_record
         <where>
-            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="description != null">and description = #{description}</if>
+            <if test="description != null and description != ''">and description = #{description}</if>
             <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
@@ -345,8 +406,8 @@ GROUP BY principal,type,spu,standard_sku,site,account
 
     <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="SkuRefundServiceFee">
         select tr.standard_sku as sku,SUM(rs.amount) as refundServiceFee from oms_transaction_record tr INNER JOIN oms_refund_servicefee rs on tr.order_id=rs.order_id
-        where type='Refund' and rs.payment_detail='Refund Administration Fee'
-            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+        where type=5 and rs.payment_detail='Refund Administration Fee'
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="description != null and description != ''">and description = #{description}</if>
@@ -361,7 +422,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
     <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="SkuFee">
         select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
         <where>
-            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="description != null">and description = #{description}</if>
@@ -376,7 +437,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
     <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="SkuFee">
         select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
         <where>
-            <if test="params.startTime != null"> and time &gt;= #{params.startTime}</if>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="description != null  and description != ''"> and description like #{description}</if>
@@ -387,5 +448,115 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </where>
         GROUP BY standard_sku
     </select>
+
+    <select id="selectSkuBDOrLdFeeList" parameterType="TransactionRecord" resultType="SkuFee">
+        select pr.sku,SUM(tr.other_transaction_fees) as fee from oms_transaction_record tr INNER JOIN oms_dealfee_asin da on tr.id=da.record_id
+        INNER JOIN pms_productinfo_relation pr on pr.asin=da.asin
+        <where>
+            <if test="params.beginTime != null"> and tr.time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null"> and tr.time &lt;= #{params.endTime}</if>
+            <if test="sku != null  and sku != ''"> and tr.sku = #{sku}</if>
+            <if test="type != null  and type != ''"> and tr.type = #{type}</if>
+            <if test="description != null  and description != ''"> and tr.description like #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and tr.fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and tr.fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and tr.site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and tr.spare_field = #{spareField}</if>
+        </where>
+        GROUP BY pr.sku
+    </select>
+
+    <select id="selectBLDTransactionReocordVoList" parameterType="BLDTransactionRecordVo" resultMap="BLDTransactionRecordVoResult">
+        select tr.id, tr.account, tr.site, tr.time, tr.settlement_id, tr.type, tr.order_id, tr.sku, tr.description, tr.quantity, tr.marketplace,
+        tr.fulfilment, tr.order_city,tr.order_state, tr.order_postal, tr.tax_collection_model, tr.product_sales, tr.product_sales_tax,
+        tr.postage_credits, tr.shipping_credits_tax,tr.gift_wrap_credits, tr.giftwrap_credits_tax, tr.promotional_rebates,
+        tr.promotional_rebates_tax, tr.marketplace_withheld_tax,tr.selling_fees, tr.fba_fees,tr.other_transaction_fees, tr.other, tr.total,
+        tr.standard_sku, tr.spu, tr.principal, tr.charg_type, tr.spare_field, tr.create_by, tr.create_time, tr.update_by,tr.update_time, da.asin
+        from oms_transaction_record tr LEFT JOIN oms_dealfee_asin da on tr.description=da.description
+        <where>
+            <if test="account != null  and account != ''"> and tr.account = #{account}</if>
+            <if test="site != null  and site != ''"> and tr.site = #{site}</if>
+            <if test="time != null "> and tr.time = #{time}</if>
+            <if test="settlementId != null  and settlementId != ''"> and tr.settlement_id = #{settlementId}</if>
+            <if test="type != null  and type != ''"> and tr.type = #{type}</if>
+            <if test="orderId != null  and orderId != ''"> and tr.order_id = #{orderId}</if>
+            <if test="sku != null  and sku != ''"> and tr.sku = #{sku}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign==''"> and tr.description = #{description}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign!=''"> and tr.description like #{description}</if>
+            <if test="quantity != null "> and tr.quantity = #{quantity}</if>
+            <if test="marketplace != null  and marketplace != ''"> and tr.marketplace = #{marketplace}</if>
+            <if test="fulfilment != null  and fulfilment != ''"> and tr.fulfilment = #{fulfilment}</if>
+            <if test="orderCity != null  and orderCity != ''"> and tr.order_city = #{orderCity}</if>
+            <if test="orderState != null  and orderState != ''"> and tr.order_state = #{orderState}</if>
+            <if test="orderPostal != null  and orderPostal != ''"> and tr.order_postal = #{orderPostal}</if>
+            <if test="taxCollectionModel != null  and taxCollectionModel != ''"> and tr.tax_collection_model = #{taxCollectionModel}</if>
+            <if test="productSales != null "> and tr.product_sales = #{productSales}</if>
+            <if test="productSalesTax != null "> and tr.product_sales_tax = #{productSalesTax}</if>
+            <if test="postageCredits != null "> and tr.postage_credits = #{postageCredits}</if>
+            <if test="shippingCreditsTax != null "> and tr.shipping_credits_tax = #{shippingCreditsTax}</if>
+            <if test="giftWrapCredits != null "> and tr.gift_wrap_credits = #{giftWrapCredits}</if>
+            <if test="giftwrapCreditsTax != null "> and tr.giftwrap_credits_tax = #{giftwrapCreditsTax}</if>
+            <if test="promotionalRebates != null "> and tr.promotional_rebates = #{promotionalRebates}</if>
+            <if test="promotionalRebatesTax != null "> and tr.promotional_rebates_tax = #{promotionalRebatesTax}</if>
+            <if test="marketplaceWithheldTax != null "> and tr.marketplace_withheld_tax = #{marketplaceWithheldTax}</if>
+            <if test="sellingFees != null "> and tr.selling_fees = #{sellingFees}</if>
+            <if test="fbaFees != null "> and tr.fba_fees = #{fbaFees}</if>
+            <if test="otherTransactionFees != null "> and tr.other_transaction_fees = #{otherTransactionFees}</if>
+            <if test="other != null "> and tr.other = #{other}</if>
+            <if test="total != null "> and tr.total = #{total}</if>
+            <if test="standardSku != null  and standardSku != ''"> and tr.standard_sku = #{standardSku}</if>
+            <if test="spu != null  and spu != ''"> and tr.spu = #{spu}</if>
+            <if test="principal != null  and principal != ''"> and tr.principal = #{principal}</if>
+            <if test="chargType != null "> and tr.charg_type = #{chargType}</if>
+            <if test="spareField != null  and spareField != ''"> and tr.spare_field = #{spareField}</if>
+            <if test="asin != null  and asin != ''"> and da.asin = #{asin}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <update id="updateAdjustmentRecordByOrderId" parameterType="TransactionRecord">
+        update oms_transaction_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="settlementId != null">settlement_id = #{settlementId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="sku != null">sku = #{sku},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="marketplace != null">marketplace = #{marketplace},</if>
+            <if test="fulfilment != null">fulfilment = #{fulfilment},</if>
+            <if test="orderCity != null">order_city = #{orderCity},</if>
+            <if test="orderState != null">order_state = #{orderState},</if>
+            <if test="orderPostal != null">order_postal = #{orderPostal},</if>
+            <if test="taxCollectionModel != null">tax_collection_model = #{taxCollectionModel},</if>
+            <if test="productSales != null">product_sales = #{productSales},</if>
+            <if test="productSalesTax != null">product_sales_tax = #{productSalesTax},</if>
+            <if test="postageCredits != null">postage_credits = #{postageCredits},</if>
+            <if test="shippingCreditsTax != null">shipping_credits_tax = #{shippingCreditsTax},</if>
+            <if test="giftWrapCredits != null">gift_wrap_credits = #{giftWrapCredits},</if>
+            <if test="giftwrapCreditsTax != null">giftwrap_credits_tax = #{giftwrapCreditsTax},</if>
+            <if test="promotionalRebates != null">promotional_rebates = #{promotionalRebates},</if>
+            <if test="promotionalRebatesTax != null">promotional_rebates_tax = #{promotionalRebatesTax},</if>
+            <if test="marketplaceWithheldTax != null">marketplace_withheld_tax = #{marketplaceWithheldTax},</if>
+            <if test="sellingFees != null">selling_fees = #{sellingFees},</if>
+            <if test="fbaFees != null">fba_fees = #{fbaFees},</if>
+            <if test="otherTransactionFees != null">other_transaction_fees = #{otherTransactionFees},</if>
+            <if test="other != null">other = #{other},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="standardSku != null">standard_sku = #{standardSku},</if>
+            <if test="spu != null">spu = #{spu},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="chargType != null">charg_type = #{chargType},</if>
+            <if test="spareField != null">spare_field = #{spareField},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where order_id = #{orderId} and type = 8
+    </update>
 
 </mapper>
