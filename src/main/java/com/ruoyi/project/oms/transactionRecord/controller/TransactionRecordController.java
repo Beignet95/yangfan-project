@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.transactionRecord.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -199,8 +200,7 @@ public class TransactionRecordController extends BaseController
     @PostMapping("/getAnalysisData")
     @RequiresPermissions("oms:transactionRecord:analysis")
     @ResponseBody
-    public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap)
-    {
+    public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap) throws ParseException {
         if(checkParams(transactionRecord)){
             Map resultMap = transactionRecordService.selectTransactionAnaly(transactionRecord);
             List<FinanceVo> financeVos = (List<FinanceVo>) resultMap.get("data");
@@ -234,8 +234,7 @@ public class TransactionRecordController extends BaseController
     @Log(title = "交易数据", businessType = BusinessType.EXPORT)
     @PostMapping("/exportGatherData")
     @ResponseBody
-    public AjaxResult exportGatherData(TransactionRecord transactionRecord)
-    {
+    public AjaxResult exportGatherData(TransactionRecord transactionRecord) throws ParseException {
         List<FinanceVo> list = (List<FinanceVo>) transactionRecordService.selectTransactionAnaly(transactionRecord).get("data");
         ExcelUtil<FinanceVo> util = new ExcelUtil<FinanceVo>(FinanceVo.class);
         return util.exportExcel(list, "财务汇总数据");

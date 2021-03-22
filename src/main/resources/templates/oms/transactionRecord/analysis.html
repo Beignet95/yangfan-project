@@ -151,6 +151,21 @@
                     title: 'FBA销售退款'
                 },
                     {
+                        field: 'compensation',
+                        title: '赔偿金',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
+                    },
+                    {
+                        field: 'fbaInventoryCredit',
+                        title: 'FBA库存信贷'
+                    },
+                    {
+                        field: 'fbaLpAndFbaLpa',
+                        title: 'FBA清算<br/>继续进行'
+                    },
+                    {
                         field: 'finalFreight',
                         title: '尾程运费信用',
                         cellStyle: function (value, row, index) {
@@ -225,6 +240,13 @@
                         },
                     },
                     {
+                        field: 'mixedVat',
+                        title: '混合增值税',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": "yellow" } }
+                        },
+                    },
+                    {
                         field: 'selfdeliveryCommission',
                         title: '销售佣金(含自配送）',
                         cellStyle: function (value, row, index) {
@@ -234,6 +256,10 @@
                     {
                         field: 'sellerFulfilledSellingFees',
                         title: '自配送销售佣金',
+                    },
+                    {
+                        field: 'sellerFulfilledSellingFeeRefunds',
+                        title: '自配送销售退款佣金',
                     },
                     {
                         field: 'fbaSellingFees',

@@ -123,6 +123,8 @@ public class AsinMskuServiceImpl implements IAsinMskuService
         {
             try
             {
+                //为空不作操作
+                if(StringUtils.isEmpty(asinMsku.getAsin())&&StringUtils.isEmpty(asinMsku.getMsku())) continue;
                 // 验证数据是否已经
                 AsinMsku domain = asinMskuMapper.selectAsinMskuByOnlyCondition(asinMsku);
                 if (domain==null)

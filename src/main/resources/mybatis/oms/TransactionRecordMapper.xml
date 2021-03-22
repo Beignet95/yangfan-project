@@ -98,8 +98,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="account != null  and account != ''"> and account = #{account}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
-            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
-            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
             <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
@@ -434,8 +438,8 @@ GROUP BY principal,type,spu,standard_sku,site,account
         GROUP BY standard_sku
     </select>
 
-    <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="SkuFee">
-        select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
+    <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="TransactionRecord">
+        select standard_sku as standardSku,spu,principal,site,account,SUM(other_transaction_fees) as otherTransactionFees from oms_transaction_record
         <where>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
@@ -446,7 +450,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
             <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
         </where>
-        GROUP BY standard_sku
+        GROUP BY standard_sku,spu,principal,site,account
     </select>
 
     <select id="selectSkuBDOrLdFeeList" parameterType="TransactionRecord" resultType="SkuFee">

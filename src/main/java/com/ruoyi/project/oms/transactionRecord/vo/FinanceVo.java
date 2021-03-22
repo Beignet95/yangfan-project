@@ -157,6 +157,10 @@ public class FinanceVo extends BaseEntity
     @Excel(name = "其他")
     private BigDecimal reimbursement;
 
+    /** 混合增值税 */
+    @Excel(name = "混合增值税")
+    private BigDecimal mixedVat2;
+
     /** 销售佣金(含自配送） */
     @Excel(name = "销售佣金(含自配送）")
     private BigDecimal selfdeliveryCommission;

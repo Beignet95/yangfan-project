@@ -79,6 +79,7 @@
         var prefix = ctx + "oms/transactionRecord";
 
         $(function() {
+            initTimeSearchArea();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -223,6 +224,25 @@
                     data: data
                 });
             });
+        }
+
+        //初始化搜索区域的时间
+        function initTimeSearchArea(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+            var Last_month = new Date().getMonth();
+            var endTime = year+"-"+(Last_month+1)+"-"+1;
+
+            if(Last_month==0){
+                Last_month=12;
+                year--;
+            }
+            var beginTime = year+"-"+Last_month+"-"+1;
+            //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+            //渲染页面上方输入月份的input
+            $("input[name='params[beginTime]']").val(beginTime);
+            $("input[name='params[endTime]']").val(endTime);
         }
     </script>
 </body>

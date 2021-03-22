@@ -98,7 +98,7 @@ public interface TransactionRecordMapper
 
     List<SkuFee> selectSkuAdjustmentFeeList(TransactionRecord transactionRecord);
 
-    List<SkuFee> selectSkuEarlyFeeGatherList(TransactionRecord transactionRecord);
+    List<TransactionRecord> selectSkuEarlyFeeGatherList(TransactionRecord transactionRecord);
 
     List<SkuFee> selectSkuBDOrLdFeeList(TransactionRecord transactionRecord);
 

@@ -35,6 +35,14 @@ public class Site extends BaseEntity
     @Excel(name = "站点")
     private String site;
 
+    /** 语言 */
+    @Excel(name = "语言")
+    private String language;
+
+    /** 时间格式 */
+    @Excel(name = "时间格式")
+    private String timeFormat;
+
     /** 描述 */
     @Excel(name = "描述")
     private String descript;

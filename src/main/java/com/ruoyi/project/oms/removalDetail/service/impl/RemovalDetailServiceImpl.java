@@ -112,7 +112,6 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
      */
     @Override
     public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport) {
-        //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(removalDetailList) || removalDetailList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
@@ -126,6 +125,7 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
         {
             try
             {
+                if(removalDetail.getRemovalFee()==null) continue;//移除费为空时，则不作操作
                 // 验证数据是否已经
                 RemovalDetail domain = removalDetailMapper.selectRemovalDetailByOnlyCondition(removalDetail);
                 if (domain==null)

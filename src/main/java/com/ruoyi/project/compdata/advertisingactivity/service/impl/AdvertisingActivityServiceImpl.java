@@ -121,11 +121,7 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
             {
 
                 /**关键列为null时直接跳过**/
-                if(StringUtils.isEmpty(advertisingActivity.getActivity())|| StringUtils.isEmpty(advertisingActivity.getSku())){
-                    failureMsg.append("<br/>" + successNum + "、"+advertisingActivity.getActivity()+"的数据有空列！");
-                    failureNum++;
-                    continue;
-                }
+                if(StringUtils.isEmpty(advertisingActivity.getActivity())|| StringUtils.isEmpty(advertisingActivity.getSku())) continue;
                 /** ASIN字段超过10的为异常字段**/
                 if(advertisingActivity.getAsin()!=null&&advertisingActivity.getAsin().length()>11){
                     failureMsg.append("<br/>" + successNum + "、"+advertisingActivity.getActivity()+" 的ASIN数据过长！");

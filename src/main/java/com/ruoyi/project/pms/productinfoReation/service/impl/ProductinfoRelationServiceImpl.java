@@ -117,7 +117,6 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
      */
     @Override
     public String importProductinfoRelation(List<ProductinfoRelation> productinfoRelationList, boolean isUpdateSupport) {
-        //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(productinfoRelationList) || productinfoRelationList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
@@ -131,6 +130,9 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
         {
             try
             {
+                if(StringUtils.isEmpty(productinfoRelation.getAsin())&&StringUtils.isEmpty(productinfoRelation.getType())
+                &&StringUtils.isEmpty(productinfoRelation.getPrincipal())&&StringUtils.isEmpty(productinfoRelation.getSku())) continue;
+
                 // 验证数据是否已经
                 ProductinfoRelation domain = productinfoRelationMapper.selectProductinfoRelationByOnlyCondition(productinfoRelation);
                 if (domain==null)
@@ -227,5 +229,13 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     @Override
     public Map<String, MskuProductinfoRelationVo> getAsinProductinfoRelationVoMap() {
         return null;
+    }
+
+    @Override
+    public Map<String, ProductinfoRelation> getSkuProductinfoRelationVoMap() {
+        List<ProductinfoRelation> prList = this.selectProductinfoRelationList(null);
+        Map<String,ProductinfoRelation> map = prList.stream().collect(Collectors
+                .toMap(ProductinfoRelation::getSku,Function.identity(),(key1,key2)->key1));
+        return map;
     }
 }

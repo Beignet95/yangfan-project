@@ -1,6 +1,7 @@
 package com.ruoyi.project.oms.transactionRecord.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public interface ITransactionRecordService
      * @param transactionRecord 交易汇总数据
      * @return 交易总数据集合
      */
-    public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord);
+    public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord) throws ParseException;
 
     /**
      * @param removalType 移除类型

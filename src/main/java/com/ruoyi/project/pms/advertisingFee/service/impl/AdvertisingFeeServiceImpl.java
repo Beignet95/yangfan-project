@@ -159,7 +159,7 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
             try
             {
                 //广告词和广告费用为null时，不做任何操作
-                if(StringUtils.isEmpty(advertisingFee.getCampaign())&&StringUtils.isEmpty(advertisingFee.getStandardSku())) continue;
+                if(StringUtils.isEmpty(advertisingFee.getCampaign())||advertisingFee.getCharge()==null) continue;
 
                 // 验证数据是否已经
                 advertisingFee.setMonth(month);//先设置好时间，再查询
@@ -225,6 +225,7 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
        StringBuilder warnMsg = new StringBuilder();
        StringBuilder warnMsg2 = new StringBuilder();
        for (AdvertisingFee advertisingFee:advertisingFeeList){
+           if(advertisingFee.getCharge()==null) continue;
            String campaign = advertisingFee.getCampaign();
            if(StringUtils.isNotEmpty(campaign)){
                if(!activityMap.containsKey(advertisingFee.getCampaign())){

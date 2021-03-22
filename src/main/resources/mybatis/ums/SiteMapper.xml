@@ -3,11 +3,13 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.ums.site.mapper.SiteMapper">
-    
+
     <resultMap type="Site" id="SiteResult">
         <result property="id"    column="id"    />
         <result property="accountId"    column="account_id"    />
         <result property="site"    column="site"    />
+        <result property="language"    column="language"    />
+        <result property="timeFormat"    column="time_format"    />
         <result property="descript"    column="descript"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -16,44 +18,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSiteVo">
-        select id, account_id, site, descript, create_by, create_time, update_by, update_time from ums_site
+        select id, account_id, site, language, time_format, descript, create_by, create_time, update_by, update_time from ums_site
     </sql>
 
     <select id="selectSiteList" parameterType="Site" resultMap="SiteResult">
         <include refid="selectSiteVo"/>
-        <where>  
+        <where>
             <if test="accountId != null "> and account_id = #{accountId}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="language != null  and language != ''"> and language = #{language}</if>
+            <if test="timeFormat != null  and timeFormat != ''"> and time_format = #{timeFormat}</if>
             <if test="descript != null  and descript != ''"> and descript = #{descript}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectSiteById" parameterType="Long" resultMap="SiteResult">
         <include refid="selectSiteVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertSite" parameterType="Site" useGeneratedKeys="true" keyProperty="id">
         insert into ums_site
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="accountId != null">account_id,</if>
             <if test="site != null and site != ''">site,</if>
+            <if test="language != null">language,</if>
+            <if test="timeFormat != null">time_format,</if>
             <if test="descript != null">descript,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="accountId != null">#{accountId},</if>
             <if test="site != null and site != ''">#{site},</if>
+            <if test="language != null">#{language},</if>
+            <if test="timeFormat != null">#{timeFormat},</if>
             <if test="descript != null">#{descript},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateSite" parameterType="Site">
@@ -61,6 +69,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="accountId != null">account_id = #{accountId},</if>
             <if test="site != null and site != ''">site = #{site},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="timeFormat != null">time_format = #{timeFormat},</if>
             <if test="descript != null">descript = #{descript},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -75,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteSiteByIds" parameterType="String">
-        delete from ums_site where id in 
+        delete from ums_site where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -91,14 +101,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateSiteByOnlyCondition" parameterType="Site">
         update ums_site
         <trim prefix="SET" suffixOverrides=",">
-                                                                            <if test="accountId != null">account_id = #{accountId},</if>
-                                                                <if test="site != null and site != ''">site = #{site},</if>
-                                                                <if test="descript != null">descript = #{descript},</if>
-                                                                <if test="createBy != null">create_by = #{createBy},</if>
-                                                                <if test="createTime != null">create_time = #{createTime},</if>
-                                                                <if test="updateBy != null">update_by = #{updateBy},</if>
-                                                                <if test="updateTime != null">update_time = #{updateTime},</if>
-                                    </trim>
+            <if test="accountId != null">account_id = #{accountId},</if>
+            <if test="site != null and site != ''">site = #{site},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="timeFormat != null">time_format = #{timeFormat},</if>
+            <if test="descript != null">descript = #{descript},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
         where id = #{id}
     </update>
 

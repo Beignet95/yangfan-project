@@ -1,10 +1,13 @@
 package com.ruoyi.project.pms.skuCoupon.service.impl;
 
-import java.util.List;
+import java.util.*;
+
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
-import java.util.Map;
+
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -119,6 +122,9 @@ public class SkuCouponServiceImpl implements ISkuCouponService
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        checkProductinfoRelation(skuCouponList);
+
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -128,6 +134,8 @@ public class SkuCouponServiceImpl implements ISkuCouponService
         {
             try
             {
+                if(StringUtils.isEmpty(skuCoupon.getCouponTitle())&&StringUtils.isEmpty(skuCoupon.getSku()))
+                    continue;
                 // 验证数据是否已经
                 SkuCoupon domain = skuCouponMapper.selectSkuCouponByOnlyCondition(skuCoupon);
                 if (domain==null)
@@ -170,6 +178,29 @@ public class SkuCouponServiceImpl implements ISkuCouponService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    IProductinfoRelationService productinfoRelationService;
+
+
+    private void checkProductinfoRelation(List<SkuCoupon> skuCouponList) {
+        List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
+        Map<String, ProductinfoRelation> skuPrMap = prList.stream()
+                .collect(Collectors.toMap(ProductinfoRelation::getSku, Function.identity(), (key1, key2) -> key2));
+        Collection<String> skuCot = new HashSet<>();
+        for(SkuCoupon skuCoupon:skuCouponList){
+            String sku = skuCoupon.getSku();
+            if(StringUtils.isNotEmpty(sku)&&!skuPrMap.containsKey(sku)) skuCot.add(sku);
+        }
+        if(skuCot.size()>0){
+            StringBuilder warnMsg = new StringBuilder();
+            warnMsg.append("以下SKU缺少产品信息关系！");
+            for(String sku:skuCot){
+                warnMsg.append("<br/>"+sku);
+            }
+            throw new BusinessException(warnMsg.toString());
+        }
     }
 
     @Override
