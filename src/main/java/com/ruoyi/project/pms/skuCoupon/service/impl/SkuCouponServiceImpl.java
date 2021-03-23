@@ -69,6 +69,9 @@ public class SkuCouponServiceImpl implements ISkuCouponService
     @Override
     public int insertSkuCoupon(SkuCoupon skuCoupon)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,null,null,null,skuCoupon.getSku());
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有标准SKU为 "+skuCoupon.getSku()+" 的数据！请完善产品信息！");
         skuCoupon.setCreateTime(DateUtils.getNowDate());
         return skuCouponMapper.insertSkuCoupon(skuCoupon);
     }
@@ -188,7 +191,7 @@ public class SkuCouponServiceImpl implements ISkuCouponService
         List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
         Map<String, ProductinfoRelation> skuPrMap = prList.stream()
                 .collect(Collectors.toMap(ProductinfoRelation::getSku, Function.identity(), (key1, key2) -> key2));
-        Collection<String> skuCot = new HashSet<>();
+        Set<String> skuCot = new LinkedHashSet();
         for(SkuCoupon skuCoupon:skuCouponList){
             String sku = skuCoupon.getSku();
             if(StringUtils.isNotEmpty(sku)&&!skuPrMap.containsKey(sku)) skuCot.add(sku);

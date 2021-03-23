@@ -18,6 +18,10 @@
                              <option value="">请选择</option>
                          </select>
                  </div>
+                 <div class="mt10 pt5">
+                     如需查看报表模板,请
+                     &nbsp;	<a onclick="importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+                 </div>
                  <input type="file" id="file" name="file"/>
                  <font color="red" class="pull-left mt10">
                      提示：仅允许导入“xls”,“xlsx”或“xlsm”格式文件！
@@ -85,6 +89,20 @@
             pickerPosition: "bottom-left"
 
         });
+
+        // 下载模板
+        function importTemplate() {
+            table.set();
+            $.get("/pms/advertisingFee/importTemplate", function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                } else if (result.code == web_status.WARNING) {
+                    $.modal.alertWarning(result.msg)
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+            });
+        }
 
     </script>
 </body>

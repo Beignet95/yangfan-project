@@ -1,12 +1,16 @@
 package com.ruoyi.project.compdata.advertisingactivity.service.impl;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.ShiroUtils;
 import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
+import com.ruoyi.project.pms.skuCoupon.domain.SkuCoupon;
 import com.ruoyi.project.system.user.service.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +69,9 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
     @Override
     public int insertAdvertisingActivity(AdvertisingActivity advertisingActivity)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,null,null,null,advertisingActivity.getSku());
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有标准SKU为 "+advertisingActivity.getSku()+" 的数据！请完善产品信息！");
         return advertisingActivityMapper.insertAdvertisingActivity(advertisingActivity);
     }
 
@@ -77,6 +84,9 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
     @Override
     public int updateAdvertisingActivity(AdvertisingActivity advertisingActivity)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,null,null,null,advertisingActivity.getSku());
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException(" 产品信息中没有标准SKU为"+advertisingActivity.getSku()+" 的数据！请完善产品信息！");
         return advertisingActivityMapper.updateAdvertisingActivity(advertisingActivity);
     }
 
@@ -110,6 +120,9 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        checkProductinfoRelation(advertisingActivityList);
+
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -170,6 +183,27 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    IProductinfoRelationService productinfoRelationService;
+    private void checkProductinfoRelation(List<AdvertisingActivity> advertisingActivityList) {
+        List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
+        Map<String, ProductinfoRelation> skuPrMap = prList.stream()
+                .collect(Collectors.toMap(ProductinfoRelation::getSku, Function.identity(), (key1, key2) -> key2));
+        Set<String> skuCot = new LinkedHashSet();
+        for(AdvertisingActivity advertisingActivity:advertisingActivityList){
+            String sku = advertisingActivity.getSku();
+            if(StringUtils.isNotEmpty(sku)&&!skuPrMap.containsKey(sku)) skuCot.add(sku);
+        }
+        if(skuCot.size()>0){
+            StringBuilder warnMsg = new StringBuilder();
+            warnMsg.append("以下SKU缺少产品信息关系！");
+            for(String sku:skuCot){
+                warnMsg.append("<br/>"+sku);
+            }
+            throw new BusinessException(warnMsg.toString());
+        }
     }
 
     @Override

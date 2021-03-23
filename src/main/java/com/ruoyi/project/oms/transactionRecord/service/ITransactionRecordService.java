@@ -90,7 +90,7 @@ public interface ITransactionRecordService
      *     key 标准SKU
      *     value 移除费
      */
-    public Map<String, BigDecimal> getSkuRemovalFeeMap(String removalType);
+    public Map<String, BigDecimal> getSkuRemovalFeeMap(TransactionRecord transactionRecord,String removalType);
 
     /**
      * @param

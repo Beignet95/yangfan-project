@@ -1,9 +1,16 @@
 package com.ruoyi.project.pms.asinMsku.service.impl;
 
-import java.util.List;
+import java.util.*;
+
+import com.ruoyi.project.pms.asinPasin.domain.AsinPasin;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
+
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.exception.BusinessException;
@@ -62,6 +69,9 @@ public class AsinMskuServiceImpl implements IAsinMskuService
     @Override
     public int insertAsinMsku(AsinMsku asinMsku)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,asinMsku.getAsin(),null,null,null);
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有ASIN为 "+asinMsku.getAsin()+" 的数据！请完善产品信息！");
         return asinMskuMapper.insertAsinMsku(asinMsku);
     }
 
@@ -74,6 +84,9 @@ public class AsinMskuServiceImpl implements IAsinMskuService
     @Override
     public int updateAsinMsku(AsinMsku asinMsku)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,asinMsku.getAsin(),null,null,null);
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有ASIN为 "+asinMsku.getAsin()+" 的数据！请完善产品信息！");
         return asinMskuMapper.updateAsinMsku(asinMsku);
     }
 
@@ -114,6 +127,9 @@ public class AsinMskuServiceImpl implements IAsinMskuService
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        checkProductinfoRelation(asinMskuList);
+
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -167,5 +183,26 @@ public class AsinMskuServiceImpl implements IAsinMskuService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    IProductinfoRelationService productinfoRelationService;
+    private void checkProductinfoRelation(List<AsinMsku> asinMskuList) {
+        List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
+        Map<String, ProductinfoRelation> skuPrMap = prList.stream()
+                .collect(Collectors.toMap(ProductinfoRelation::getAsin, Function.identity(), (key1, key2) -> key2));
+        Set<String> skuCot = new LinkedHashSet();
+        for(AsinMsku asinMsku:asinMskuList){
+            String asin = asinMsku.getAsin();
+            if(StringUtils.isNotEmpty(asin)&&!skuPrMap.containsKey(asin)) skuCot.add(asin);
+        }
+        if(skuCot.size()>0){
+            StringBuilder warnMsg = new StringBuilder();
+            warnMsg.append("以下ASIN缺少产品信息关系！");
+            for(String sku:skuCot){
+                warnMsg.append("<br/>"+sku);
+            }
+            throw new BusinessException(warnMsg.toString());
+        }
     }
 }

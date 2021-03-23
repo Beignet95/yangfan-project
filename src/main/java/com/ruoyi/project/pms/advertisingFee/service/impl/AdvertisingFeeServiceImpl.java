@@ -146,6 +146,7 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         {
             throw new BusinessException("导入数据不能为空！");
         }
+        if(advertisingFeeList.get(0)==null) new BusinessException("系统识别到第一条数据为空！你导入的报表格式可能有异常！");
 
         Map<String,CampaignProductinfoRelation> campProdinfoRelaMap =  checkAndGetAdvertisingActivity(advertisingFeeList);//校验广告活动数据是否完整，避免分析数据不准确
 

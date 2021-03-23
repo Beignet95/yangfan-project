@@ -42,7 +42,7 @@ public class AdvertisingFeeController extends BaseController
     @Autowired
     private IAdvertisingFeeService advertisingFeeService;
 
-    private static final int NO_USE_ROWNUM=1;
+    private static final int NO_USE_ROWNUM=0;
 
     @RequiresPermissions("pms:advertisingFee:view")
     @GetMapping()

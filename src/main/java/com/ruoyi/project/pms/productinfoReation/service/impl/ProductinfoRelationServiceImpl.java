@@ -1,5 +1,6 @@
 package com.ruoyi.project.pms.productinfoReation.service.impl;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
@@ -30,7 +31,7 @@ import com.ruoyi.common.utils.text.Convert;
  * @date 2021-03-05
  */
 @Service
-public class ProductinfoRelationServiceImpl implements IProductinfoRelationService 
+public class ProductinfoRelationServiceImpl implements IProductinfoRelationService
 {
     private static final Logger log = LoggerFactory.getLogger(ProductinfoRelation.class);
 
@@ -237,5 +238,14 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
         Map<String,ProductinfoRelation> map = prList.stream().collect(Collectors
                 .toMap(ProductinfoRelation::getSku,Function.identity(),(key1,key2)->key1));
         return map;
+    }
+
+    /**
+     * 检验是否存在产品信息，存在：不做操作，不存在：抛出异常
+     * @param pr
+     */
+    @Override
+    public boolean checkProductinfoRelation(ProductinfoRelation pr) {
+        return this.selectProductinfoRelationList(pr).size()>0;
     }
 }

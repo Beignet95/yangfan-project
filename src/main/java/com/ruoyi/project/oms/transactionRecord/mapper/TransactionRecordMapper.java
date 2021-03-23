@@ -86,7 +86,7 @@ public interface TransactionRecordMapper
      * @param removalType 移除类型
      * @return 标准SKU对应的移除费
      */
-    public List<SkuRemovalFee> selectSkuRemovalFeeList(String removalType);
+    public List<SkuRemovalFee> selectSkuRemovalFeeList(TransactionRecord transactionRecord);
 
     public TransactionRecord selectGatherRecord(TransactionRecord transactionRecord);
 

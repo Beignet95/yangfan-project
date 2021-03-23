@@ -70,6 +70,9 @@ public class AsinPasinServiceImpl implements IAsinPasinService
     @Override
     public int insertAsinPasin(AsinPasin asinPasin)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,asinPasin.getAsin(),null,null,null);
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有ASIN为 "+asinPasin.getAsin()+" 的数据！请完善产品信息！");
         asinPasin.setCreateTime(DateUtils.getNowDate());
         return asinPasinMapper.insertAsinPasin(asinPasin);
     }
@@ -83,6 +86,9 @@ public class AsinPasinServiceImpl implements IAsinPasinService
     @Override
     public int updateAsinPasin(AsinPasin asinPasin)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,asinPasin.getAsin(),null,null,null);
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有ASIN为 "+asinPasin.getAsin()+" 的数据！请完善产品信息！");
         asinPasin.setUpdateTime(DateUtils.getNowDate());
         return asinPasinMapper.updateAsinPasin(asinPasin);
     }
@@ -186,7 +192,7 @@ public class AsinPasinServiceImpl implements IAsinPasinService
         List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
         Map<String, ProductinfoRelation> skuPrMap = prList.stream()
                 .collect(Collectors.toMap(ProductinfoRelation::getAsin, Function.identity(), (key1, key2) -> key2));
-        Collection<String> skuCot = new HashSet<>();
+        Set<String> skuCot = new LinkedHashSet();
         for(AsinPasin asinPasin:asinPasinList){
             String asin = asinPasin.getAsin();
             if(StringUtils.isNotEmpty(asin)&&!skuPrMap.containsKey(asin)) skuCot.add(asin);

@@ -402,10 +402,28 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </where>
     </select>
 
-    <select id="selectSkuRemovalFeeList" parameterType="String" resultType="SkuRemovalFee">
-        select pr.sku,sum(tr.other) as removalFee from pms_productinfo_relation pr LEFT JOIN pms_asin_msku am on pr.asin=am.asin LEFT JOIN oms_removal_detail rd on am.msku=rd.sku
-    LEFT JOIN oms_transaction_record tr ON tr.order_id=rd.order_id
-    where tr.order_id is not null and rd.order_type=#{orderType} group BY pr.sku
+    <select id="selectSkuRemovalFeeList" parameterType="TransactionRecord" resultType="SkuRemovalFee">
+        SELECT
+        pr.sku,sum(rd.removal_fee) as removalFee
+        FROM
+        (SELECT DISTINCT order_id from oms_transaction_record
+        <where>
+            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="description != null and description != ''">and description = #{description}</if>
+            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        </where>
+        ) tr
+        INNER JOIN oms_removal_detail rd ON tr.order_id = rd.order_id
+        LEFT JOIN pms_asin_msku am ON am.msku = rd.sku
+        LEFT JOIN pms_productinfo_relation pr ON pr.asin = am.asin
+        <where>
+           <if test="params.removalType != null  and params.removalType != ''"> and rd.order_type = #{params.removalType}</if>
+        </where>
+        GROUP BY pr.sku
     </select>
 
     <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="SkuRefundServiceFee">

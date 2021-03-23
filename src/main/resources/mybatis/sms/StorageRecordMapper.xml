@@ -151,8 +151,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectStorageRecordGather" parameterType="StorageRecord" resultType="StorageRecord">
-         select standard_sku as standardSku,principal,account,country_code as countryCode,sum(storage_fee) as storageFee
-         from sms_storage_record where month =#{month}   group by standard_sku,principal,account,country_code
+         select standard_sku as standardSku,spu,principal,account,country_code as countryCode,sum(storage_fee) as storageFee
+         from sms_storage_record where month =#{month} and account=#{account} and  country_code=#{countryCode}  group by standard_sku,spu,principal,account,country_code
     </select>
 
 

@@ -4,6 +4,11 @@
     <th:block th:include="include :: header('交易数据列表')" />
     <th:block th:include="include :: datetimepicker-css" />
 </head>
+<style>
+    .mainCol{
+        background-color: #f7a54a;
+    }
+</style>
 <body class="gray-bg">
      <div class="container-div">
         <div class="row">
@@ -73,6 +78,7 @@
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:transactionRecord:remove')}]];
         var prefix = ctx + "oms/transactionRecord";
+        var mainColColor = "#39f6cb";
 
         $(function() {
             init_month();
@@ -131,7 +137,7 @@
                         field: 'salesRevenue',
                         title: '销售收入(含自配送）',
                         cellStyle: function (value, row, index) {
-                                return { css: { "background-color": "yellow" } }
+                                return { css: { "background-color": "#39f6cb" } }
                         },
                     },
                 {
@@ -154,7 +160,7 @@
                         field: 'compensation',
                         title: '赔偿金',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -169,7 +175,7 @@
                         field: 'finalFreight',
                         title: '尾程运费信用',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -184,7 +190,7 @@
                         field: 'packagingFee',
                         title: '包装费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -199,7 +205,7 @@
                         field: 'promotionFee',
                         title: '促销费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -214,7 +220,7 @@
                         field: 'platformRefund',
                         title: '平台退款',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -229,28 +235,28 @@
                         field: 'shippingReimbursement',
                         title: '尾程运费退回',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'reimbursement',
                         title: '其他',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'mixedVat',
                         title: '混合增值税',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'selfdeliveryCommission',
                         title: '销售佣金(含自配送）',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -272,7 +278,7 @@
                         field: 'finalFreightReturn',
                         title: '尾程运费退回',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -287,7 +293,7 @@
                         field: 'otherTransactionFee',
                         title: '其他交易费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -302,7 +308,7 @@
                         field: 'fbaInventoryAndInboundServicesFees',
                         title: '仓储费（0.79%）',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -329,7 +335,7 @@
                         field: 'shippingLabelFee',
                         title: '运输标签费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
@@ -346,7 +352,10 @@
                     },
                     {
                         field: 'serviceFees',
-                        title: '平台服务费'
+                        title: '平台服务费',
+                        cellStyle: function (value, row, index) {
+                            return { css: { "background-color": mainColColor } }
+                        },
                     },
                     {
                         field: 'shopRent',
@@ -377,21 +386,21 @@
                         field: 'refundAdministrationFees',
                         title: '平台退款服务费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'adjustments',
                         title: '平台服务调整费',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'advertisingFee',
                         title: '广告费（3.32%）',
                         cellStyle: function (value, row, index) {
-                            return { css: { "background-color": "yellow" } }
+                            return { css: { "background-color": mainColColor } }
                         },
                     },
                     {

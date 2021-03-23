@@ -128,9 +128,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <select id="selectSkuAdvertisingFeeList" parameterType="AdvertisingFee" resultType="AdvertisingFee">
-        select standard_sku as standardSku,principal,site,sum(charge) as charge
+        select standard_sku as standardSku,spu,principal,site,sum(charge) as charge
          from pms_advertising_fee
-        where month = #{month} and site = #{site} group by standard_sku,principal,site
+        where month = #{month} and site = #{site} group by standard_sku,spu,principal,site
     </select>
 
 </mapper>
