@@ -33,6 +33,8 @@ public class AsinPasinController extends BaseController
 {
     private String prefix = "pms/asinPasin";
 
+    private final int noImportRowNum = 0;
+
     @Autowired
     private IAsinPasinService asinPasinService;
 
@@ -133,7 +135,7 @@ public class AsinPasinController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
     {
         ExcelUtil<AsinPasin> util = new ExcelUtil<AsinPasin>(AsinPasin.class);
-        List<AsinPasin> asinPasinList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),1);
+        List<AsinPasin> asinPasinList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),noImportRowNum);
         String message = asinPasinService.importAsinPasin(asinPasinList, updateSupport);
         return AjaxResult.success(message);
     }
@@ -145,6 +147,6 @@ public class AsinPasinController extends BaseController
     public AjaxResult importTemplate()
     {
         ExcelUtil<AsinPasin> util = new ExcelUtil<AsinPasin>(AsinPasin.class);
-        return util.importTemplateExcel("ASIN与父ASIN关系",1);
+        return util.importTemplateExcel("ASIN与父ASIN关系",noImportRowNum);
     }
 }

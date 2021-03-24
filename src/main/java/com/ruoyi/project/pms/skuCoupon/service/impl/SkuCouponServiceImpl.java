@@ -85,6 +85,9 @@ public class SkuCouponServiceImpl implements ISkuCouponService
     @Override
     public int updateSkuCoupon(SkuCoupon skuCoupon)
     {
+        ProductinfoRelation pr = new ProductinfoRelation(null,null,null,null,skuCoupon.getSku());
+        if(!productinfoRelationService.checkProductinfoRelation(pr))
+            throw new BusinessException("产品信息中没有标准SKU为 "+skuCoupon.getSku()+" 的数据！请完善产品信息！");
         skuCoupon.setUpdateTime(DateUtils.getNowDate());
         return skuCouponMapper.updateSkuCoupon(skuCoupon);
     }

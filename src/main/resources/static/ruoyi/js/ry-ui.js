@@ -431,7 +431,7 @@ var table = {
                     btn1: function(index, layero){
                         var file = layero.find('#file').val();
                         if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx')&&
-                            !$.common.endWith(file, '.xlsm') && !$.common.endWith(file, '.csv'))){
+                            !$.common.endWith(file, '.xlsm') )){
                             $.modal.msgWarning("请选择后缀为 “xls” “xlsm”或“xlsx”的文件。");
                             return false;
                         }
@@ -485,7 +485,7 @@ var table = {
                     btn1: function(index, layero){
                         var file = layero.find('#file').val();
                         if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx')&&
-                            !$.common.endWith(file, '.xlsm')&& !$.common.endWith(file, '.csv'))){
+                            !$.common.endWith(file, '.xlsm') )){
                             $.modal.msgWarning("请选择后缀为 “xls”,“xlsm”或“xlsx”的文件。");
                             return false;
                         }

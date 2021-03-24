@@ -102,11 +102,6 @@
                     visible: false,
                 },
                 {
-                    field: 'id',
-                    title: '主键',
-                    visible: false
-                },
-                {
                     field: 'account',
                     title: '账号',
                     class: 'W60'
@@ -353,13 +348,19 @@
                     {
                         field: 'serviceFees',
                         title: '平台服务费',
+                        formatter : function(value, row, index) {
+                            return toFixed(value);
+                        },
                         cellStyle: function (value, row, index) {
                             return { css: { "background-color": mainColColor } }
                         },
                     },
                     {
                         field: 'shopRent',
-                        title: '店租'
+                        title: '店租',
+                        formatter : function(value, row, index) {
+                            return toFixed(value);
+                        },
                     },
                     {
                         field: 'bdDealFee',
@@ -435,6 +436,7 @@
             $.table.init(options);
 
             initAccountSite();
+            bingdingColumnCheckBox();
         });
 
         //设置时间选择器
@@ -477,47 +479,49 @@
             $.table.search();
         }
 
-        var checkOne = $(".dropdown-menu li input");
-        var checkAll = checkOne.eq(0);
-        checkAll.off('click').on('click', function () {
-            alert();
-            var flag = checkAll.prop("checked");
-            checkOne.each(function(i){
-                if (i>0){
-                    var $this = $(this);
-                    if (flag) {
-                        if (!$this.prop('checked')) {
-                            $this.click();
-                        }
-                    } else {
-                        if ($this.prop('checked')) {
-                            $this.click();
+        function bingdingColumnCheckBox(){
+            var checkOne = $(".dropdown-menu li input");
+            var checkAll = checkOne.eq(0);
+            checkAll.off('click').on('click', function () {
+                var flag = checkAll.prop("checked");
+                checkOne.each(function(i){
+                    if (i>0){
+                        var $this = $(this);
+                        if (flag) {
+                            if (!$this.prop('checked')) {
+                                $this.click();
+                            }
+                        } else {
+                            if ($this.prop('checked')) {
+                                $this.click();
+                            }
                         }
                     }
-                }
+                });
             });
-        });
-        checkOne.on('click', function () {
-            var len = checkOne.length;
-            var _l = 0;
-            checkOne.each(function(i){
-                if (i>0){
-                    if ($(this).prop('checked')) {
-                        _l++;
+            checkOne.on('click', function () {
+                var len = checkOne.length;
+                var _l = 0;
+                checkOne.each(function(i){
+                    if (i>0){
+                        if ($(this).prop('checked')) {
+                            _l++;
+                        }
                     }
+                });
+                if (_l === len-1){
+                    checkAll.prop("checked", true)
+                } else {
+                    checkAll.prop("checked", false)
                 }
             });
-            if (_l === len-1){
-                checkAll.prop("checked", true)
-            } else {
-                checkAll.prop("checked", false)
-            }
-        });
+        }
+
 
         //当所有数据被加载时触发
         function responseHandler(res){
             console.log("res:"+res);
-            if(res.code==0&&res.msg!=null){
+            if(res.code==0&&res.msg!=null&&res.msg.length>0){
                 $.modal.alertWarning(res.msg);
             }
         }
@@ -533,6 +537,10 @@
                     data: data
                 });
             });
+        }
+
+        function toFixed(value){
+            return  value.toFixed(2);
         }
     </script>
 </body>

@@ -1,13 +1,15 @@
 package com.ruoyi.project.compdata.truckService.service.impl;
 
-import java.util.List;
+import java.util.*;
 
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import com.ruoyi.project.oms.transactionRecord.service.ITransactionRecordService;
+import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
-import java.util.Map;
+
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -20,6 +22,7 @@ import com.ruoyi.project.compdata.truckService.mapper.TruckServiceMapper;
 import com.ruoyi.project.compdata.truckService.domain.TruckService;
 import com.ruoyi.project.compdata.truckService.service.ITruckServiceService;
 import com.ruoyi.common.utils.text.Convert;
+import sun.security.pkcs11.wrapper.Functions;
 
 /**
  * 卡车费用Service业务层处理
@@ -120,11 +123,12 @@ public class TruckServiceServiceImpl implements ITruckServiceService
      * @return 导入结果
      */
     public String importTruckService(List<TruckService> truckServiceList, boolean updateSupport,Long truckRecordId) {
-        //TODO 此方法为模板生成，需要完善，完善后请将此注释删除或修改
         if (StringUtils.isNull(truckServiceList) || truckServiceList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        checkProductinfoRelation(truckServiceList);
 
         TransactionRecord truckFeeRecord = transactionRecordService.selectTransactionRecordById(truckRecordId);
         if(truckFeeRecord==null) throw new BusinessException("卡车服务收费记录不存在！可能已经被删除！");
@@ -184,6 +188,25 @@ public class TruckServiceServiceImpl implements ITruckServiceService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    IProductinfoRelationService productinfoRelationService;
+    private void checkProductinfoRelation(List<TruckService> truckServiceList) {
+        List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
+        Map asinPrMap = prList.stream().collect(Collectors.toMap(ProductinfoRelation::getAsin, Function.identity(),(k1,k2)->k1));
+        Set<String> cot = new LinkedHashSet();
+        for(TruckService truckService:truckServiceList){
+            String asin = truckService.getAsin();
+            if(!asinPrMap.containsKey(asin)) cot.add(asin);
+        }
+        if(cot.size()>0) {
+            StringBuilder warnMsg = new StringBuilder();
+            warnMsg.append("以下ASIN缺少产品信息关系！");
+            for (String asin : cot) {
+                warnMsg.append("<br/>" + asin);
+            }
+        }
     }
 
     @Override

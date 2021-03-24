@@ -188,6 +188,8 @@ public class AdvertisingActivityServiceImpl implements IAdvertisingActivityServi
     @Autowired
     IProductinfoRelationService productinfoRelationService;
     private void checkProductinfoRelation(List<AdvertisingActivity> advertisingActivityList) {
+        if(advertisingActivityList.get(0)==null) throw new BusinessException("报表格式异常！请下载导入模板进行对照！");
+
         List<ProductinfoRelation> prList = productinfoRelationService.selectProductinfoRelationList(null);
         Map<String, ProductinfoRelation> skuPrMap = prList.stream()
                 .collect(Collectors.toMap(ProductinfoRelation::getSku, Function.identity(), (key1, key2) -> key2));

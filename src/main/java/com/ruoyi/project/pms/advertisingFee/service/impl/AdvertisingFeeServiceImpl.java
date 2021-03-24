@@ -2,7 +2,7 @@ package com.ruoyi.project.pms.advertisingFee.service.impl;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
-import java.util.List;
+import java.util.*;
 
 import com.opencsv.CSVIterator;
 import com.ruoyi.project.compdata.advertisingactivity.domain.AdvertisingActivity;
@@ -15,8 +15,7 @@ import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
-import java.util.Map;
+
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -223,26 +222,30 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         Map<String,AdvertisingActivity> activityMap = activityList.stream()
                 .collect(Collectors.toMap(AdvertisingActivity::getActivity,Function.identity(),(entity1, entity2) ->entity1));
 
-       StringBuilder warnMsg = new StringBuilder();
-       StringBuilder warnMsg2 = new StringBuilder();
+       Set<String> cot1 = new LinkedHashSet();
+       Set<String> cot2 = new LinkedHashSet();
        for (AdvertisingFee advertisingFee:advertisingFeeList){
            if(advertisingFee.getCharge()==null) continue;
            String campaign = advertisingFee.getCampaign();
            if(StringUtils.isNotEmpty(campaign)){
                if(!activityMap.containsKey(advertisingFee.getCampaign())){
-                   warnMsg.append(advertisingFee.getCampaign()+"<br/>");
+                   cot1.add(advertisingFee.getCampaign());
                }else if(!map.containsKey(advertisingFee.getCampaign())){
-                   warnMsg2.append(advertisingFee.getCampaign()+"<br/>");
+                   cot2.add(advertisingFee.getCampaign());
                }
            }
        }
-       if(warnMsg.length()>0) {
-           warnMsg.insert(0,"以下广告词缺少广告映射关系:<br/>");
+       StringBuilder warnMsg = new StringBuilder();
+       if(cot1.size()>0) {
+           warnMsg.append("<br/>以下广告词缺少广告映射关系:<br/>");
+           for(String campaign:cot1)
+           warnMsg.append("<br/>"+campaign);
        }
-       if(warnMsg2.length()>0){
-           warnMsg2.insert(0,"以下广告词缺少产品信息关系:<br/>");
+       if(cot2.size()>0){
+           warnMsg.append("<br/>以下广告词缺少产品信息关系:<br/>");
+           for(String campaign:cot1)
+               warnMsg.append("<br/>"+campaign);
        }
-       warnMsg.append(warnMsg2);
        if(warnMsg.length()>0){
             throw new BusinessException(warnMsg.toString());
        }

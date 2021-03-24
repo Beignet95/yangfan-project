@@ -1,9 +1,14 @@
 package com.ruoyi.project.oms.removalDetail.service.impl;
 
-import java.util.List;
+import java.util.*;
+
+import com.ruoyi.project.pms.asinMsku.domain.AsinMsku;
+import com.ruoyi.project.pms.asinMsku.service.IAsinMskuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
+
+import java.util.stream.Collectors;
+
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +20,8 @@ import com.ruoyi.project.oms.removalDetail.mapper.RemovalDetailMapper;
 import com.ruoyi.project.oms.removalDetail.domain.RemovalDetail;
 import com.ruoyi.project.oms.removalDetail.service.IRemovalDetailService;
 import com.ruoyi.common.utils.text.Convert;
+
+import javax.swing.*;
 
 /**
  * 移除明细Service业务层处理
@@ -116,6 +123,9 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        checkMskuAsin(removalDetailList);
+
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -168,5 +178,26 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Autowired
+    IAsinMskuService asinMskuService;
+    private void checkMskuAsin(List<RemovalDetail> removalDetailList) {
+        if(removalDetailList.get(0)==null) throw new BusinessException("报表格式异常！请下载模板进行对照！");
+        List<AsinMsku> asinMskuList = asinMskuService.selectAsinMskuList(null);
+        Map<String,String> mskuAsinMap =  asinMskuList.stream().collect(Collectors.toMap(AsinMsku::getMsku,AsinMsku::getAsin));
+        Set<String> cot = new LinkedHashSet();
+        for(RemovalDetail removalDetail : removalDetailList){
+            String msku = removalDetail.getSku();
+            if(StringUtils.isNotEmpty(msku)&&!mskuAsinMap.containsKey(msku)) cot.add(msku);
+        }
+        if(cot.size()>0){
+            StringBuilder warnMsg = new StringBuilder();
+            warnMsg.append("以下MSKU缺少与ASIN的关系！");
+            for(String msku:cot){
+            warnMsg.append("<br/>"+msku);
+        }
+        throw new BusinessException(warnMsg.toString());
+        }
     }
 }
