@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.refundServicefee.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.project.oms.refundServicefee.domain.RefundServicefee;
 
@@ -65,7 +66,7 @@ public interface IRefundServicefeeService
      * @param ids 需要导入的数据List
      * @return 结果
      */
-    public String importRefundServicefee(List<RefundServicefee> refundServicefeeList, boolean isUpdateSupport);
+    public String importRefundServicefee(List<RefundServicefee> refundServicefeeList, boolean isUpdateSupport, String account, Date month);
 
 
 }

@@ -2,6 +2,8 @@ package com.ruoyi.project.oms.removalDetail.service.impl;
 
 import java.util.*;
 
+import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
+import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
 import com.ruoyi.project.pms.asinMsku.domain.AsinMsku;
 import com.ruoyi.project.pms.asinMsku.service.IAsinMskuService;
 import org.slf4j.Logger;
@@ -20,6 +22,8 @@ import com.ruoyi.project.oms.removalDetail.mapper.RemovalDetailMapper;
 import com.ruoyi.project.oms.removalDetail.domain.RemovalDetail;
 import com.ruoyi.project.oms.removalDetail.service.IRemovalDetailService;
 import com.ruoyi.common.utils.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.unit.DataUnit;
 
 import javax.swing.*;
 
@@ -34,8 +38,13 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
 {
     private static final Logger log = LoggerFactory.getLogger(RemovalDetail.class);
 
+    private final String HISTORY_OPERARE_PREFIX = "imp:removal:r:";
+
     @Autowired
     private RemovalDetailMapper removalDetailMapper;
+
+    @Autowired
+    private IHistoryOperateService historyOperateService;
 
     /**
      * 查询移除明细
@@ -118,12 +127,14 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
      * @return 导入结果
      */
     @Override
-    public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport) {
+    @Transactional
+    public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport,String account,Date month) {
         if (StringUtils.isNull(removalDetailList) || removalDetailList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
         }
 
+        HistoryOperate ho = checkAndInterceptImp(account,month);//检查是否有做个导入操作
         checkMskuAsin(removalDetailList);
 
         int successNum = 0;
@@ -136,29 +147,13 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
             try
             {
                 if(removalDetail.getRemovalFee()==null) continue;//移除费为空时，则不作操作
-                // 验证数据是否已经
-                RemovalDetail domain = removalDetailMapper.selectRemovalDetailByOnlyCondition(removalDetail);
-                if (domain==null)
-                {
+                    removalDetail.setAccount(account);
+                    removalDetail.setMonth(month);
                     removalDetail.setCreateBy(operName);
                     removalDetail.setCreateTime(new Date());
                     this.insertRemovalDetail(removalDetail);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、"+ removalDetail.toString()+" 的数据导入成功");
-                }
-                else if (isUpdateSupport)
-                {
-                    removalDetail.setUpdateBy(operName);
-                    removalDetail.setUpdateTime(new Date());
-                    removalDetailMapper.updateRemovalDetailByOnlyCondition(removalDetail);
-                    successNum++;
-                    successMsg.append("<br/>" + successNum + "、" + removalDetail.toString()+" 的数据更新成功");
-                }
-                else
-                {
-                    failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、" + removalDetail.toString()+" 的数据已存在");
-                }
             }
             catch (Exception e)
             {
@@ -176,8 +171,20 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService
         else
         {
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            historyOperateService.insertHistoryOperate(ho);//插入导入记录
         }
         return successMsg.toString();
+    }
+
+    private HistoryOperate checkAndInterceptImp(String account, Date month) {
+        String monthStr = DateUtils.parseDateToStr("yyyy-MM",month);
+        String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+ monthStr;
+        HistoryOperate ho = new HistoryOperate();
+        ho.setRepeatCode(history_operate_code);
+        List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
+        if(hoRes.size()>0) throw new BusinessException(monthStr+"月份，账号为"
+                +account+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
+        return ho;
     }
 
     @Autowired

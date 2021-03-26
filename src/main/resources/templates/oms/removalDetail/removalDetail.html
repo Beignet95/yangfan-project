@@ -119,32 +119,40 @@
             $.table.init(options);
         });
 
+        //弹出导入框
         function importExcel(formId, width, height) {
             table.set();
-            var currentId = $.common.isEmpty(formId) ? 'importTpl' : formId;
-            var _width = $.common.isEmpty(width) ? "400" : width;
-            var _height = $.common.isEmpty(height) ? "230" : height;
+            var _width = $.common.isEmpty(width) ? "600" : width;
+            var _height = $.common.isEmpty(height) ? "300" : height;
             layer.open({
-                type: 1,
+                type: 2,
                 area: [_width + 'px', _height + 'px'],
                 fix: false,
                 //不固定
                 maxmin: true,
                 shade: 0.3,
                 title: '导入' + table.options.modalName + '数据',
-                content: $('#' + currentId).html(),
+                content: prefix + "/showImportPage",
                 btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
                 // 弹层外区域关闭
                 shadeClose: true,
                 btn1: function(index, layero){
-                    var file = layero.find('#file').val();
-                    if (file == '' || !$.common.endWith(file, '.csv') ){
+                    var body = layer.getChildFrame('body', index); //得到iframe页的body内容
+
+                    var account = body.find("#account").val();
+                    if(account==""||account==null){
+                        $.modal.msgWarning("请选择账号。");
+                        return false;
+                    }
+
+                    var file = body.find("#file").val();
+                    if (file == '' || (!$.common.endWith(file, '.csv'))){
                         $.modal.msgWarning("请选择后缀为 “csv”的文件。");
                         return false;
                     }
                     var index = layer.load(2, {shade: false});
                     $.modal.disable();
-                    var formData = new FormData(layero.find('form')[0]);
+                    var formData = new FormData(body.find('form')[0]);
                     $.ajax({
                         url: table.options.importUrl,
                         data: formData,
@@ -180,7 +188,7 @@
             <input type="file" id="file" name="file"/>
             <div class="mt10 pt5">
                 <input type="checkbox" checked="checked" id="updateSupport" name="updateSupport" title="如果数据已经存在，更新这条数据。"> 是否更新已经存在的数据
-                &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+<!--                &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>-->
             </div>
             <font color="red" class="pull-left mt10">
                 提示：仅允许导入“csv”格式文件！

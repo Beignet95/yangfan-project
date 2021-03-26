@@ -44,7 +44,7 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:refundServicefee:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
-                <a class="btn btn-info" onclick="$.table.importExcel(null,400,300)" shiro:hasPermission="oms:refundServicefee:export">
+                <a class="btn btn-info" onclick="importExcel(null,400,300)" shiro:hasPermission="oms:refundServicefee:export">
                     <i class="fa fa-upload"></i> 导入
                 </a>
             </div>
@@ -105,6 +105,68 @@
             };
             $.table.init(options);
         });
+
+        //弹出导入框
+        function importExcel(formId, width, height) {
+            table.set();
+            var _width = $.common.isEmpty(width) ? "600" : width;
+            var _height = $.common.isEmpty(height) ? "300" : height;
+            layer.open({
+                type: 2,
+                area: [_width + 'px', _height + 'px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '导入' + table.options.modalName + '数据',
+                content: prefix + "/showImportPage",
+                btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                btn1: function(index, layero){
+                    var body = layer.getChildFrame('body', index); //得到iframe页的body内容
+
+                    var account = body.find("#account").val();
+                    if(account==""||account==null){
+                        $.modal.msgWarning("请选择账号。");
+                        return false;
+                    }
+
+                    var file = body.find("#file").val();
+                    if (file == '' || (!$.common.endWith(file, '.xls')&&!$.common.endWith(file, '.xlsx')
+                    &&!$.common.endWith(file, '.xlsm'))){
+                        $.modal.msgWarning("请选择后缀为 “xls”,“xlsx”或“xlsm”的文件。");
+                        return false;
+                    }
+                    var index = layer.load(2, {shade: false});
+                    $.modal.disable();
+                    var formData = new FormData(body.find('form')[0]);
+                    $.ajax({
+                        url: table.options.importUrl,
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        type: 'POST',
+                        success: function (result) {
+                            if (result.code == web_status.SUCCESS) {
+                                $.modal.closeAll();
+                                $.modal.alertSuccess(result.msg);
+                                $.table.refresh();
+                            } else if (result.code == web_status.WARNING) {
+                                layer.close(index);
+                                $.modal.enable();
+                                $.modal.alertWarning(result.msg)
+                            } else {
+                                layer.close(index);
+                                $.modal.enable();
+                                $.modal.alertError(result.msg);
+                            }
+                        }
+                    });
+                }
+            });
+        }
     </script>
 </body>
 <!-- 导入区域 -->

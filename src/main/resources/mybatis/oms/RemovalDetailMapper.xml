@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.oms.removalDetail.mapper.RemovalDetailMapper">
-    
+
     <resultMap type="RemovalDetail" id="RemovalDetailResult">
         <result property="id"    column="id"    />
         <result property="orderId"    column="order_id"    />
@@ -11,6 +11,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sku"    column="sku"    />
         <result property="removalFee"    column="removal_fee"    />
         <result property="currency"    column="currency"    />
+        <result property="month"    column="month"    />
+        <result property="account"    column="account
+"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -18,26 +21,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRemovalDetailVo">
-        select id, order_id, order_type, sku, removal_fee, currency, create_by, create_time, update_by, update_time from oms_removal_detail
+        select id, order_id, order_type, sku, removal_fee, currency, month, account, create_by, create_time, update_by, update_time from oms_removal_detail
     </sql>
 
     <select id="selectRemovalDetailList" parameterType="RemovalDetail" resultMap="RemovalDetailResult">
         <include refid="selectRemovalDetailVo"/>
-        <where>  
+        <where>
             <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
             <if test="orderType != null  and orderType != ''"> and order_type = #{orderType}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
             <if test="removalFee != null "> and removal_fee = #{removalFee}</if>
             <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="account != null  and account != ''"> and account = #{account}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectRemovalDetailById" parameterType="Long" resultMap="RemovalDetailResult">
         <include refid="selectRemovalDetailVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertRemovalDetail" parameterType="RemovalDetail" useGeneratedKeys="true" keyProperty="id">
         insert into oms_removal_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -46,22 +51,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sku != null">sku,</if>
             <if test="removalFee != null">removal_fee,</if>
             <if test="currency != null">currency,</if>
+            <if test="month != null">month,</if>
+            <if test="account != null and account != ''">account,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null">#{orderId},</if>
             <if test="orderType != null">#{orderType},</if>
             <if test="sku != null">#{sku},</if>
             <if test="removalFee != null">#{removalFee},</if>
             <if test="currency != null">#{currency},</if>
+            <if test="month != null">#{month},</if>
+            <if test="account != null and account != ''">#{account},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateRemovalDetail" parameterType="RemovalDetail">
@@ -72,6 +81,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sku != null">sku = #{sku},</if>
             <if test="removalFee != null">removal_fee = #{removalFee},</if>
             <if test="currency != null">currency = #{currency},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -85,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteRemovalDetailByIds" parameterType="String">
-        delete from oms_removal_detail where id in 
+        delete from oms_removal_detail where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

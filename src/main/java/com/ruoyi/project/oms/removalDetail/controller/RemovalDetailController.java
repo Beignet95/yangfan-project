@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.removalDetail.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.utils.csv.CsvUtil;
@@ -132,11 +133,11 @@ public class RemovalDetailController extends BaseController
     @RequiresPermissions("oms:removalDetail:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport, String account, Date month) throws Exception
     {
         CsvUtil<RemovalDetail> util = new CsvUtil<RemovalDetail>(RemovalDetail.class);
-        List<RemovalDetail> removalDetailList = util.importCvs(file.getInputStream(),0);
-        String message = removalDetailService.importRemovalDetail(removalDetailList, updateSupport);
+        List<RemovalDetail> removalDetailList = util.importCvsByColumnName(file.getInputStream(),0);
+        String message = removalDetailService.importRemovalDetail(removalDetailList, updateSupport,account,month);
         return AjaxResult.success(message);
     }
 
@@ -148,5 +149,15 @@ public class RemovalDetailController extends BaseController
     {
         ExcelUtil<RemovalDetail> util = new ExcelUtil<RemovalDetail>(RemovalDetail.class);
         return util.importTemplateExcel("移除明细");
+    }
+
+    /**
+     * 展示导入框
+     */
+    @GetMapping("/showImportPage")
+    public String showImportPage(boolean showSpareField,ModelMap mmap)
+    {
+        mmap.addAttribute("showSpareField",showSpareField);
+        return prefix + "/import";
     }
 }

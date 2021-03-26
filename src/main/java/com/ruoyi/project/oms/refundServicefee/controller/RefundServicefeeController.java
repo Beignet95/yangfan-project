@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.refundServicefee.controller;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,11 +131,21 @@ public class RefundServicefeeController extends BaseController
     @RequiresPermissions("oms:refundServicefee:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport, String account, Date month) throws Exception
     {
         ExcelUtil<RefundServicefee> util = new ExcelUtil<RefundServicefee>(RefundServicefee.class);
         List<RefundServicefee> refundServicefeeList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),3);
-        String message = refundServicefeeService.importRefundServicefee(refundServicefeeList, updateSupport);
+        String message = refundServicefeeService.importRefundServicefee(refundServicefeeList, updateSupport,account,month);
         return AjaxResult.success(message);
+    }
+
+    /**
+     * 展示导入框
+     */
+    @GetMapping("/showImportPage")
+    public String showImportPage(boolean showSpareField, ModelMap mmap)
+    {
+        mmap.addAttribute("showSpareField",showSpareField);
+        return prefix + "/import";
     }
 }

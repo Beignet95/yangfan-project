@@ -147,23 +147,6 @@
                     {
                         field: 'asin',
                         title: '关联的ASIN',
-                        // formatter: function(value, row, index) {
-                        //     if(value=undefined) return '点击编辑';
-                        //     else return value;
-                        // },
-                        editable : {
-                            type : 'text',
-                            title : '关联的ASIN',
-                            emptytext : "点击编辑",
-                            validate : function(value) {
-                                if (value.length > 10) {
-                                    return '关联的ASIN不能超过10个字符';
-                                }
-                                if (value.length == 0) {
-                                    return '关联的ASIN不能为空';
-                                }
-                            }
-                        }
                     },
                     {
                         title: '操作',

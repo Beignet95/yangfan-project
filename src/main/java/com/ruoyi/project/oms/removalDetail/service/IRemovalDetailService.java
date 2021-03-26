@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.removalDetail.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.project.oms.removalDetail.domain.RemovalDetail;
 
@@ -65,7 +66,7 @@ public interface IRemovalDetailService
      * @param ids 需要导入的数据List
      * @return 结果
      */
-    public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport);
+    public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport, String account, Date month);
 
 
 }

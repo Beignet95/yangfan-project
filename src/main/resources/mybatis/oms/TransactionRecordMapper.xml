@@ -378,7 +378,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
-        and length(sku) &gt; 3
+             <if test="type != null  and type != ''"> and type = #{type}</if>
         </where>
         GROUP BY principal,spu,standard_sku,site,account
 
@@ -427,22 +427,24 @@ GROUP BY principal,type,spu,standard_sku,site,account
     </select>
 
     <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="SkuRefundServiceFee">
-        select tr.standard_sku as sku,SUM(rs.amount) as refundServiceFee from oms_transaction_record tr INNER JOIN oms_refund_servicefee rs on tr.order_id=rs.order_id
-        where type=5 and rs.payment_detail='Refund Administration Fee'
-            <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
-            <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
-            <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="description != null and description != ''">and description = #{description}</if>
-            <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
-            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
-            <if test="site != null  and site != ''"> and site = #{site}</if>
-            <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
+        select tr.standard_sku as sku,SUM(rs.amount) as refundServiceFee from
+        (select distinct order_id,sku,standard_sku from oms_transaction_record
+        where type=5
+        <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+        <if test="type != null  and type != ''"> and type = #{type}</if>
+        <if test="description != null and description != ''">and description = #{description}</if>
+        <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+        <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
+        <if test="site != null  and site != ''"> and site = #{site}</if>
+        <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>)  tr
+        INNER JOIN oms_refund_servicefee rs on tr.order_id=rs.order_id and tr.sku=rs.sku
         GROUP BY tr.standard_sku
     </select>
 
 
     <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="SkuFee">
-        select standard_sku as sku,SUM(other_transaction_fees) as fee from oms_transaction_record
+        select standard_sku as sku,SUM(other) as fee from oms_transaction_record
         <where>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>

@@ -1,6 +1,9 @@
 package com.ruoyi.project.oms.refundServicefee.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
+import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
@@ -29,8 +32,13 @@ public class RefundServicefeeServiceImpl implements IRefundServicefeeService
 {
     private static final Logger log = LoggerFactory.getLogger(RefundServicefee.class);
 
+    private final String HISTORY_OPERARE_PREFIX = "imp:RefundServicefee:r:";
+
     @Autowired
     private RefundServicefeeMapper refundServicefeeMapper;
+
+    @Autowired
+    private IHistoryOperateService historyOperateService;
 
     /**
      * 查询平台退款服务费
@@ -113,13 +121,17 @@ public class RefundServicefeeServiceImpl implements IRefundServicefeeService
      * @return 导入结果
      */
     @Override
-    public String importRefundServicefee(List<RefundServicefee> refundServicefeeList, boolean isUpdateSupport) {
-        refundServicefeeList = refundServicefeeList.stream()
-                .filter(refundServicefee -> "Refund Administration Fee".equals(refundServicefee.getPaymentDetail())).collect(Collectors.toList());
+    public String importRefundServicefee(List<RefundServicefee> refundServicefeeList, boolean isUpdateSupport,String account,Date month) {
+        refundServicefeeList = refundServicefeeList.stream().filter(refundServicefee
+                -> ("Refund Administration Fee".equals(refundServicefee.getPaymentDetail())
+                ||"Refund commission".equals(refundServicefee.getPaymentDetail() )) ).collect(Collectors.toList());
         if (StringUtils.isNull(refundServicefeeList) || refundServicefeeList.size() == 0)
         {
             throw new BusinessException("导入数据不能为空！");
         }
+
+        HistoryOperate ho = checkAndInterceptImp(account,month);//检查是否有做个导入操作
+
         int successNum = 0;
         int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
@@ -129,29 +141,13 @@ public class RefundServicefeeServiceImpl implements IRefundServicefeeService
         {
             try
             {
-                // 验证数据是否已经
-                RefundServicefee domain = refundServicefeeMapper.selectRefundServicefeeByOnlyCondition(refundServicefee);
-                if (domain==null)
-                {
-                    refundServicefee.setCreateBy(operName);
-                    refundServicefee.setCreateTime(new Date());
-                    this.insertRefundServicefee(refundServicefee);
-                    successNum++;
-                    successMsg.append("<br/>" + successNum + "、"+ refundServicefee.toString()+" 的数据导入成功");
-                }
-                else if (isUpdateSupport)
-                {
-                    refundServicefee.setUpdateBy(operName);
-                    refundServicefee.setUpdateTime(new Date());
-                    refundServicefeeMapper.updateRefundServicefeeByOnlyCondition(refundServicefee);
-                    successNum++;
-                    successMsg.append("<br/>" + successNum + "、" + refundServicefee.toString()+" 的数据更新成功");
-                }
-                else
-                {
-                    failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、" + refundServicefee.toString()+" 的数据已存在");
-                }
+                refundServicefee.setAccount(account);
+                refundServicefee.setMonth(month);
+                refundServicefee.setCreateBy(operName);
+                refundServicefee.setCreateTime(new Date());
+                this.insertRefundServicefee(refundServicefee);
+                successNum++;
+                successMsg.append("<br/>" + successNum + "、"+ refundServicefee.toString()+" 的数据导入成功");
             }
             catch (Exception e)
             {
@@ -169,7 +165,19 @@ public class RefundServicefeeServiceImpl implements IRefundServicefeeService
         else
         {
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            historyOperateService.insertHistoryOperate(ho);
         }
         return successMsg.toString();
+    }
+
+    private HistoryOperate checkAndInterceptImp(String account, Date month) {
+        String monthStr = DateUtils.parseDateToStr("yyyy-MM",month);
+        String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+ monthStr;
+        HistoryOperate ho = new HistoryOperate();
+        ho.setRepeatCode(history_operate_code);
+        List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
+        if(hoRes.size()>0) throw new BusinessException(monthStr+"月份，账号为"
+                +account+"的退款服务费数据导入操作已被锁定！你可能已经导入过数据了！");
+        return ho;
     }
 }

@@ -1,19 +1,16 @@
 package com.ruoyi.project.oms.removalDetail.domain;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
+import com.ruoyi.framework.aspectj.lang.annotation.Excel;
+import com.ruoyi.framework.web.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.framework.aspectj.lang.annotation.Excel;
-import com.ruoyi.framework.web.domain.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 移除明细对象 oms_removal_detail
@@ -26,7 +23,7 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class RemovalDetail extends BaseEntity
+public class RemovalDetail4EU extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -36,31 +33,26 @@ public class RemovalDetail extends BaseEntity
     /** order-id */
     @Excel(name = "order-id")
     @CsvBindByPosition(position = 1)
-    @CsvBindByName( column = "order-id")
     private String orderId;
 
     /** order-type */
     @Excel(name = "order-type")
     @CsvBindByPosition(position = 2)
-    @CsvBindByName( column = "order-type")
     private String orderType;
 
     /** sku */
     @Excel(name = "sku")
-    @CsvBindByPosition(position = 5)
-    @CsvBindByName( column = "sku")
+    @CsvBindByPosition(position = 6)
     private String sku;
 
     /** removal-fee */
     @Excel(name = "removal-fee")
-    @CsvBindByPosition(position = 13)
-    @CsvBindByName( column = "removal-fee")
+    @CsvBindByPosition(position = 14)
     private BigDecimal removalFee;
 
     /** currency */
     @Excel(name = "currency")
-    @CsvBindByPosition(position = 14)
-    @CsvBindByName( column = "currency")
+    @CsvBindByPosition(position = 15)
     private String currency;
 
     /** 月份 */
