@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.utils.csv.CsvUtil;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -159,5 +160,22 @@ public class RemovalDetailController extends BaseController
     {
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
+    }
+    /**
+     * 解锁并删除数据
+     */
+
+    @PostMapping("/unlockData")
+    @RequiresPermissions("oms:removalDetail:remove")
+    @Log(title = "解锁移除明细", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult unlockData(Date month,String account)
+    {
+        int unlockNum = removalDetailService.unlockData(month,account);
+        if(unlockNum>-1){
+            return AjaxResult.success("成功结算并删除"+unlockNum+"条数据！");
+        }else{
+            return AjaxResult.success("数据未曾锁定！无需解锁!");
+        }
     }
 }

@@ -12,16 +12,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="removalFee"    column="removal_fee"    />
         <result property="currency"    column="currency"    />
         <result property="month"    column="month"    />
-        <result property="account"    column="account
-"    />
+        <result property="account"    column="account"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="principal"    column="principal"    />
+        <result property="spu"    column="spu"    />
+        <result property="standardSku"    column="standard_sku"    />
     </resultMap>
 
     <sql id="selectRemovalDetailVo">
-        select id, order_id, order_type, sku, removal_fee, currency, month, account, create_by, create_time, update_by, update_time from oms_removal_detail
+        select id, order_id, order_type, sku, removal_fee, currency, month, account, create_by, create_time, update_by, update_time, principal, spu, standard_sku from oms_removal_detail
     </sql>
 
     <select id="selectRemovalDetailList" parameterType="RemovalDetail" resultMap="RemovalDetailResult">
@@ -34,6 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
             <if test="month != null "> and month = #{month}</if>
             <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+            <if test="spu != null  and spu != ''"> and spu = #{spu}</if>
+            <if test="standardSku != null  and standardSku != ''"> and standard_sku = #{standardSku}</if>
         </where>
         order by id desc
     </select>
@@ -46,47 +51,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertRemovalDetail" parameterType="RemovalDetail" useGeneratedKeys="true" keyProperty="id">
         insert into oms_removal_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderId != null">order_id,</if>
-            <if test="orderType != null">order_type,</if>
-            <if test="sku != null">sku,</if>
+            <if test="orderId != null and orderId != ''">order_id,</if>
+            <if test="orderType != null and orderType != ''">order_type,</if>
+            <if test="sku != null and sku != ''">sku,</if>
             <if test="removalFee != null">removal_fee,</if>
-            <if test="currency != null">currency,</if>
+            <if test="currency != null and currency != ''">currency,</if>
             <if test="month != null">month,</if>
             <if test="account != null and account != ''">account,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="principal != null and principal != ''">principal,</if>
+            <if test="spu != null and spu != ''">spu,</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderId != null">#{orderId},</if>
-            <if test="orderType != null">#{orderType},</if>
-            <if test="sku != null">#{sku},</if>
+            <if test="orderId != null and orderId != ''">#{orderId},</if>
+            <if test="orderType != null and orderType != ''">#{orderType},</if>
+            <if test="sku != null and sku != ''">#{sku},</if>
             <if test="removalFee != null">#{removalFee},</if>
-            <if test="currency != null">#{currency},</if>
+            <if test="currency != null and currency != ''">#{currency},</if>
             <if test="month != null">#{month},</if>
             <if test="account != null and account != ''">#{account},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="principal != null and principal != ''">#{principal},</if>
+            <if test="spu != null and spu != ''">#{spu},</if>
+            <if test="standardSku != null and standardSku != ''">#{standardSku},</if>
         </trim>
     </insert>
 
     <update id="updateRemovalDetail" parameterType="RemovalDetail">
         update oms_removal_detail
         <trim prefix="SET" suffixOverrides=",">
-            <if test="orderId != null">order_id = #{orderId},</if>
-            <if test="orderType != null">order_type = #{orderType},</if>
-            <if test="sku != null">sku = #{sku},</if>
+            <if test="orderId != null and orderId != ''">order_id = #{orderId},</if>
+            <if test="orderType != null and orderType != ''">order_type = #{orderType},</if>
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
             <if test="removalFee != null">removal_fee = #{removalFee},</if>
-            <if test="currency != null">currency = #{currency},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
             <if test="month != null">month = #{month},</if>
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
+            <if test="spu != null and spu != ''">spu = #{spu},</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku = #{standardSku},</if>
         </trim>
         where id = #{id}
     </update>
@@ -112,17 +126,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateRemovalDetailByOnlyCondition" parameterType="RemovalDetail">
         update oms_removal_detail
         <trim prefix="SET" suffixOverrides=",">
-                                                                            <if test="orderId != null">order_id = #{orderId},</if>
-                                                                <if test="orderType != null">order_type = #{orderType},</if>
-                                                                <if test="sku != null">sku = #{sku},</if>
-                                                                <if test="removalFee != null">removal_fee = #{removalFee},</if>
-                                                                <if test="currency != null">currency = #{currency},</if>
-                                                                <if test="createBy != null">create_by = #{createBy},</if>
-                                                                <if test="createTime != null">create_time = #{createTime},</if>
-                                                                <if test="updateBy != null">update_by = #{updateBy},</if>
-                                                                <if test="updateTime != null">update_time = #{updateTime},</if>
-                                    </trim>
+            <if test="orderId != null and orderId != ''">order_id = #{orderId},</if>
+            <if test="orderType != null and orderType != ''">order_type = #{orderType},</if>
+            <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="removalFee != null">removal_fee = #{removalFee},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="principal != null and principal != ''">principal = #{principal},</if>
+            <if test="spu != null and spu != ''">spu = #{spu},</if>
+            <if test="standardSku != null and standardSku != ''">standard_sku = #{standardSku},</if>
+        </trim>
         where order_id = #{orderId} and order_type = #{orderType} and sku = #{sku}
     </update>
+
+
+    <delete id="deleteRemovalDetailByTypeAndAccount">
+        delete from oms_removal_detail where month=#{month} and account=#{account}
+    </delete>
+
 
 </mapper>

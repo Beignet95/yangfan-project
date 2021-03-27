@@ -70,4 +70,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+
+    <delete id="deleteHistoryOperateByOperateCode" parameterType="String">
+        delete from sys_history_operate where repeat_code = #{operateCode}
+    </delete>
+
 </mapper>

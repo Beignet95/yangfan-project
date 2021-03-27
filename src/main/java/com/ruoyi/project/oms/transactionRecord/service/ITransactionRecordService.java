@@ -1,6 +1,5 @@
 package com.ruoyi.project.oms.transactionRecord.service;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
 import com.ruoyi.project.oms.transactionRecord.vo.BLDTransactionRecordVo;
-import com.ruoyi.project.oms.transactionRecord.vo.FinanceVo;
 import com.ruoyi.project.oms.transactionRecord.vo.OrderIdSku;
 
 /**
@@ -90,7 +88,7 @@ public interface ITransactionRecordService
      *     key 标准SKU
      *     value 移除费
      */
-    public Map<String, BigDecimal> getSkuRemovalFeeMap(TransactionRecord transactionRecord,String removalType);
+    public Map<String, TransactionRecord> getSkuRemovalFeeMap(TransactionRecord transactionRecord, String removalType);
 
     /**
      * @param
@@ -98,7 +96,7 @@ public interface ITransactionRecordService
      *     key 标准SKU
      *     value 退款服务费
      */
-    public Map<String, BigDecimal> getSkuRefundServiceFeeMap(TransactionRecord transactionRecord);
+    public Map<String, TransactionRecord> getSkuRefundServiceFeeMap(TransactionRecord transactionRecord);
 
     List<BLDTransactionRecordVo> selectBLDTransactionReocordVoList(BLDTransactionRecordVo vo);
 

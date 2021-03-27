@@ -2,6 +2,7 @@ package com.ruoyi.project.oms.transactionRecord.vo;
 
 import com.ruoyi.framework.aspectj.lang.annotation.Excel;
 import com.ruoyi.framework.web.domain.BaseEntity;
+import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,14 +58,17 @@ public class FinanceVo extends BaseEntity
     @Excel(name = "数量",cellType = Excel.ColumnType.NUMERIC)
     private Long quantity;
 
+
     /** 销售收入(含自配送） */
     @Excel(name = "销售收入(含自配送）",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal salesRevenue;
 
+    //1.自配送销售
     /** 自配送销售 */
     @Excel(name = "自配送销售",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal productSalesOfSeller;
 
+    //2.自配送销售退款
     /** 自配送销售退款 */
     @Excel(name = "自配送销售退款",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal productSaleRefundsOfSeller;
@@ -81,7 +85,7 @@ public class FinanceVo extends BaseEntity
     @Excel(name = "赔偿金",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal compensation;
 
-    //FBA inventory credit
+    //5.FBA inventory credit
     /** FBA库存信贷 */
     @Excel(name = "FBA库存信贷",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal fbaInventoryCredit;
@@ -325,6 +329,15 @@ public class FinanceVo extends BaseEntity
     @Excel(name = "清算经纪费",cellType = Excel.ColumnType.NUMERIC)
     private BigDecimal liquidationsBrokerageFee;
 
+    public FinanceVo(TransactionRecord record) {
+        super();
+        this.account = record.getAccount();
+        this.site = record.getSite();
+        this.principal = record.getPrincipal();
+        this.type = record.getSpu();
+        this.sku = record.getStandardSku();
+    }
+
 //    /** FBA销售佣金 */
 //    @Excel(name = "FBA销售佣金")
 //    private BigDecimal fbaSalesCommission;
@@ -386,4 +399,5 @@ public class FinanceVo extends BaseEntity
 //    private BigDecimal finalFreightReturn2;
 //
 //    private Integer isdelete;
+
 }

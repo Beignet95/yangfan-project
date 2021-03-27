@@ -69,4 +69,5 @@ public interface IRemovalDetailService
     public String importRemovalDetail(List<RemovalDetail> removalDetailList, boolean isUpdateSupport, String account, Date month);
 
 
+    int unlockData(Date month, String account);
 }

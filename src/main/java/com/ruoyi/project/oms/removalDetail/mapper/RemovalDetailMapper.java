@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.removalDetail.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.project.oms.removalDetail.domain.RemovalDetail;
 
@@ -74,4 +75,12 @@ public interface RemovalDetailMapper
      * @return ${subTable.functionName}对象
      */
     public RemovalDetail selectRemovalDetailByOnlyCondition(RemovalDetail removalDetail);
+
+    /**
+     * 更具月份和账号删除移除明细
+     * @param month
+     * @param account
+     * @return
+     */
+    int deleteRemovalDetailByTypeAndAccount(Date month, String account);
 }

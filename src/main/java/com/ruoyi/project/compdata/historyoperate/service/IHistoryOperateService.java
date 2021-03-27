@@ -70,4 +70,5 @@ public interface IHistoryOperateService
     public boolean checkIsExitHistoryOperate(String hocode);
 
 
+    int deleteHistoryOperateByOperateCode(String historyCode);
 }

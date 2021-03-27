@@ -215,5 +215,11 @@ public class TransactionRecord extends BaseEntity
     }
 
 
-
+    /**
+     * 获取map的key值，用于汇总时获取
+     * @return
+     */
+    public String getMapKey() {
+        return this.principal+this.spu+this.getStandardSku();
+    }
 }

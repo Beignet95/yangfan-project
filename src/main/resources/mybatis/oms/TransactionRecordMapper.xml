@@ -402,9 +402,9 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </where>
     </select>
 
-    <select id="selectSkuRemovalFeeList" parameterType="TransactionRecord" resultType="SkuRemovalFee">
+    <select id="selectSkuRemovalFeeList" parameterType="TransactionRecord" resultType="TransactionRecord">
         SELECT
-        pr.sku,sum(rd.removal_fee) as removalFee
+        rd.principal,rd.spu,rd.standard_sku as standardSku,sum(rd.removal_fee) as total
         FROM
         (SELECT DISTINCT order_id from oms_transaction_record
         <where>
@@ -418,17 +418,15 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </where>
         ) tr
         INNER JOIN oms_removal_detail rd ON tr.order_id = rd.order_id
-        LEFT JOIN pms_asin_msku am ON am.msku = rd.sku
-        LEFT JOIN pms_productinfo_relation pr ON pr.asin = am.asin
         <where>
            <if test="params.removalType != null  and params.removalType != ''"> and rd.order_type = #{params.removalType}</if>
         </where>
-        GROUP BY pr.sku
+        GROUP BY rd.principal,rd.spu,rd.standard_sku
     </select>
 
-    <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="SkuRefundServiceFee">
-        select tr.standard_sku as sku,SUM(rs.amount) as refundServiceFee from
-        (select distinct order_id,sku,standard_sku from oms_transaction_record
+    <select id="selectSkuRefundServiceFeeList" parameterType="TransactionRecord" resultType="TransactionRecord">
+        select tr.account,tr.site,tr.principal,tr.spu,tr.standard_sku as standardSku,SUM(rs.amount) as total from
+        (select distinct order_id,sku,account,site,principal,spu,standard_sku from oms_transaction_record
         where type=5
         <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
         <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
@@ -439,12 +437,12 @@ GROUP BY principal,type,spu,standard_sku,site,account
         <if test="site != null  and site != ''"> and site = #{site}</if>
         <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>)  tr
         INNER JOIN oms_refund_servicefee rs on tr.order_id=rs.order_id and tr.sku=rs.sku
-        GROUP BY tr.standard_sku
+        GROUP BY tr.account,tr.site,tr.principal,tr.spu,tr.standard_sku
     </select>
 
 
-    <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="SkuFee">
-        select standard_sku as sku,SUM(other) as fee from oms_transaction_record
+    <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="TransactionRecord">
+        select account,site,principal,spu,standard_sku as standardSku,SUM(other) as other from oms_transaction_record
         <where>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
@@ -455,7 +453,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
             <if test="site != null  and site != ''"> and site = #{site}</if>
             <if test="spareField != null  and spareField != ''"> and spare_field = #{spareField}</if>
         </where>
-        GROUP BY standard_sku
+        GROUP BY account,site,principal,spu,standard_sku
     </select>
 
     <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="TransactionRecord">

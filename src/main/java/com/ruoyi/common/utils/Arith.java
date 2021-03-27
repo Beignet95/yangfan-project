@@ -122,4 +122,15 @@ public class Arith
         }
         return value1.divide(value2, scale).floatValue();
     }
+
+    /**
+     * 获取BigDecimal
+     * @param v 为空时返回数值0，不为空，返回自己
+     * @return
+     */
+    public static BigDecimal getDecimal(BigDecimal v){
+        //如果精确范围小于0，抛出异常信息
+        return v!=null?v:new BigDecimal(0);
+    }
+
 }

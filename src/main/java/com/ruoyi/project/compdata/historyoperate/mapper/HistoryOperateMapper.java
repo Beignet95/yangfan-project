@@ -74,4 +74,6 @@ public interface HistoryOperateMapper
      * @return ${subTable.functionName}对象
      */
     public HistoryOperate selectHistoryOperateByOnlyCondition(HistoryOperate historyOperate);
+
+    int deleteHistoryOperateByOperateCode(String historyCode);
 }

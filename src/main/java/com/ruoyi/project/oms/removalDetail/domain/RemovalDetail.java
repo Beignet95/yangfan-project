@@ -25,7 +25,6 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class RemovalDetail extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -71,5 +70,22 @@ public class RemovalDetail extends BaseEntity
     /** 账号 */
     @Excel(name = "账号")
     private String account;
+
+    /** 负责人 */
+    @Excel(name = "负责人")
+    private String principal;
+
+    /** 型号 */
+    @Excel(name = "型号")
+    private String spu;
+
+    /** 标准SKU */
+    @Excel(name = "标准SKU")
+    private String standardSku;
+
+    @Override
+    public String toString(){
+        return "订单号："+orderId;
+    }
 
 }

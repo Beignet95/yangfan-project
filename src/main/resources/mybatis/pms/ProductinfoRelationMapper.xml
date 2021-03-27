@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <select id="selectMskuProductinfoRelationVoList" resultType="MskuProductinfoRelationVo">
-        SELECT pr.sku,pr.principal,pr.type,am.msku from pms_productinfo_relation pr left JOIN pms_asin_msku am on pr.asin=am.asin
+        SELECT pr.sku,pr.principal,pr.type,am.msku from pms_productinfo_relation pr inner JOIN pms_asin_msku am on pr.asin=am.asin
     </select>
 
     <select id="selectPasinProductinfoRelationVoList" resultType="PasinProductinfoRelationVo">

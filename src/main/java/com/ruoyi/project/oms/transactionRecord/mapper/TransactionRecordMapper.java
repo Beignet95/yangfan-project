@@ -86,7 +86,7 @@ public interface TransactionRecordMapper
      * @param removalType 移除类型
      * @return 标准SKU对应的移除费
      */
-    public List<SkuRemovalFee> selectSkuRemovalFeeList(TransactionRecord transactionRecord);
+    public List<TransactionRecord> selectSkuRemovalFeeList(TransactionRecord transactionRecord);
 
     public TransactionRecord selectGatherRecord(TransactionRecord transactionRecord);
 
@@ -94,9 +94,9 @@ public interface TransactionRecordMapper
      * @param
      * @return 标准SKU对应的退款服务费
      */
-    public List<SkuRefundServiceFee> selectSkuRefundServiceFeeList(TransactionRecord transactionRecord);
+    public List<TransactionRecord> selectSkuRefundServiceFeeList(TransactionRecord transactionRecord);
 
-    List<SkuFee> selectSkuAdjustmentFeeList(TransactionRecord transactionRecord);
+    List<TransactionRecord> selectSkuAdjustmentFeeList(TransactionRecord transactionRecord);
 
     List<TransactionRecord> selectSkuEarlyFeeGatherList(TransactionRecord transactionRecord);
 

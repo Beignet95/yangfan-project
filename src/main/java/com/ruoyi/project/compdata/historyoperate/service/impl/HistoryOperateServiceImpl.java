@@ -174,4 +174,9 @@ public class HistoryOperateServiceImpl implements IHistoryOperateService
         List<HistoryOperate> hoList = historyOperateMapper.selectHistoryOperateList(ho);
         return hoList.size()>0;
     }
+
+    @Override
+    public int deleteHistoryOperateByOperateCode(String historyCode) {
+        return historyOperateMapper.deleteHistoryOperateByOperateCode(historyCode);
+    }
 }
