@@ -90,4 +90,11 @@ public interface IStorageRecordService
      */
     public List<StorageRecord> getStorageRecordGather(StorageRecord storageRecord);
 
+    /**
+     * 解锁并删除仓储记录
+     * @param month
+     * @param account
+     * @return
+     */
+    int unlockData(Date month, String account,String site);
 }

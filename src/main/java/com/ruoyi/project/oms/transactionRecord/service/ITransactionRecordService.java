@@ -1,6 +1,7 @@
 package com.ruoyi.project.oms.transactionRecord.service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +73,7 @@ public interface ITransactionRecordService
      * @return 结果
      */
     public String importTransactionRecord(List<TransactionRecordImpTempVo> impTempVos,
-                                          boolean isUpdateSupport, String account, String site,String spare);
+                                          boolean isUpdateSupport,Date month, String account, String site,String spare);
 
     /**
      * 查询交易总数据汇列表
@@ -80,7 +81,7 @@ public interface ITransactionRecordService
      * @param transactionRecord 交易汇总数据
      * @return 交易总数据集合
      */
-    public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord) throws ParseException;
+    public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord) throws ParseException, IllegalAccessException;
 
     /**
      * @param removalType 移除类型
@@ -105,4 +106,12 @@ public interface ITransactionRecordService
     String exportOrderIdStrs(TransactionRecord transactionRecord);
 
     String importOrderSku4FeeAdjustmentOrder(List<OrderIdSku> impTempVos, boolean updateSupport);
+
+    /**
+     * 解锁并删除数据
+     * @param month
+     * @param site
+     * @return
+     */
+    int unlockData(Date month, String site,String spareField);
 }

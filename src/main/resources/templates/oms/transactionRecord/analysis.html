@@ -18,7 +18,7 @@
                         <ul>
                             <li>
                                 <label>月份：</label>
-                                <input type="text" class="form-control" placeholder="请选择月份" name="params[month]" id="month" style="width: 100px;display: inline;"/>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
                                 <label>账号：</label>
@@ -306,10 +306,16 @@
                         cellStyle: function (value, row, index) {
                             return { css: { "background-color": mainColColor } }
                         },
+                        formatter : function(value, row, index) {
+                            return toFixed(value);
+                        },
                     },
                     {
                         field: 'truckServiceFee',
-                        title: '卡车服务费'
+                        title: '卡车服务费',
+                        formatter : function(value, row, index) {
+                            return toFixed(value);
+                        },
                     },
                     {
                         field: 'storageFee',
@@ -442,7 +448,7 @@
 
         //设置时间选择器
         $("#month").datetimepicker({
-            format: 'yyyy年mm月',
+            format: 'yyyy-mm',
             weekStart : 1,
             todayBtn : true,
             autoclose : 1,
@@ -469,7 +475,7 @@
 
             //Last_month = ((Last_month == 0) ? (12) : (Last_month));
             //渲染页面上方输入月份的input
-            $("#month").val(year+"年"+Last_month+"月");
+            $("#month").val(year+"-"+Last_month);
         }
 
         function tableSearch(){
@@ -541,7 +547,8 @@
         }
 
         function toFixed(value){
-            return  value.toFixed(2);
+            if(value!=null)
+            return  value.toFixed(4);
         }
     </script>
 </body>

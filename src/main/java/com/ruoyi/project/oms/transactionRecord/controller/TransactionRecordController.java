@@ -2,6 +2,7 @@ package com.ruoyi.project.oms.transactionRecord.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -169,7 +170,7 @@ public class TransactionRecordController extends BaseController
     @RequiresPermissions("oms:transactionRecord:import")
     @PostMapping("/importData")
     @ResponseBody
-    public AjaxResult importData(MultipartFile file, boolean updateSupport,String account,String site,String spareField) throws Exception
+    public AjaxResult importData(MultipartFile file, boolean updateSupport,Date month,String account,String site,String spareField) throws Exception
     {
 
         if (StringUtils.isEmpty(account)||StringUtils.isEmpty(site)||StringUtils.isEmpty(spareField))
@@ -177,7 +178,7 @@ public class TransactionRecordController extends BaseController
 
         CsvUtil<TransactionRecordImpTempVo> util = new CsvUtil<TransactionRecordImpTempVo>(TransactionRecordImpTempVo.class);
         List<TransactionRecordImpTempVo> impTempVos = util.importCvs(file.getInputStream(),7);
-        String message = transactionRecordService.importTransactionRecord(impTempVos, updateSupport,account,site,spareField);
+        String message = transactionRecordService.importTransactionRecord(impTempVos, updateSupport,month,account,site,spareField);
         return AjaxResult.success(message);
     }
 
@@ -200,7 +201,7 @@ public class TransactionRecordController extends BaseController
     @PostMapping("/getAnalysisData")
     @RequiresPermissions("oms:transactionRecord:analysis")
     @ResponseBody
-    public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap) throws ParseException {
+    public TableDataInfo getAnalysisData(TransactionRecord transactionRecord, ModelMap mmap) throws ParseException, IllegalAccessException {
         if(checkParams(transactionRecord)){
             Map resultMap = transactionRecordService.selectTransactionAnaly(transactionRecord);
             List<FinanceVo> financeVos = (List<FinanceVo>) resultMap.get("data");
@@ -234,7 +235,7 @@ public class TransactionRecordController extends BaseController
     @Log(title = "交易数据", businessType = BusinessType.EXPORT)
     @PostMapping("/exportGatherData")
     @ResponseBody
-    public AjaxResult exportGatherData(TransactionRecord transactionRecord) throws ParseException {
+    public AjaxResult exportGatherData(TransactionRecord transactionRecord) throws ParseException, IllegalAccessException {
         List<FinanceVo> list = (List<FinanceVo>) transactionRecordService.selectTransactionAnaly(transactionRecord).get("data");
         ExcelUtil<FinanceVo> util = new ExcelUtil<FinanceVo>(FinanceVo.class);
         return util.exportExcel(list, "财务汇总数据");
@@ -336,6 +337,23 @@ public class TransactionRecordController extends BaseController
     {
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
+    }
+
+    /**
+     * 解锁并删除数据
+     */
+    @PostMapping("/unlockData")
+    @RequiresPermissions("pms:advertisingFee:remove")
+    @Log(title = "解锁交易记录数据", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult unlockData(Date month, String site,String spareField)
+    {
+        int unlockNum = transactionRecordService.unlockData(month,site,spareField);
+        if(unlockNum>-1){
+            return AjaxResult.success("成功结算并删除"+unlockNum+"条数据！");
+        }else{
+            return AjaxResult.success("数据未曾锁定！无需解锁!");
+        }
     }
 
 

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.ruoyi.common.utils.Arith;
+import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
 import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
 import com.ruoyi.project.compdata.productPrincipal.service.IProductPrincipalService;
@@ -169,7 +170,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
      */
     @Override
     @Transactional
-    public String importTransactionRecord(List<TransactionRecordImpTempVo> impTempVos, boolean isUpdateSupport, String account, String site,String spareField) {
+    public String importTransactionRecord(List<TransactionRecordImpTempVo> impTempVos, boolean isUpdateSupport,
+                                          Date month,String account, String site,String spareField) {
 
         if (StringUtils.isNull(impTempVos) || impTempVos.size() == 0)
         {
@@ -251,6 +253,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             }
 
             //设置好账号和站点
+            transactionRecord.setMonth(month);
             transactionRecord.setAccount(account);
             transactionRecord.setSite(site);
             transactionRecord.setSpareField(spareField);
@@ -273,7 +276,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             Date time = DateUtils.parseUTCDate4CSV(impTempVo.getTime(), locale,timeFormatStr);//因为欧洲各国时间不一样，所以在此层处理
             transactionRecord.setTime(time);
             if(StringUtils.isEmpty(history_operate_code)){
-                String monthStr = DateUtils.parseDateToStr("yyyy-MM",time);
+                String monthStr = DateUtils.parseDateToStr("yyyy-MM",month);
                 history_operate_code = HISTORY_OPERARE_PREFIX+":"+site+":"+monthStr+spareField;
                 ho.setRepeatCode(history_operate_code);
                 List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
@@ -363,31 +366,36 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
     @Override
     public Map<String,Object> selectTransactionAnaly(TransactionRecord transactionRecord) throws ParseException {
 
-        String preMonthStr = (String)transactionRecord.getParams().get("month");
-        Date startTime = null;
-        if(StringUtils.isNotEmpty(preMonthStr)){
-            SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月");
-            Calendar c = Calendar.getInstance();
-            try {
-                // 注意格式需要与上面一致，不然会出现异常
-                startTime = format.parse(preMonthStr);
-                c.set(Calendar.DAY_OF_MONTH, 1);
-                c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
-                        0, 0, 0);
-                Date endTime = c.getTime();//最后一天
-                Map params = new HashMap();
-                params.put("beginTime",DateUtils.parseDateToStr("yyyy-MM-dd",startTime));
-                params.put("endTime",DateUtils.parseDateToStr("yyyy-MM-dd",endTime));
-                transactionRecord.setParams(params);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+//        String preMonthStr = (String)transactionRecord.getParams().get("month");
+//        Date startTime = null;
+//        if(StringUtils.isNotEmpty(preMonthStr)){
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月");
+//            Calendar c = Calendar.getInstance();
+//            try {
+//                // 注意格式需要与上面一致，不然会出现异常
+//                startTime = format.parse(preMonthStr);
+//                c.set(Calendar.DAY_OF_MONTH, 1);
+//                c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH),
+//                        0, 0, 0);
+//                Date endTime = c.getTime();//最后一天
+//                Map params = new HashMap();
+//                params.put("beginTime",DateUtils.parseDateToStr("yyyy-MM-dd",startTime));
+//                params.put("endTime",DateUtils.parseDateToStr("yyyy-MM-dd",endTime));
+//                transactionRecord.setParams(params);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         String spareField = transactionRecord.getSpareField();
         StringBuilder warnMsg = new StringBuilder();
         //获取卡车服务记录map
-        Map<String,BigDecimal> truckFeeMap =  this.getTruckServiceFeeMap(transactionRecord);
+        Map<String,BigDecimal> truckFeeMap = null;
+        try {
+            truckFeeMap = this.getTruckServiceFeeMap(transactionRecord);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         transactionRecord.setFulfilment("Amazon");
         List<TransactionRecord> amazonRecordGather = transactionRecordMapper.selectTransactionAnaly(transactionRecord);
@@ -651,17 +659,17 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
 
             //仓储费（0.79%）
             //BigDecimal fbaInventoryAndInboundServicesFees = new BigDecimal(0);
-            BigDecimal truckServiceFee = (truckFeeMap.get(standardSku)!=null)?truckFeeMap.get(standardSku):new BigDecimal(0);
+            BigDecimal truckServiceFee = Arith.getDecimal(truckFeeMap.get(key));
             financeVo.setTruckServiceFee(truckServiceFee);
 
             BigDecimal storageFee = (skuStorageFeeMap.get(key)!=null&&skuStorageFeeMap.get(key).getStorageFee()!=null)
                     ?skuStorageFeeMap.get(key).getStorageFee().multiply(new BigDecimal(-1)):new BigDecimal(0);//整数取负
             financeVo.setStorageFee(storageFee);
-            BigDecimal returnRemovalFee = (returnSkuRemovalFeeMap.get(standardSku)!=null)
-                    ?returnSkuRemovalFeeMap.get(standardSku).getTotal().multiply(new BigDecimal(-1)):new BigDecimal(0);
+            BigDecimal returnRemovalFee = (returnSkuRemovalFeeMap.get(key)!=null)
+                    ?returnSkuRemovalFeeMap.get(key).getTotal().multiply(new BigDecimal(-1)):new BigDecimal(0);
             financeVo.setReturnRemovalFee(returnRemovalFee);
-            BigDecimal disposalRemovalFee = (disposalSkuRemovalFeeMap.get(standardSku)!=null)
-                    ?disposalSkuRemovalFeeMap.get(standardSku).getTotal().multiply(new BigDecimal(-1)):new BigDecimal(0);
+            BigDecimal disposalRemovalFee = (disposalSkuRemovalFeeMap.get(key)!=null)
+                    ?disposalSkuRemovalFeeMap.get(key).getTotal().multiply(new BigDecimal(-1)):new BigDecimal(0);
             financeVo.setDisposalRemovalFee(disposalRemovalFee);
             BigDecimal fbaInventoryAndInboundServicesFees = new BigDecimal(0);
             fbaInventoryAndInboundServicesFees = fbaInventoryAndInboundServicesFees.add(truckServiceFee).add(storageFee).add(returnRemovalFee).add(disposalRemovalFee);
@@ -746,13 +754,14 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             //去除map中的值 剩下的需要再作汇总
             skuStorageFeeMap.remove(key);
             skuAdvertisingFeeMap.remove(key);
-            returnSkuRemovalFeeMap.remove(standardSku);
-            disposalSkuRemovalFeeMap.remove(standardSku);
+            returnSkuRemovalFeeMap.remove(key);
+            disposalSkuRemovalFeeMap.remove(key);
             skuAdjustmentFeeMap.remove(key);
             refundRecordMap.remove(key);
             adjustmentRecordMap.remove(key);
             sellerRecordMap.remove(key);
             sellerRefundRecordMap.remove(key);
+            truckFeeMap.remove(key);
         }
 
         //未匹配的记录也许放置到list中
@@ -839,9 +848,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             BigDecimal refundServiceFee = record.getTotal();
             FinanceVo financeVo = new FinanceVo(record);
 
-            String standartSku = entry.getKey();
-            if(noSalesRecordGather.containsKey(standartSku)) {
-                financeVo = noSalesRecordGather.get(standartSku);
+            String key = record.getMapKey();
+            if(noSalesRecordGather.containsKey(key)) {
+                financeVo = noSalesRecordGather.get(key);
             }
             financeVo.setRefundAdministrationFees(refundServiceFee);
             noSalesRecordGather.put(entry.getKey(),financeVo);
@@ -853,9 +862,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             BigDecimal returnSkuRemovalFee = record.getTotal().multiply(new BigDecimal(-1));
             FinanceVo financeVo = new FinanceVo(record);
 
-            String standartSku = entry.getKey();
-            if(noSalesRecordGather.containsKey(standartSku)) {
-                financeVo = noSalesRecordGather.get(standartSku);
+            String key = record.getMapKey();
+            if(noSalesRecordGather.containsKey(key)) {
+                financeVo = noSalesRecordGather.get(key);
             }else{
                 financeVo.setAccount(transactionRecord.getAccount());
                 financeVo.setSite(transactionRecord.getSite());
@@ -874,9 +883,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             BigDecimal disposalSkuRemovalFee = record.getTotal().multiply(new BigDecimal(-1));
             FinanceVo financeVo = new FinanceVo(record);
 
-            String standartSku = entry.getKey();
-            if(noSalesRecordGather.containsKey(standartSku)) {
-                financeVo = noSalesRecordGather.get(standartSku);
+            String key = record.getMapKey();
+            if(noSalesRecordGather.containsKey(key)) {
+                financeVo = noSalesRecordGather.get(key);
             }else{
                 financeVo.setAccount(transactionRecord.getAccount());
                 financeVo.setSite(transactionRecord.getSite());
@@ -893,7 +902,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             TransactionRecord record = (TransactionRecord)entry.getValue();
             FinanceVo financeVo = new FinanceVo(record);
             BigDecimal skuAdjustmentFee = record.getOther();
-            String key = record.getPrincipal()+record.getSpu()+record.getStandardSku();
+            String key = record.getMapKey();
             if(noSalesRecordGather.containsKey(key)) {
                 financeVo = noSalesRecordGather.get(key);
             }
@@ -1022,6 +1031,20 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             noSalesRecordGather.put(entry.getKey(),financeVo);
 
         }
+        //未匹配的卡车费用
+        for(Map.Entry<String, BigDecimal> entry : truckFeeMap.entrySet()){
+            BigDecimal truckFee = entry.getValue();
+            FinanceVo financeVo = new FinanceVo();
+            String key = entry.getKey();
+            if(noSalesRecordGather.containsKey(key)) {
+                financeVo = noSalesRecordGather.get(key);
+            }
+            financeVo.setTruckServiceFee(truckFee);
+            BigDecimal fbaInventoryAndInboundServicesFees = Arith.getDecimal(financeVo.getFbaInventoryAndInboundServicesFees());
+            financeVo.setFbaInventoryAndInboundServicesFees(fbaInventoryAndInboundServicesFees.add(truckFee));
+            noSalesRecordGather.put(entry.getKey(),financeVo);
+
+        }
 
 
 
@@ -1067,7 +1090,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         transactionRecord.setFulfilment(null);
         transactionRecord.setType(TransactionType.FEE_ADJUSTMENT);
         List<TransactionRecord> feeAdjustmentRecordList = transactionRecordMapper.selectTransactionAnaly(transactionRecord);
-        Map<String, TransactionRecord> map = feeAdjustmentRecordList.stream().collect(Collectors.toMap(TransactionRecord::getStandardSku,Function.identity()));
+        Map<String, TransactionRecord> map = feeAdjustmentRecordList.stream().collect(Collectors.toMap(
+                k->k.getPrincipal()+k.getSpu()+k.getStandardSku(),Function.identity()));
         return map;
     }
 
@@ -1229,8 +1253,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
 
     private Map<String, AdvertisingFee> getSkuAdvertisingFeeMap(TransactionRecord transactionRecord) {
         AdvertisingFee af = new AdvertisingFee();
-        Date month = DateUtils.parseDate(transactionRecord.getParams().get("beginTime"));
-        af.setMonth(month);
+        af.setMonth(transactionRecord.getMonth());
         af.setSite(transactionRecord.getSite());
         List<AdvertisingFee> advertisingFeeList = advertisingFeeService.selectSkuAdvertisingFeeList(af);
         Map<String, AdvertisingFee> map = advertisingFeeList.stream().collect(Collectors.toMap(
@@ -1239,8 +1262,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
     }
 
     private Map<String, StorageRecord> getSkuStorageFeeMapByMonth(TransactionRecord transactionRecord) throws ParseException {
-        String timeStr = (String) transactionRecord.getParams().get("beginTime");
-        Date time = DateUtils.parseDate(timeStr,"yyyy-MM-dd");
+        Date time = transactionRecord.getMonth();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(time); // 设置时间
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1); // 再设置为上一个月
@@ -1425,6 +1447,19 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         return successMsg.toString();
     }
 
+    @Override
+    @Transactional
+    public int unlockData(Date month, String site,String spareField) {
+        String monstr = DateUtils.parseDateToStr("yyyy-MM",month);
+        if(historyOperateService.deleteHistoryOperateByOperateCode(getHistoryCode(site,monstr,spareField))>0){
+            return transactionRecordMapper.deleteTransactionRecordByMonthSiteAndSpareField(month,site,spareField);
+        }else return -1;
+    }
+
+    private String getHistoryCode(String site, String monstr,String spareField) {
+        return HISTORY_OPERARE_PREFIX+":"+site+":"+monstr+spareField;
+    }
+
     private int updateAdjustmentRecordByOrderId(TransactionRecord record) {
         return transactionRecordMapper.updateAdjustmentRecordByOrderId(record);
     }
@@ -1445,28 +1480,48 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         return skuProductinfoRelationMap;
     }
 
-    private Map<String,BigDecimal> getTruckServiceFeeMap(TransactionRecord transactionRecord) {
+    private Map<String,BigDecimal> getTruckServiceFeeMap(TransactionRecord transactionRecord) throws IllegalAccessException {
         transactionRecord.setDescription("FBA Amazon-Partnered Carrier Shipment Fee");
         List<TransactionRecord> truckFeeRecords = this.selectTransactionRecordList(transactionRecord);
         Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap =  productinfoRelationService.getSkuMskuMap();
+        Map<String,BigDecimal> skuVolumnMap = this.getSkuVolumnMap(transactionRecord);
         Map<String,BigDecimal> truckFeeMap = new HashMap();
         for (TransactionRecord record:truckFeeRecords){
             //获取卡车上货物的数量
             TruckService tsParam = new TruckService();
             tsParam.setTruckRecordId(record.getId());
             List<TruckService> tsList = truckServiceService.selectTruckServiceList(tsParam);
-            Long totalNum = 0l;
+            BigDecimal totalVolumn = new BigDecimal(0);
             for(TruckService ts:tsList){
-                totalNum+=ts.getShipped();
+                BigDecimal num = new BigDecimal(ts.getShipped());
+                BigDecimal volumn = skuVolumnMap.get(ts.getAsin());
+                totalVolumn = totalVolumn.add(num.multiply(volumn));
             }
             for(TruckService ts:tsList){
-                Double rate = Arith.div(ts.getShipped().doubleValue(),totalNum.doubleValue());
+                BigDecimal volumn = new BigDecimal(ts.getShipped()).multiply(skuVolumnMap.get(ts.getAsin()));
+                Float rate = Arith.div(volumn,totalVolumn,4);
                 BigDecimal tFee = new BigDecimal(Arith.mul(rate,record.getOther().doubleValue()));
-                String standardSku = mskuProductinfoRelationVoMap.get(ts.getMsku()).getSku();
-                truckFeeMap.put(standardSku,tFee);
+                MskuProductinfoRelationVo mskuPrl = mskuProductinfoRelationVoMap.get(ts.getMsku());
+                truckFeeMap.put(mskuPrl.getPrincipal()+mskuPrl.getType()+mskuPrl.getSku(),tFee);
             }
         }
         return truckFeeMap;
+    }
+
+    private Map<String, BigDecimal> getSkuVolumnMap(TransactionRecord transactionRecord) {
+        Date time = transactionRecord.getMonth();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time); // 设置时间
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1); // 再设置为上一个月
+        time = calendar.getTime();
+
+        StorageRecord storageRecord = new StorageRecord();
+        storageRecord.setMonth(time);
+        storageRecord.setAccount(transactionRecord.getAccount());
+        storageRecord.setCountryCode(transactionRecord.getSite().split("-")[1]);
+        List<StorageRecord> storageRecordList = storageRecordService.selectStorageRecordList(storageRecord);
+        if(storageRecordList.size()==0) return new HashMap<>();
+        return storageRecordList.stream().collect(Collectors.toMap(k->k.getAsin(),k->k.getItemVolume(),(entity1, entity2) -> entity1));
     }
 
     private TransactionRecordImpTempVo mergeRepeatRecord(Map<String,List<TransactionRecordImpTempVo>> recordGroupsMap,String orderId){

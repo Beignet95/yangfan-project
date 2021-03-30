@@ -126,4 +126,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where order_id = #{orderId} and payment_type = #{paymentType} and payment_detail = #{paymentDetail}
     </update>
 
+
+    <delete id="deleteRefundServicefeeByTypeAndAccount">
+        delete from oms_refund_servicefee where month=#{month} and account=#{account}
+    </delete>
+
 </mapper>

@@ -156,4 +156,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 
+    <delete id="deleteStorageRecordLockUnit">
+        delete from sms_storage_record where month=#{month} and account=#{account} and country_code=#{countryCode}
+    </delete>
+
+
 </mapper>

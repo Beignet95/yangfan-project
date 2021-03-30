@@ -20,6 +20,7 @@ import com.ruoyi.project.oms.refundServicefee.mapper.RefundServicefeeMapper;
 import com.ruoyi.project.oms.refundServicefee.domain.RefundServicefee;
 import com.ruoyi.project.oms.refundServicefee.service.IRefundServicefeeService;
 import com.ruoyi.common.utils.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 平台退款服务费Service业务层处理
@@ -170,9 +171,22 @@ public class RefundServicefeeServiceImpl implements IRefundServicefeeService
         return successMsg.toString();
     }
 
+    @Override
+    @Transactional
+    public int unlockData(Date month, String account) {
+        String monstr = DateUtils.parseDateToStr("yyyy-MM",month);
+        if(historyOperateService.deleteHistoryOperateByOperateCode(getHistoryCode(account,monstr))>0){
+            return refundServicefeeMapper.deleteRefundServicefeeByTypeAndAccount(month,account);
+        }else return -1;
+    }
+
+    private String getHistoryCode(String account, String monthStr) {
+        return HISTORY_OPERARE_PREFIX+account+":"+ monthStr;
+    }
+
     private HistoryOperate checkAndInterceptImp(String account, Date month) {
         String monthStr = DateUtils.parseDateToStr("yyyy-MM",month);
-        String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+ monthStr;
+        String history_operate_code = getHistoryCode(account,monthStr);
         HistoryOperate ho = new HistoryOperate();
         ho.setRepeatCode(history_operate_code);
         List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);

@@ -1,5 +1,6 @@
 package com.ruoyi.project.sms.storageRecord.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.utils.csv.CsvUtil;
@@ -160,5 +161,22 @@ public class StorageRecordController extends BaseController
     {
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
+    }
+
+    /**
+     * 解锁并删除数据
+     */
+    @PostMapping("/unlockData")
+    @RequiresPermissions("sms:storageRecord:remove")
+    @Log(title = "解锁移除明细", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult unlockData(Date month, String account,String site)
+    {
+        int unlockNum = storageRecordService.unlockData(month,account,site);
+        if(unlockNum>-1){
+            return AjaxResult.success("成功结算并删除"+unlockNum+"条数据！");
+        }else{
+            return AjaxResult.success("数据未曾锁定！无需解锁!");
+        }
     }
 }

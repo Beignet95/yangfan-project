@@ -1144,7 +1144,7 @@ public class ExcelUtil<T>
                         CellStyle cellStyle = cell.getCellStyle();
                         String formatString = cellStyle.getDataFormatString();
 
-                        if("[$€-2]\\ #,##0.00;[Red][$€-2]\\ \\-#,##0.00".equals(formatString)) return val = "€"+ val;
+                        //TODO if("[$€-2]\\ #,##0.00;[Red][$€-2]\\ \\-#,##0.00".equals(formatString)) return val = "€"+ val;
 
                         if ((Double) val % 1 != 0)
                         {

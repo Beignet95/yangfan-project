@@ -75,4 +75,12 @@ public interface IAdvertisingFeeService
 
     public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee advertisingFee);
 
+    /**
+     * 解锁并删除数据
+     * @param month
+     * @param site
+     * @return
+     */
+    int unlockData(Date month, String site);
+
 }

@@ -2,6 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('平台退款服务费列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -10,6 +11,14 @@
                 <form id="formId">
                     <div class="select-list">
                         <ul>
+                            <li>
+                                <label>账号：</label>
+                                <input type="text" name="account" id="account"/>
+                            </li>
+                            <li>
+                                <label>月份：</label>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
+                            </li>
                             <li>
                                 <label>Order ID：</label>
                                 <input type="text" name="orderId"/>
@@ -41,6 +50,9 @@
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="oms:refundServicefee:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>
+                <a class="btn btn-danger" onclick="unlockData()" shiro:hasPermission="oms:removalDetail:remove">
+                    <i class="fa fa-remove"></i> 解锁并删除数据
+                </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:refundServicefee:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
@@ -54,6 +66,7 @@
         </div>
     </div>
     <th:block th:include="include :: footer" />
+     <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:refundServicefee:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:refundServicefee:remove')}]];
@@ -167,6 +180,35 @@
                 }
             });
         }
+
+        function unlockData(){
+            var month = $("#month").val();
+            var account = $("#account").val();
+            if(month==''||account==''){
+                $.modal.alertWarning("解锁的账号或月份不能为空！");
+                return false;
+            }
+            var confirmMsg = "确定解锁账号："+account+" "+month+"月份的移除明细记录数据吗！";
+            $.modal.confirm(confirmMsg, function() {
+                $.post(prefix+"/unlockData",{month:month,account:account},function(result){
+                    layer.msg(result.msg, {icon: 0});
+                });
+            });
+
+        }
+
+        //设置时间选择器
+        $("#month").datetimepicker({
+            format: 'yyyy-mm',
+            weekStart : 1,
+            todayBtn : true,
+            autoclose : 1,
+            startView : 'year',
+            maxView:'decade',
+            minView :'year',
+            forceParse : false,
+            pickerPosition: "bottom-left"
+        });
     </script>
 </body>
 <!-- 导入区域 -->

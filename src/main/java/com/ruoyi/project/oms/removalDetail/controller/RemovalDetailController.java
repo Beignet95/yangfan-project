@@ -161,10 +161,10 @@ public class RemovalDetailController extends BaseController
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
     }
+
     /**
      * 解锁并删除数据
      */
-
     @PostMapping("/unlockData")
     @RequiresPermissions("oms:removalDetail:remove")
     @Log(title = "解锁移除明细", businessType = BusinessType.DELETE)

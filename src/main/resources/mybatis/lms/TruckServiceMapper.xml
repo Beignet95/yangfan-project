@@ -118,6 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateTruckServiceByOnlyCondition" parameterType="TruckService">
         update lms_truck_service
         <trim prefix="SET" suffixOverrides=",">
+            <if test="truckRecordId != null">truck_record_id = #{truckRecordId},</if>
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="site != null and site != ''">site = #{site},</if>
             <if test="month != null">month = #{month},</if>

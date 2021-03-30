@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.refundServicefee.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.project.oms.refundServicefee.domain.RefundServicefee;
 
@@ -74,4 +75,12 @@ public interface RefundServicefeeMapper
      * @return ${subTable.functionName}对象
      */
     public RefundServicefee selectRefundServicefeeByOnlyCondition(RefundServicefee refundServicefee);
+
+    /**
+     * 更具月份和账号删除记录
+     * @param month
+     * @param account
+     * @return
+     */
+    int deleteRefundServicefeeByTypeAndAccount(Date month, String account);
 }

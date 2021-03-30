@@ -1,5 +1,6 @@
 package com.ruoyi.project.pms.advertisingFee.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
@@ -78,4 +79,12 @@ public interface AdvertisingFeeMapper
     public AdvertisingFee selectAdvertisingFeeByOnlyCondition(AdvertisingFee advertisingFee);
 
     public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee AdvertisingFee);
+
+    /**
+     * 更具月份和站点删除数据
+     * @param month
+     * @param site
+     * @return
+     */
+    int deleteAdvertisingFeeByTypeAndSite(Date month, String site);
 }

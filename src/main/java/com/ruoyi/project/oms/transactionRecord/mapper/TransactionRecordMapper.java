@@ -1,5 +1,6 @@
 package com.ruoyi.project.oms.transactionRecord.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecord;
@@ -107,4 +108,13 @@ public interface TransactionRecordMapper
     List<TransactionRecord>  selectQuantityAnaly(TransactionRecord transactionRecord);
 
     int updateAdjustmentRecordByOrderId(TransactionRecord record);
+
+    /**
+     * 按照月份 站点 类型 删除数据
+     * @param month
+     * @param site
+     * @param spareField
+     * @return
+     */
+    int deleteTransactionRecordByMonthSiteAndSpareField(Date month, String site, String spareField);
 }

@@ -204,6 +204,19 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         return skuAdvertisingFeeList;
     }
 
+    @Override
+    @Transactional
+    public int unlockData(Date month, String site) {
+        String monstr = DateUtils.parseDateToStr("yyyy-MM",month);
+        if(historyOperateService.deleteHistoryOperateByOperateCode(getHistoryCode(site,monstr))>0){
+            return advertisingFeeMapper.deleteAdvertisingFeeByTypeAndSite(month,site);
+        }else return -1;
+    }
+
+    private String getHistoryCode(String site, String monthStr) {
+        return HISTORY_OPERARE_PREFIX+":"+ site+":"+monthStr;
+    }
+
     @Autowired
     IAdvertisingActivityService advertisingActivityService;
 

@@ -17,13 +17,13 @@
                         </li>
                         <li>
                             <label>账号：</label>
-                            <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                            <select class="type form-control" style="width: 100px;display: inline;" name="account" id="account">
                                 <option value="">-请选择-</option>
                             </select>
                         </li>
                         <li>
                             <label>站点：</label>
-                            <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                            <select class="router form-control" style="width: 100px;display: inline;" name="site" id="site">
                                 <option value="">-请选择-</option>
                             </select>
                         </li>
@@ -53,6 +53,9 @@
             </a>
             <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="pms:advertisingFee:remove">
                 <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-danger" onclick="unlockData()" shiro:hasPermission="pms:advertisingFee:remove">
+                <i class="fa fa-remove"></i> 解锁并删除数据
             </a>
             <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="pms:advertisingFee:export">
                 <i class="fa fa-download"></i> 导出
@@ -222,6 +225,21 @@
                 selects: ['type', 'router'],
                 jsonValue: 'v',
                 data: data
+            });
+        });
+    }
+
+    function unlockData(){
+        var month = $("#month").val();
+        var site = $("#site").val();
+        if(month==''||site==''||site==null){
+            $.modal.alertWarning("解锁的站点或月份不能为空！");
+            return false;
+        }
+        var confirmMsg = "确定解锁站点："+site+" "+month+"月份的移除明细记录数据吗！";
+        $.modal.confirm(confirmMsg, function() {
+            $.post(prefix+"/unlockData",{month:month,site:site},function(result){
+                layer.msg(result.msg, {icon: 0});
             });
         });
     }

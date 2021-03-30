@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="account"    column="account"    />
         <result property="site"    column="site"    />
+        <result property="month"    column="month"    />
         <result property="time"    column="time"    />
         <result property="settlementId"    column="settlement_id"    />
         <result property="type"    column="type"    />
@@ -50,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="account"    column="account"    />
         <result property="site"    column="site"    />
+        <result property="month"    column="month"    />
         <result property="time"    column="time"    />
         <result property="settlementId"    column="settlement_id"    />
         <result property="type"    column="type"    />
@@ -90,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectTransactionRecordVo">
-        select id, account, site, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, standard_sku, spu, principal, charg_type, spare_field, create_by, create_time, update_by, update_time from oms_transaction_record
+        select id, account, site, month, time, settlement_id, type, order_id, sku, description, quantity, marketplace, fulfilment, order_city, order_state, order_postal, tax_collection_model, product_sales, product_sales_tax, postage_credits, shipping_credits_tax, gift_wrap_credits, giftwrap_credits_tax, promotional_rebates, promotional_rebates_tax, marketplace_withheld_tax, selling_fees, fba_fees, other_transaction_fees, other, total, standard_sku, spu, principal, charg_type, spare_field, create_by, create_time, update_by, update_time from oms_transaction_record
     </sql>
 
     <select id="selectTransactionRecordList" parameterType="TransactionRecord" resultMap="TransactionRecordResult">
@@ -98,18 +100,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="account != null  and account != ''"> and account = #{account}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
-            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-                AND date_format(time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
-            </if>
-            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-                AND date_format(time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
-            </if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="time != null "> and time = #{time}</if>
             <if test="settlementId != null  and settlementId != ''"> and settlement_id = #{settlementId}</if>
-            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="type != null "> and type = #{type}</if>
             <if test="orderId != null  and orderId != ''"> and order_id = #{orderId}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
-            <if test="description != null  and description != '' and params.descriptionCompareSign==''"> and description = #{description}</if>
-            <if test="description != null  and description != '' and params.descriptionCompareSign!=''"> and description like #{description}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
             <if test="quantity != null "> and quantity = #{quantity}</if>
             <if test="marketplace != null  and marketplace != ''"> and marketplace = #{marketplace}</if>
             <if test="fulfilment != null  and fulfilment != ''"> and fulfilment = #{fulfilment}</if>
@@ -152,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="account != null and account != ''">account,</if>
             <if test="site != null and site != ''">site,</if>
+            <if test="month != null">month,</if>
             <if test="time != null">time,</if>
             <if test="settlementId != null">settlement_id,</if>
             <if test="type != null">type,</if>
@@ -192,6 +190,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="account != null and account != ''">#{account},</if>
             <if test="site != null and site != ''">#{site},</if>
+            <if test="month != null">#{month},</if>
             <if test="time != null">#{time},</if>
             <if test="settlementId != null">#{settlementId},</if>
             <if test="type != null">#{type},</if>
@@ -236,6 +235,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="site != null and site != ''">site = #{site},</if>
+            <if test="month != null">month = #{month},</if>
             <if test="time != null">time = #{time},</if>
             <if test="settlementId != null">settlement_id = #{settlementId},</if>
             <if test="type != null">type = #{type},</if>
@@ -299,6 +299,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="site != null and site != ''">site = #{site},</if>
+            <if test="month != null">month = #{month},</if>
             <if test="time != null">time = #{time},</if>
             <if test="settlementId != null">settlement_id = #{settlementId},</if>
             <if test="type != null">type = #{type},</if>
@@ -359,6 +360,7 @@ from oms_transaction_record
         <where>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
+            <if test="month != null">and month = #{month}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="fulfilment != null  and fulfilment != ''"> and fulfilment = #{fulfilment}</if>
 <!--            <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>-->
@@ -374,6 +376,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         sum(quantity) as quantity
         from oms_transaction_record
          <where>
+             <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>
@@ -391,6 +394,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
                sum(other) as other
                from oms_transaction_record
         <where>
+            <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -408,6 +412,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         FROM
         (SELECT DISTINCT order_id from oms_transaction_record
         <where>
+            <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="description != null and description != ''">and description = #{description}</if>
@@ -428,6 +433,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         select tr.account,tr.site,tr.principal,tr.spu,tr.standard_sku as standardSku,SUM(rs.amount) as total from
         (select distinct order_id,sku,account,site,principal,spu,standard_sku from oms_transaction_record
         where type=5
+        <if test="month != null">and month = #{month}</if>
         <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
         <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
         <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -444,6 +450,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
     <select id="selectSkuAdjustmentFeeList" parameterType="TransactionRecord" resultType="TransactionRecord">
         select account,site,principal,spu,standard_sku as standardSku,SUM(other) as other from oms_transaction_record
         <where>
+            <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -459,6 +466,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
     <select id="selectSkuEarlyFeeGatherList" parameterType="TransactionRecord" resultType="TransactionRecord">
         select standard_sku as standardSku,spu,principal,site,account,SUM(other_transaction_fees) as otherTransactionFees from oms_transaction_record
         <where>
+            <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
@@ -475,6 +483,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         select pr.sku,SUM(tr.other_transaction_fees) as fee from oms_transaction_record tr INNER JOIN oms_dealfee_asin da on tr.id=da.record_id
         INNER JOIN pms_productinfo_relation pr on pr.asin=da.asin
         <where>
+            <if test="month != null">and month = #{month}</if>
             <if test="params.beginTime != null"> and tr.time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and tr.time &lt;= #{params.endTime}</if>
             <if test="sku != null  and sku != ''"> and tr.sku = #{sku}</if>
@@ -498,6 +507,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         <where>
             <if test="account != null  and account != ''"> and tr.account = #{account}</if>
             <if test="site != null  and site != ''"> and tr.site = #{site}</if>
+            <if test="month != null">and month = #{month}</if>
             <if test="time != null "> and tr.time = #{time}</if>
             <if test="settlementId != null  and settlementId != ''"> and tr.settlement_id = #{settlementId}</if>
             <if test="type != null  and type != ''"> and tr.type = #{type}</if>
@@ -541,6 +551,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
         <trim prefix="SET" suffixOverrides=",">
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="site != null and site != ''">site = #{site},</if>
+            <if test="month != null">month = #{month}</if>
             <if test="time != null">time = #{time},</if>
             <if test="settlementId != null">settlement_id = #{settlementId},</if>
             <if test="type != null">type = #{type},</if>
@@ -580,5 +591,10 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </trim>
         where order_id = #{orderId} and type = 8
     </update>
+
+
+    <delete id="deleteTransactionRecordByMonthSiteAndSpareField">
+        delete from oms_transaction_record where month=#{month} and site = #{site} and spare_field = #{spareField}
+    </delete>
 
 </mapper>

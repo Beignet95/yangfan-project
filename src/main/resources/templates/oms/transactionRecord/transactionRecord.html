@@ -2,6 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('交易数据列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -11,9 +12,8 @@
                     <div class="select-list"  id="searchArea">
                         <ul>
                             <li>
-                                <label>时间：</label>
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="开始时间" name="params[beginTime]"/>-
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="结束时间" name="params[endTime]"/>
+                                <label>月份：</label>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
                                 <label>账号：</label>
@@ -23,25 +23,25 @@
                             </li>
                             <li>
                                 <label>站点：</label>
-                                <select class="router form-control" style="width: 100px;display: inline;" name="site">
+                                <select class="router form-control" style="width: 100px;display: inline;" name="site" id="site">
                                     <option value="">-请选择-</option>
                                 </select>
                             </li>
                             <li>
                                 <label>类型：</label>
-                                <select class="form-control" style="width: 100px;display: inline;" name="spareField">
+                                <select class="form-control" style="width: 100px;display: inline;" name="spareField" id="spareField">
                                     <option value="SO">SO</option>
                                     <option value="IO">IO</option>
                                 </select>
                             </li>
                             <li>
                                 <label>型号：</label>
-                                <input type="text" name="type"/>
+                                <input type="text" name="type" style="width: 80px;"/>
                             </li>
 
                             <li>
                                 <label>order id：</label>
-                                <input type="text" name="orderId"/>
+                                <input type="text" name="orderId" style="width: 150px;"/>
                             </li>
                             <li>
                                 <label>sku：</label>
@@ -66,6 +66,9 @@
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="oms:transactionRecord:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>
+                <a class="btn btn-danger" onclick="unlockData()" shiro:hasPermission="oms:transactionRecord:remove">
+                    <i class="fa fa-remove"></i> 解锁并删除数据
+                </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:transactionRecord:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
@@ -80,6 +83,7 @@
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: jquery-cxselect-js" />
+     <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:transactionRecord:remove')}]];
@@ -235,8 +239,8 @@
         //弹出导入框
         function importExcel(formId, width, height) {
             table.set();
-            var _width = $.common.isEmpty(width) ? "400" : width;
-            var _height = $.common.isEmpty(height) ? "230" : height;
+            var _width = $.common.isEmpty(width) ? "600" : width;
+            var _height = $.common.isEmpty(height) ? "300" : height;
             layer.open({
                 type: 2,
                 area: [_width + 'px', _height + 'px'],
@@ -302,6 +306,36 @@
                 });
             });
         }
+
+        function unlockData(){
+            var month = $("#month").val();
+            var site = $("#site").val();
+            var spareField = $("#spareField").val();
+            if(month==''||site==''||site==null||spareField==''){
+                $.modal.alertWarning("解锁的站点或月份不能为空！");
+                return false;
+            }
+            var confirmMsg = "确定解锁站点："+site+" "+month+"月份的移除交易记录数据吗！";
+            $.modal.confirm(confirmMsg, function() {
+                $.post(prefix+"/unlockData",{month:month,site:site,spareField:spareField},function(result){
+                    layer.msg(result.msg, {icon: 0});
+                });
+            });
+        }
+
+        //设置时间选择器
+        $("#month").datetimepicker({
+            format: 'yyyy-mm',
+            weekStart : 1,
+            todayBtn : true,
+            autoclose : 1,
+            startView : 'year',
+            maxView:'decade',
+            minView :'year',
+            forceParse : false,
+            pickerPosition: "bottom-left"
+
+        });
     </script>
 </body>
 <!-- 导入区域 -->

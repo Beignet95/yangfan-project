@@ -148,4 +148,21 @@ public class RefundServicefeeController extends BaseController
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
     }
+
+    /**
+     * 解锁并删除数据
+     */
+    @PostMapping("/unlockData")
+    @RequiresPermissions("oms:refundServicefee:remove")
+    @Log(title = "解锁移除明细", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult unlockData(Date month,String account)
+    {
+        int unlockNum = refundServicefeeService.unlockData(month,account);
+        if(unlockNum>-1){
+            return AjaxResult.success("成功结算并删除"+unlockNum+"条数据！");
+        }else{
+            return AjaxResult.success("数据未曾锁定！无需解锁!");
+        }
+    }
 }

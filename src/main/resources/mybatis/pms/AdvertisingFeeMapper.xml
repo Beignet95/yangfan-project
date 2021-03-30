@@ -133,4 +133,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where month = #{month} and site = #{site} group by standard_sku,spu,principal,site
     </select>
 
+    <delete id="deleteAdvertisingFeeByTypeAndSite">
+        delete from pms_advertising_fee where month =#{month} and site=#{site}
+    </delete>
+
 </mapper>

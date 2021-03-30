@@ -40,6 +40,10 @@ public class TransactionRecord extends BaseEntity
     //@Excel(name = "站点")
     private String site;
 
+    /** 月份 */
+    //@Excel(name = "月份")
+    private Date month;
+
     /** date/time */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "date/time", width = 30, dateFormat = "d MMM yyyy HH:mm:ss 'UTC'")

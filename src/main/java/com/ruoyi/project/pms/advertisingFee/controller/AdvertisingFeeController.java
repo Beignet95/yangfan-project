@@ -166,4 +166,21 @@ public class AdvertisingFeeController extends BaseController
         mmap.addAttribute("showSpareField",showSpareField);
         return prefix + "/import";
     }
+
+    /**
+     * 解锁并删除数据
+     */
+    @PostMapping("/unlockData")
+    @RequiresPermissions("pms:advertisingFee:remove")
+    @Log(title = "解锁广告费用", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult unlockData(Date month,String site)
+    {
+        int unlockNum = advertisingFeeService.unlockData(month,site);
+        if(unlockNum>-1){
+            return AjaxResult.success("成功结算并删除"+unlockNum+"条数据！");
+        }else{
+            return AjaxResult.success("数据未曾锁定！无需解锁!");
+        }
+    }
 }

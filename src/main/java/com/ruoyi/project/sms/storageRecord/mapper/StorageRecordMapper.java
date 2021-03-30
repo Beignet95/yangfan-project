@@ -89,4 +89,11 @@ public interface StorageRecordMapper
      * @return
      */
     List<StorageRecord> selectStorageRecordGather(StorageRecord storageRecord);
+
+    /**
+     * @param month
+     * @param Site
+     * @return
+     */
+    int deleteStorageRecordLockUnit(Date month,String account, String countryCode);
 }

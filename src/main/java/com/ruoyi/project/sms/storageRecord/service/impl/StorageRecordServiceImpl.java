@@ -237,18 +237,31 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         return storageRecordMapper.selectStorageRecordGather(storageRecord);
     }
 
+    @Override
+    @Transactional
+    public int unlockData(Date month, String account,String site) {
+        String monstr = DateUtils.parseDateToStr("yyyy-MM",month);
+        if(historyOperateService.deleteHistoryOperateByOperateCode(getHistoryCode(site,monstr))>0){
+            return storageRecordMapper.deleteStorageRecordLockUnit(month,account,site.split("-")[1]);
+        }else return -1;
+    }
+
+    private String getHistoryCode(String account, String monthStr) {
+        return  HISTORY_OPERARE_PREFIX+account+":"+monthStr;
+    }
+
     /**
      *有存在过导入记录，则抛出异常
      * 否则返回一个HistoryOperate对象
      */
-    private HistoryOperate checkAndInterceptImp(StorageRecordImpTempVo storageRecord, String account) {
+    private HistoryOperate checkAndInterceptImp(StorageRecordImpTempVo storageRecord, String site) {
             //String timeStr = DateUtils.parseDateToStr("yyyy-MM",storageRecord.getMonth());
-            String history_operate_code = HISTORY_OPERARE_PREFIX+account+":"+storageRecord.getMonth();
+            String history_operate_code = getHistoryCode(site,storageRecord.getMonth());
             HistoryOperate ho = new HistoryOperate();
             ho.setRepeatCode(history_operate_code);
             List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
-            if(hoRes.size()>0) throw new BusinessException(storageRecord.getMonth()+"月份，账号为"
-                    +account+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
+            if(hoRes.size()>0) throw new BusinessException(storageRecord.getMonth()+"月份，站点为"
+                    +site+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
             return ho;
     }
 }

@@ -69,4 +69,11 @@ public interface IRefundServicefeeService
     public String importRefundServicefee(List<RefundServicefee> refundServicefeeList, boolean isUpdateSupport, String account, Date month);
 
 
+    /**
+     * 解锁并删除数据
+     * @param month
+     * @param account
+     * @return
+     */
+    int unlockData(Date month, String account);
 }
