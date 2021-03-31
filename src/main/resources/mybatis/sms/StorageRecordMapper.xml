@@ -161,4 +161,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
 
+    <select id="selectAsinVolumnList" parameterType="StorageRecord" resultType="StorageRecord">
+        select distinct asin,item_volume as itemVolume from sms_storage_record
+        where month =#{month} and account=#{account} and country_code=#{countryCode}
+    </select>
+
 </mapper>

@@ -597,4 +597,53 @@ GROUP BY principal,type,spu,standard_sku,site,account
         delete from oms_transaction_record where month=#{month} and site = #{site} and spare_field = #{spareField}
     </delete>
 
+    <insert id="batchInsertTransactionRecord" parameterType="java.util.List">
+        insert into oms_transaction_record
+        (id,account,site,month,time,settlement_id,type,order_id,sku,description,quantity,marketplace,fulfilment,order_city,order_state,
+            order_postal,tax_collection_model,product_sales,product_sales_tax,postage_credits,shipping_credits_tax,gift_wrap_credits,
+            giftwrap_credits_tax,promotional_rebates,promotional_rebates_tax,marketplace_withheld_tax,selling_fees,fba_fees,other_transaction_fees,
+            other,total,standard_sku,spu,principal,charg_type,spare_field,create_by,create_time,update_by,update_time) values
+        <foreach collection="transactionRecordList" item="item" index="index" separator=",">
+            (null,#{item.account},
+            #{item.site},
+            #{item.month},
+            #{item.time},
+            #{item.settlementId},
+            #{item.type},
+            #{item.orderId},
+            #{item.sku},
+            #{item.description},
+            #{item.quantity},
+            #{item.marketplace},
+            #{item.fulfilment},
+            #{item.orderCity},
+            #{item.orderState},
+            #{item.orderPostal},
+            #{item.taxCollectionModel},
+            #{item.productSales},
+            #{item.productSalesTax},
+            #{item.postageCredits},
+            #{item.shippingCreditsTax},
+            #{item.giftWrapCredits},
+            #{item.giftwrapCreditsTax},
+            #{item.promotionalRebates},
+            #{item.promotionalRebatesTax},
+            #{item.marketplaceWithheldTax},
+            #{item.sellingFees},
+            #{item.fbaFees},
+            #{item.otherTransactionFees},
+            #{item.other},
+            #{item.total},
+            #{item.standardSku},
+            #{item.spu},
+            #{item.principal},
+            #{item.chargType},
+            #{item.spareField},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime})
+        </foreach>
+    </insert>
+
 </mapper>

@@ -97,4 +97,11 @@ public interface IStorageRecordService
      * @return
      */
     int unlockData(Date month, String account,String site);
+
+    /**
+     * 获取对应标准sku对应的体积
+     * @param storageRecord
+     * @return
+     */
+    List<StorageRecord> selectAsinVolumnList(StorageRecord storageRecord);
 }

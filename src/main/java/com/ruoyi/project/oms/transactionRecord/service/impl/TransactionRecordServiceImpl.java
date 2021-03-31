@@ -194,6 +194,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
 
         successNum = impTempVos.size();
 
+        List<TransactionRecord> transactionRecordList = new ArrayList<>();
         for (TransactionRecordImpTempVo impTempVo : impTempVos)
         {
 
@@ -282,31 +283,28 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                 List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
                 if(hoRes.size()>0) throw new BusinessException(time.getMonth()+"月份，站点为"+site+"的数据导入操作已被锁定！你可能已经导入过数据了！");
             }
+                transactionRecordList.add(transactionRecord);
+        }
 
-            try
-            {
-                this.insertTransactionRecord(transactionRecord);
-            }
-            catch (Exception e)
-            {
-                failureNum++;
-                String msg = "<br/>" + failureNum + "、" + transactionRecord.getTime()+"-"+transactionRecord.getOrderId()+"-"
-                        +transactionRecord.getSku()+" 的数据导入失败：";
-                failureMsg.append(msg + e.getMessage());
-                log.error(msg, e);
-            }
-        }
-        if (failureNum > 0)
+        try
         {
-            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
-            throw new BusinessException(failureMsg.toString());
+            int toIndex = 1000;
+            for(int i = 0; i < transactionRecordList.size(); i += toIndex){
+                if (i + toIndex > transactionRecordList.size()) {
+                    // 注意下标问题
+                    toIndex = transactionRecordList.size() - i;
+                }
+                List<TransactionRecord> insertList = transactionRecordList.subList(i, i + toIndex);
+                transactionRecordMapper.batchInsertTransactionRecord(insertList);
+
+            }
         }
-        else
+        catch (Exception e)
         {
-            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条!");
-            historyOperateService.insertHistoryOperate(ho);
+            String msg = "数据导入失败！可能某种字段超过系统所设置的长度！ ";
+            throw new BusinessException(msg+e.getMessage());
         }
-        return successMsg.toString();
+        return "已成功导入"+transactionRecordList.size()+"条数据！";
     }
 
     private Map getAndCheackProductionRelation(List<TransactionRecordImpTempVo> impTempVos) {
@@ -1519,7 +1517,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         storageRecord.setMonth(time);
         storageRecord.setAccount(transactionRecord.getAccount());
         storageRecord.setCountryCode(transactionRecord.getSite().split("-")[1]);
-        List<StorageRecord> storageRecordList = storageRecordService.selectStorageRecordList(storageRecord);
+        List<StorageRecord> storageRecordList = storageRecordService.selectAsinVolumnList(storageRecord);
         if(storageRecordList.size()==0) return new HashMap<>();
         return storageRecordList.stream().collect(Collectors.toMap(k->k.getAsin(),k->k.getItemVolume(),(entity1, entity2) -> entity1));
     }

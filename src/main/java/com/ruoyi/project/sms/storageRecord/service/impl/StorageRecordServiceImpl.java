@@ -246,6 +246,11 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         }else return -1;
     }
 
+    @Override
+    public List<StorageRecord> selectAsinVolumnList(StorageRecord storageRecord) {
+        return storageRecordMapper.selectAsinVolumnList(storageRecord);
+    }
+
     private String getHistoryCode(String account, String monthStr) {
         return  HISTORY_OPERARE_PREFIX+account+":"+monthStr;
     }

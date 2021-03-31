@@ -96,4 +96,11 @@ public interface StorageRecordMapper
      * @return
      */
     int deleteStorageRecordLockUnit(Date month,String account, String countryCode);
+
+    /**
+     * 获取standartSku与volumn的List
+     * @param storageRecord
+     * @return
+     */
+    List<StorageRecord> selectAsinVolumnList(StorageRecord storageRecord);
 }

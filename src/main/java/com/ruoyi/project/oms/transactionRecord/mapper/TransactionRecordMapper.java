@@ -8,6 +8,7 @@ import com.ruoyi.project.oms.transactionRecord.vo.BLDTransactionRecordVo;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuRefundServiceFee;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuRemovalFee;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 交易数据Mapper接口
@@ -117,4 +118,11 @@ public interface TransactionRecordMapper
      * @return
      */
     int deleteTransactionRecordByMonthSiteAndSpareField(Date month, String site, String spareField);
+
+    /**
+     * 批量插入
+     * @param transactionRecordList
+     * @return
+     */
+    int batchInsertTransactionRecord(@Param("transactionRecordList") List<TransactionRecord> transactionRecordList);
 }
