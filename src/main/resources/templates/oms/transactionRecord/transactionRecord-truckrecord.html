@@ -2,6 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('卡车服务收费记录列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -15,9 +16,8 @@
                                 <input type="text" name="description" value="FBA Amazon-Partnered Carrier Shipment Fee"/>
                             </li>
                             <li>
-                                <label>时间：</label>
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="开始时间" name="params[beginTime]"/>-
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="结束时间" name="params[endTime]"/>
+                                <label>月份：</label>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
                                 <label>账号：</label>
@@ -73,13 +73,14 @@
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: jquery-cxselect-js" />
+     <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:transactionRecord:edit')}]];
         var listFlag = [[${@permission.hasPermi('oms:transactionRecord:view')}]];
         var prefix = ctx + "oms/transactionRecord";
 
         $(function() {
-            initTimeSearchArea();
+            init_month();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -110,6 +111,15 @@
                     field: 'time',
                     title: 'date/time',
                     class: 'W80'
+                },
+                {
+                    field: 'month',
+                    title: '月份',
+                    class: 'W80',
+                    formatter: function (value,row,index) {
+                        return value.substr(0,7);
+
+                    }
                 },
                 {
                     field: 'settlementId',
@@ -244,6 +254,38 @@
             //渲染页面上方输入月份的input
             $("input[name='params[beginTime]']").val(beginTime);
             $("input[name='params[endTime]']").val(endTime);
+        }
+
+        //设置时间选择器
+        $("#month").datetimepicker({
+            format: 'yyyy-mm',
+            weekStart : 1,
+            todayBtn : true,
+            autoclose : 1,
+            startView : 'year',
+            maxView:'decade',
+            minView :'year',
+            forceParse : false,
+            pickerPosition: "bottom-left"
+
+        });
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+
+            var Last_month = new Date().getMonth();
+
+            if(Last_month==0){
+                Last_month=12;
+                year--;
+            }
+
+            //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+            //渲染页面上方输入月份的input
+            $("#month").val(year+"-"+Last_month);
         }
     </script>
 </body>

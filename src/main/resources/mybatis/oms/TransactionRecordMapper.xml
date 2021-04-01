@@ -498,7 +498,7 @@ GROUP BY principal,type,spu,standard_sku,site,account
     </select>
 
     <select id="selectBLDTransactionReocordVoList" parameterType="BLDTransactionRecordVo" resultMap="BLDTransactionRecordVoResult">
-        select tr.id, tr.account, tr.site, tr.time, tr.settlement_id, tr.type, tr.order_id, tr.sku, tr.description, tr.quantity, tr.marketplace,
+        select tr.id,tr.month,tr.account, tr.site, tr.time, tr.settlement_id, tr.type, tr.order_id, tr.sku, tr.description, tr.quantity, tr.marketplace,
         tr.fulfilment, tr.order_city,tr.order_state, tr.order_postal, tr.tax_collection_model, tr.product_sales, tr.product_sales_tax,
         tr.postage_credits, tr.shipping_credits_tax,tr.gift_wrap_credits, tr.giftwrap_credits_tax, tr.promotional_rebates,
         tr.promotional_rebates_tax, tr.marketplace_withheld_tax,tr.selling_fees, tr.fba_fees,tr.other_transaction_fees, tr.other, tr.total,

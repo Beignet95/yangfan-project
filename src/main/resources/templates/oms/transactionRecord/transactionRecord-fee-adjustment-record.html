@@ -12,9 +12,8 @@
                     <div class="select-list" id="searchArea">
                         <ul>
                             <li>
-                                <label>时间：</label>
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="开始时间" name="params[beginTime]"/>-
-                                <input type="text" class="time-input" style="width: 80px;" placeholder="结束时间" name="params[endTime]"/>
+                                <label>月份：</label>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
                                 <label>账号：</label>
@@ -86,7 +85,7 @@
         var prefix = ctx + "oms/transactionRecord";
 
         $(function() {
-            initTimeSearchArea();
+            init_month();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -117,6 +116,15 @@
                     field: 'time',
                     title: 'date/time',
                     class: 'W80'
+                },
+                {
+                    field: 'month',
+                    title: '月份',
+                    class: 'W80',
+                    formatter: function (value,row,index) {
+                        return value.substr(0,7);
+
+                    }
                 },
                 {
                     field: 'orderId',
@@ -293,6 +301,24 @@
             //渲染页面上方输入月份的input
             $("input[name='params[beginTime]']").val(beginTime);
             $("input[name='params[endTime]']").val(endTime);
+        }
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+
+            var Last_month = new Date().getMonth();
+
+            if(Last_month==0){
+                Last_month=12;
+                year--;
+            }
+
+            //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+            //渲染页面上方输入月份的input
+            $("#month").val(year+"-"+Last_month);
         }
 
     </script>

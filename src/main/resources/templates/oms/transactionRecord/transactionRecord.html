@@ -113,9 +113,12 @@
                     class: 'W60'
                 },
                 {
-                    field: 'time',
-                    title: 'date/time',
-                    class: 'W80'
+                    field: 'month',
+                    title: '月份',
+                    class: 'W80',
+                    formatter: function (value,row,index) {
+                        return value.substr(0,7);
+                    }
                 },
                 {
                     field: 'settlementId',
