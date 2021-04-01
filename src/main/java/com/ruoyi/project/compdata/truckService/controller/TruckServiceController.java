@@ -141,7 +141,7 @@ public class TruckServiceController extends BaseController
         return AjaxResult.success(message);
     }
 
-    private final static int noImportRowNum = 8;
+    private final static int noImportRowNum = 0;
     //导出 导入模板
     @RequiresPermissions("lms:truckService:import")
     @GetMapping("/importTemplate")

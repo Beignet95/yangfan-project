@@ -71,6 +71,8 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     @Override
     public int insertProductinfoRelation(ProductinfoRelation productinfoRelation)
     {
+        if (productinfoRelationMapper.selectProductinfoRelationByOnlyCondition(productinfoRelation)!=null)
+            throw new BusinessException("数据ASIN:"+productinfoRelation.getAsin()+", 标准SKU"+productinfoRelation.getSku()+"的数据已经存在！");
         return productinfoRelationMapper.insertProductinfoRelation(productinfoRelation);
     }
 

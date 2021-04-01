@@ -142,6 +142,7 @@ public class TruckServiceServiceImpl implements ITruckServiceService
         {
             try
             {
+                if(truckService.getShipped()==null||truckService.getAsin()==null||truckService.getMsku()==null) continue;
                 // 验证数据是否已经
                 truckService.setTruckRecordId(truckRecordId);
                 truckService.setMonth(truckFeeRecord.getTime());

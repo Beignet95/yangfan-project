@@ -3,35 +3,41 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.pms.productinfoReation.mapper.ProductinfoRelationMapper">
-    
+
     <resultMap type="ProductinfoRelation" id="ProductinfoRelationResult">
         <result property="id"    column="id"    />
         <result property="asin"    column="asin"    />
         <result property="principal"    column="principal"    />
         <result property="type"    column="type"    />
         <result property="sku"    column="sku"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="site"    column="site"    />
     </resultMap>
 
     <sql id="selectProductinfoRelationVo">
-        select id, asin, principal, type, sku from pms_productinfo_relation
+        select id, asin, principal, type, sku, create_by, create_time, update_by, update_time, site from pms_productinfo_relation
     </sql>
 
     <select id="selectProductinfoRelationList" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">
         <include refid="selectProductinfoRelationVo"/>
-        <where>  
+        <where>
             <if test="asin != null  and asin != ''"> and asin = #{asin}</if>
             <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
         </where>
         order by id desc
     </select>
-    
+
     <select id="selectProductinfoRelationById" parameterType="Long" resultMap="ProductinfoRelationResult">
         <include refid="selectProductinfoRelationVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertProductinfoRelation" parameterType="ProductinfoRelation" useGeneratedKeys="true" keyProperty="id">
         insert into pms_productinfo_relation
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -39,13 +45,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null and principal != ''">principal,</if>
             <if test="type != null and type != ''">type,</if>
             <if test="sku != null and sku != ''">sku,</if>
-         </trim>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="site != null">site,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="asin != null and asin != ''">#{asin},</if>
             <if test="principal != null and principal != ''">#{principal},</if>
             <if test="type != null and type != ''">#{type},</if>
             <if test="sku != null and sku != ''">#{sku},</if>
-         </trim>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="site != null">#{site},</if>
+        </trim>
     </insert>
 
     <update id="updateProductinfoRelation" parameterType="ProductinfoRelation">
@@ -55,6 +71,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null and principal != ''">principal = #{principal},</if>
             <if test="type != null and type != ''">type = #{type},</if>
             <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="site != null">site = #{site},</if>
         </trim>
         where id = #{id}
     </update>
@@ -64,11 +85,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteProductinfoRelationByIds" parameterType="String">
-        delete from pms_productinfo_relation where id in 
+        delete from pms_productinfo_relation where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
 
     <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
     <select id="selectProductinfoRelationByOnlyCondition" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">

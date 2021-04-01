@@ -422,8 +422,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         // 数量
         transactionRecord.setType(TransactionType.ORDER);
         List<TransactionRecord> analyRecordList = transactionRecordMapper.selectQuantityAnaly(transactionRecord);
-        Map<String,TransactionRecord> analyRecordMap=
-                analyRecordList.stream().collect(Collectors.toMap(k->(k.getPrincipal()+k.getStandardSku()),Function.identity()));
+//        Map<String,TransactionRecord> analyRecordMap=
+//                analyRecordList.stream().collect(Collectors.toMap(k->(k.getPrincipal()+k.getStandardSku()),Function.identity()));
 
         //Seller订单
         List<TransactionRecord> sellerRecords = sellerRecordGatherMap.get(TransactionType.ORDER);
@@ -485,8 +485,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         Map<String,TransactionRecord> skuCouponFeeMap = this.getSkuCouponFeeMap(transactionRecord);
 
         //订单数据
-        List<TransactionRecord> orderRecordAnalys = amazonRecordGatherMap.get(TransactionType.ORDER);
-        if(orderRecordAnalys==null) return new HashMap<>();
+        //List<TransactionRecord> orderRecordAnalys = amazonRecordGatherMap.get(TransactionType.ORDER);
+        //if(orderRecordAnalys==null) return new HashMap<>();
 
         // 总店租
         transactionRecord.setDescription("Subscription");

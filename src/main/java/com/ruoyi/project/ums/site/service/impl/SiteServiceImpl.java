@@ -76,6 +76,7 @@ public class SiteServiceImpl implements ISiteService
     @Override
     public int updateSite(Site site)
     {
+        site.setCreateBy(ShiroUtils.getLoginName());
         site.setUpdateTime(DateUtils.getNowDate());
         return siteMapper.updateSite(site);
     }

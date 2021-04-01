@@ -50,4 +50,16 @@ public class ProductinfoRelation extends BaseEntity
     @NotNull
     @Excel(name = "标准SKU")
     private String sku;
+
+    /** 站点 */
+    @Excel(name = "站点")
+    private String site;
+
+    public ProductinfoRelation(Long id,String asin,String principal,String type,String sku){
+        this.id=id;
+        this.asin = asin;
+        this.principal = principal;
+        this.type = type;
+        this.sku = sku;
+    }
 }
