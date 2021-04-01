@@ -49,15 +49,6 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="oms:transactionRecord:add">
-                    <i class="fa fa-plus"></i> 添加
-                </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="oms:transactionRecord:edit">
-                    <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="oms:transactionRecord:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="oms:transactionRecord:export">
                     <i class="fa fa-download"></i> 导出
                 </a>

@@ -90,6 +90,7 @@
         var prefix = ctx + "oms/transactionRecord";
 
         $(function() {
+            init_month();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -336,6 +337,24 @@
             pickerPosition: "bottom-left"
 
         });
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+
+            var Last_month = new Date().getMonth();
+
+            if(Last_month==0){
+                Last_month=12;
+                year--;
+            }
+
+            //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+            //渲染页面上方输入月份的input
+            $("#month").val(year+"-"+Last_month);
+        }
     </script>
 </body>
 <!-- 导入区域 -->

@@ -136,11 +136,12 @@ public class TruckServiceController extends BaseController
     {
         if(truckRecordId==null)   throw new BusinessException("非法导入！");
         ExcelUtil<TruckService> util = new ExcelUtil<TruckService>(TruckService.class);
-        List<TruckService> truckServiceList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),8);
+        List<TruckService> truckServiceList = util.importExcel(StringUtils.EMPTY,file.getInputStream(),noImportRowNum);
         String message = truckServiceService.importTruckService(truckServiceList, updateSupport,truckRecordId);
         return AjaxResult.success(message);
     }
 
+    private final static int noImportRowNum = 8;
     //导出 导入模板
     @RequiresPermissions("lms:truckService:import")
     @GetMapping("/importTemplate")
@@ -148,6 +149,6 @@ public class TruckServiceController extends BaseController
     public AjaxResult importTemplate()
     {
         ExcelUtil<TruckService> util = new ExcelUtil<TruckService>(TruckService.class);
-        return util.importTemplateExcel("卡车费用");
+        return util.importTemplateExcel("卡车费用",noImportRowNum);
     }
 }

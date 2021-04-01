@@ -30,20 +30,20 @@ public class TruckService extends BaseEntity
     private Long id;
 
     /** 卡车记录id */
-    @Excel(name = "卡车记录id")
+    @Excel(name = "卡车记录id",type = Excel.Type.EXPORT)
     private Long truckRecordId;
 
     /** 账号 */
-    @Excel(name = "账号")
+    @Excel(name = "账号",type = Excel.Type.EXPORT)
     private String account;
 
     /** 站点 */
-    @Excel(name = "站点")
+    @Excel(name = "站点",type = Excel.Type.EXPORT)
     private String site;
 
     /** 月份 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "月份", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "月份", width = 30, dateFormat = "yyyy-MM-dd",type = Excel.Type.EXPORT)
     private Date month;
 
     /** Merchant SKU */

@@ -31,12 +31,12 @@ public class AdvertisingFee extends BaseEntity
 
     /** 月份 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "月份", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "月份", width = 30, dateFormat = "yyyy-MM-dd",type = Excel.Type.EXPORT)
     private Date month;
 
 
     /** 站点 */
-    @Excel(name = "站点")
+    @Excel(name = "站点",type = Excel.Type.EXPORT)
     private String site;
 
     /** Campaign */
