@@ -139,7 +139,7 @@ public class StorageRecordServiceImpl implements IStorageRecordService
             throw new BusinessException("导入数据不能为空！");
         }
 
-        HistoryOperate ho = checkAndInterceptImp(impTempVos.get(0),site);
+        HistoryOperate ho = new HistoryOperate();
         if(StringUtils.isNotEmpty(site)&&site.contains("-")){
             String[] siteStrs = site.split("-");
             String countryCode = siteStrs[1];
@@ -164,9 +164,18 @@ public class StorageRecordServiceImpl implements IStorageRecordService
                 StorageRecord storageRecord = new StorageRecord();
                 BeanUtils.copyProperties(impTempVo,storageRecord);
 
-                Date time = DateUtils.parseUTCDate4CSV(impTempVo.getMonth(), locale,timeFormatStr);//因为欧洲各国时间不一样，所以在此层处理
-                if(time==null) time = DateUtils.parseDate(impTempVo.getMonth());
+                String monthStr = impTempVo.getMonth();
+                Date time = DateUtils.parseUTCDate4CSV(monthStr, locale,timeFormatStr);//因为欧洲各国时间不一样，所以在此层处理
+                if(time==null) time = DateUtils.parseDate(monthStr);
+                if(time==null) {//适配仓储费yy-MM的格式
+                    String[] monstrs = monthStr.split("-");
+                    monthStr = monstrs[1]+"-"+monstrs[0];
+                     time = DateUtils.parseUTCDate4CSV(monthStr, locale,timeFormatStr);
+                }
+                if(time==null) throw new BusinessException("仓储费月份的时间格式异常！");
                 storageRecord.setMonth(time);
+
+                ho = checkAndInterceptImp(storageRecord,site);
 
                 ProductinfoRelation relation = relationMap.get(storageRecord.getAsin());
                 storageRecord.setSpu(relation.getType());
@@ -268,5 +277,17 @@ public class StorageRecordServiceImpl implements IStorageRecordService
             if(hoRes.size()>0) throw new BusinessException(storageRecord.getMonth()+"月份，站点为"
                     +site+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
             return ho;
+    }
+
+    private HistoryOperate checkAndInterceptImp(StorageRecord storageRecord, String site) {
+        //String timeStr = DateUtils.parseDateToStr("yyyy-MM",storageRecord.getMonth());
+        String monthStr = DateUtils.parseDateToStr("yyyy-MM",storageRecord.getMonth());
+        String history_operate_code = getHistoryCode(site,monthStr);
+        HistoryOperate ho = new HistoryOperate();
+        ho.setRepeatCode(history_operate_code);
+        List<HistoryOperate> hoRes = historyOperateService.selectHistoryOperateList(ho);
+        if(hoRes.size()>0) throw new BusinessException(storageRecord.getMonth()+"月份，站点为"
+                +site+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
+        return ho;
     }
 }

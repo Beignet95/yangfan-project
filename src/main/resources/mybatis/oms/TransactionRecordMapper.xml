@@ -398,7 +398,8 @@ GROUP BY principal,type,spu,standard_sku,site,account
             <if test="params.beginTime != null"> and time &gt;= #{params.beginTime}</if>
             <if test="params.endTime != null"> and time &lt;= #{params.endTime}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="description != null and description != ''">and description = #{description}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign==''"> and description = #{description}</if>
+            <if test="description != null  and description != '' and params.descriptionCompareSign!=''"> and description like #{description}</if>
             <if test="fulfilment != null  and fulfilment != '' and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="fulfilment != null  and fulfilment != 'Amazon'"> and fulfilment = #{fulfilment}</if>
             <if test="site != null  and site != ''"> and site = #{site}</if>

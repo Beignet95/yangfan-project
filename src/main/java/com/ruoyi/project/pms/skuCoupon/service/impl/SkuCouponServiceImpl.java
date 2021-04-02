@@ -212,7 +212,8 @@ public class SkuCouponServiceImpl implements ISkuCouponService
     @Override
     public Map<String, String> getCouponSkuMap() {
         List<SkuCoupon> skuCouponList = skuCouponMapper.selectSkuCouponList(null);
-        Map<String,String> map = skuCouponList.stream().collect(Collectors.toMap(SkuCoupon::getCouponTitle,SkuCoupon::getSku));
+        Map<String,String> map = skuCouponList.stream().collect(
+                Collectors.toMap(k->k.getCouponTitle().toLowerCase(),SkuCoupon::getSku,(e1,e2)->e1));
         return map;
     }
 }

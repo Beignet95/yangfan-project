@@ -213,7 +213,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             //如果是手续费 设置标准SKU
             String description = transactionRecord.getDescription();
             if(StringUtils.isNotEmpty(description)&&description.startsWith("Save")&&StringUtils.isEmpty(transactionRecord.getStandardSku())){
-                String standardSku = conponSkuMap.get(description);
+                String standardSku = conponSkuMap.get(description.toLowerCase());
                 //skuProductinfoRelationVoMap.get(standardSku);
                 transactionRecord.setStandardSku(standardSku);
                 transactionRecord.setSpu(skuPrMap.get(standardSku).getType());
@@ -330,7 +330,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                     }
                 }
                 if (description.startsWith("Save")) {
-                    if (!couponSkuMap.containsKey(description))
+                    if (!couponSkuMap.containsKey(description.toLowerCase()))
                         couponSet.add(description);
                 }
             }
@@ -346,7 +346,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             for(String pasin:pasinSet) warnMsg.append("<br/>"+pasin);
         }
         if(couponSet.size()>0){
-            warnMsg.append("<br/>以下Coupon Title缺少早期映射关系：");
+            warnMsg.append("<br/>以下Coupon Title缺少Coupon映射关系：");
             for(String couponTitle:couponSet) warnMsg.append("<br/>"+couponTitle);
         }
 
@@ -495,10 +495,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         TransactionRecord shopRentRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
 
         //其他服务费 Manual Processing Fee
-        transactionRecord.setDescription("Manual Processing Fee%");
+        transactionRecord.setDescription("%Manual Processing Fee%");
         TransactionRecord otherTransactionGaterRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
-        BigDecimal totalOtherServiceFee = (otherTransactionGaterRecord!=null)
-                ? otherTransactionGaterRecord.getOtherTransactionFees():new BigDecimal(0);
+        BigDecimal totalOtherServiceFee = Arith.getDecimal(otherTransactionGaterRecord.getOther());
 
         //TODO 平台调整费 FBA Inventory Reimbursement - General Adjustment
         transactionRecord.setDescription("FBA Inventory Reimbursement - General Adjustment");
@@ -532,6 +531,8 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             String standardSku = orderRecord.getStandardSku();
             String spu = orderRecord.getSpu();
             String principal = orderRecord.getPrincipal();
+
+            if(principal==null&&spu==null&&standardSku==null) continue;
             String key = principal+spu+standardSku;
 
             TransactionRecord amazonRecord = orderRecordMap.get(key);
@@ -687,7 +688,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             }
             financeVo.setEarlyFee(earlyFee);
             financeVos.add(financeVo);
-            BigDecimal otherServiceFee = orderRecord.getProductSales().divide(totalSales,4).multiply(totalOtherServiceFee);
+            BigDecimal otherServiceFee = orderRecord.getProductSales().divide(totalSales,4,BigDecimal.ROUND_HALF_UP).multiply(totalOtherServiceFee);
             financeVo.setOtherServiceFee(otherServiceFee);
 
             BigDecimal refundServiceFee = new BigDecimal(0);
@@ -1493,6 +1494,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
             for(TruckService ts:tsList){
                 BigDecimal num = new BigDecimal(ts.getShipped());
                 BigDecimal volumn = skuVolumnMap.get(ts.getAsin());
+                if(volumn==null) throw new BusinessException("ASIN:"+ts.getAsin()+"在"+transactionRecord.getSite()+"的储存记录缺少对应的体积关系！");
                 totalVolumn = totalVolumn.add(num.multiply(volumn));
             }
             for(TruckService ts:tsList){
@@ -1500,6 +1502,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                 Float rate = Arith.div(volumn,totalVolumn,4);
                 BigDecimal tFee = new BigDecimal(Arith.mul(rate,record.getOther().doubleValue()));
                 MskuProductinfoRelationVo mskuPrl = mskuProductinfoRelationVoMap.get(ts.getMsku());
+                if(mskuPrl==null) throw new BusinessException("MSKU:"+ts.getMsku()+"关联的ASIN获取不到对应的产品信息！或者此MSKU缺少ASIN关系！");
                 truckFeeMap.put(mskuPrl.getPrincipal()+mskuPrl.getType()+mskuPrl.getSku(),tFee);
             }
         }
