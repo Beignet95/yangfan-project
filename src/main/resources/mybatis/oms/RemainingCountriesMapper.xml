@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.oms.countries.mapper.RemainingCountriesMapper">
+    
+    <resultMap type="RemainingCountries" id="RemainingCountriesResult">
+        <result property="id"    column="id"    />
+        <result property="warehouseSku"    column="warehouse_SKU"    />
+        <result property="numberSets"    column="number_sets"    />
+        <result property="trackingNumber"    column="tracking_number"    />
+        <result property="customerRemarks"    column="customer_remarks"    />
+        <result property="customerRegistrationDate"    column="customer_registration_date"    />
+        <result property="site"    column="site"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRemainingCountriesVo">
+        select id, warehouse_SKU, number_sets, tracking_number, customer_remarks, customer_registration_date,  site ,create_time, update_by, update_time from oms_remaining_countries
+    </sql>
+
+    <select id="selectRemainingCountriesList" parameterType="RemainingCountries" resultMap="RemainingCountriesResult">
+        <include refid="selectRemainingCountriesVo"/>
+        <where>  
+            <if test="warehouseSku != null  and warehouseSku != ''"> and warehouse_SKU = #{warehouseSku}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="numberSets != null "> and number_sets = #{numberSets}</if>
+            <if test="trackingNumber != null  and trackingNumber != ''"> and tracking_number = #{trackingNumber}</if>
+            <if test="customerRemarks != null  and customerRemarks != ''"> and customer_remarks = #{customerRemarks}</if>
+            <if test="customerRegistrationDate != null "> and customer_registration_date = #{customerRegistrationDate}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectRemainingCountriesById" parameterType="Long" resultMap="RemainingCountriesResult">
+        <include refid="selectRemainingCountriesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRemainingCountries" parameterType="RemainingCountries">
+        insert into oms_remaining_countries
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="warehouseSku != null">warehouse_SKU,</if>
+            <if test="site != null">site,</if>
+            <if test="numberSets != null">number_sets,</if>
+            <if test="trackingNumber != null">tracking_number,</if>
+            <if test="customerRemarks != null">customer_remarks,</if>
+            <if test="customerRegistrationDate != null">customer_registration_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="warehouseSku != null">#{warehouseSku},</if>
+            <if test="site != null">#{site},</if>
+            <if test="numberSets != null">#{numberSets},</if>
+            <if test="trackingNumber != null">#{trackingNumber},</if>
+            <if test="customerRemarks != null">#{customerRemarks},</if>
+            <if test="customerRegistrationDate != null">#{customerRegistrationDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRemainingCountries" parameterType="RemainingCountries">
+        update oms_remaining_countries
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseSku != null">warehouse_SKU = #{warehouseSku},</if>
+            <if test="site != null">site = #{site},</if>
+            <if test="numberSets != null">number_sets = #{numberSets},</if>
+            <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+            <if test="customerRemarks != null">customer_remarks = #{customerRemarks},</if>
+            <if test="customerRegistrationDate != null">customer_registration_date = #{customerRegistrationDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRemainingCountriesById" parameterType="Long">
+        delete from oms_remaining_countries where id = #{id}
+    </delete>
+
+    <delete id="deleteRemainingCountriesByIds" parameterType="String">
+        delete from oms_remaining_countries where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectRemainingCountriesByOnlyCondition" parameterType="RemainingCountries" resultMap="RemainingCountriesResult">
+        <include refid="selectRemainingCountriesVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateRemainingCountriesByOnlyCondition" parameterType="RemainingCountries">
+        update oms_remaining_countries
+        <trim prefix="SET" suffixOverrides=",">
+        <if test="warehouseSku != null">warehouse_SKU = #{warehouseSku},</if>
+        <if test="site != null">site = #{site},</if>
+        <if test="numberSets != null">number_sets = #{numberSets},</if>
+        <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+        <if test="customerRemarks != null">customer_remarks = #{customerRemarks},</if>
+        <if test="customerRegistrationDate != null">customer_registration_date = #{customerRegistrationDate},</if>
+        <if test="createTime != null">create_time = #{createTime},</if>
+        <if test="updateBy != null">update_by = #{updateBy},</if>
+        <if test="updateTime != null">update_time = #{updateTime},</if>
+    </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

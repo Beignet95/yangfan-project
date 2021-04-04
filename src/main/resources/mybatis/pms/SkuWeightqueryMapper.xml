@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.weightquery.mapper.SkuWeightqueryMapper">
+    
+    <resultMap type="SkuWeightquery" id="SkuWeightqueryResult">
+        <result property="id"    column="id"    />
+        <result property="productSku"    column="product_SKU"    />
+        <result property="productName"    column="product_name"    />
+        <result property="category"    column="category"    />
+        <result property="weight"    column="weight"    />
+        <result property="packageSizeLong"    column="package_size_long"    />
+        <result property="packageSizeWidth"    column="package_size_width"    />
+        <result property="packageSizeHigh"    column="package_size_high"    />
+    </resultMap>
+
+    <sql id="selectSkuWeightqueryVo">
+        select id, product_SKU, product_name, category, weight, package_size_long, package_size_width, package_size_high from pms_sku_weightquery
+    </sql>
+
+    <select id="selectSkuWeightqueryList" parameterType="SkuWeightquery" resultMap="SkuWeightqueryResult">
+        <include refid="selectSkuWeightqueryVo"/>
+        <where>  
+            <if test="productSku != null  and productSku != ''"> and product_SKU = #{productSku}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="category != null  and category != ''"> and category = #{category}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="packageSizeLong != null "> and package_size_long = #{packageSizeLong}</if>
+            <if test="packageSizeWidth != null "> and package_size_width = #{packageSizeWidth}</if>
+            <if test="packageSizeHigh != null "> and package_size_high = #{packageSizeHigh}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectSkuWeightqueryById" parameterType="Long" resultMap="SkuWeightqueryResult">
+        <include refid="selectSkuWeightqueryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSkuWeightquery" parameterType="SkuWeightquery" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_sku_weightquery
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productSku != null">product_SKU,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="category != null">category,</if>
+            <if test="weight != null">weight,</if>
+            <if test="packageSizeLong != null">package_size_long,</if>
+            <if test="packageSizeWidth != null">package_size_width,</if>
+            <if test="packageSizeHigh != null">package_size_high,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productSku != null">#{productSku},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="category != null">#{category},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="packageSizeLong != null">#{packageSizeLong},</if>
+            <if test="packageSizeWidth != null">#{packageSizeWidth},</if>
+            <if test="packageSizeHigh != null">#{packageSizeHigh},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSkuWeightquery" parameterType="SkuWeightquery">
+        update pms_sku_weightquery
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productSku != null">product_SKU = #{productSku},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="weight != null">weight = #{weight},</if>
+            <if test="packageSizeLong != null">package_size_long = #{packageSizeLong},</if>
+            <if test="packageSizeWidth != null">package_size_width = #{packageSizeWidth},</if>
+            <if test="packageSizeHigh != null">package_size_high = #{packageSizeHigh},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSkuWeightqueryById" parameterType="Long">
+        delete from pms_sku_weightquery where id = #{id}
+    </delete>
+
+    <delete id="deleteSkuWeightqueryByIds" parameterType="String">
+        delete from pms_sku_weightquery where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectSkuWeightqueryByOnlyCondition" parameterType="SkuWeightquery" resultMap="SkuWeightqueryResult">
+        <include refid="selectSkuWeightqueryVo"/>
+        where id =#{id}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateSkuWeightqueryByOnlyCondition" parameterType="SkuWeightquery">
+        update pms_sku_weightquery
+        <trim prefix="SET" suffixOverrides=",">
+                                                                            <if test="productSku != null">product_SKU = #{productSku},</if>
+                                                                <if test="productName != null">product_name = #{productName},</if>
+                                                                <if test="category != null">category = #{category},</if>
+                                                                <if test="weight != null">weight = #{weight},</if>
+                                                                <if test="packageSizeLong != null">package_size_long = #{packageSizeLong},</if>
+                                                                <if test="packageSizeWidth != null">package_size_width = #{packageSizeWidth},</if>
+                                                                <if test="packageSizeHigh != null">package_size_high = #{packageSizeHigh},</if>
+                                    </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

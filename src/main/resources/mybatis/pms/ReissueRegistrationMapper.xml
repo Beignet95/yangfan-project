@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.pms.registration.mapper.ReissueRegistrationMapper">
+    
+    <resultMap type="ReissueRegistration" id="ReissueRegistrationResult">
+        <result property="id"    column="id"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="customerManager"    column="customer_manager"    />
+        <result property="accountNumber"    column="account_number"    />
+        <result property="site"    column="site"    />
+        <result property="warehouseSku"    column="warehouse_SKU"    />
+        <result property="numberSets"    column="number_sets"    />
+        <result property="number"    column="number"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="receiptAddress"    column="receipt_address"    />
+        <result property="goodsNetweight"    column="goods_netweight"    />
+        <result property="goodsGrossweight"    column="goods_grossweight"    />
+        <result property="trackingNumber"    column="tracking_number"    />
+        <result property="customerRemarks"    column="customer_remarks"    />
+        <result property="customerRegistrationDate"    column="customer_registration_date"    />
+        <result property="warehouseShipDate"    column="warehouse_ship_date"    />
+        <result property="logisticsOperating"    column="logistics_operating"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectReissueRegistrationVo">
+        select id, order_number, customer_manager, account_number, site, warehouse_SKU, number_sets, number, recipient_name, receipt_address, goods_netweight, goods_grossweight, tracking_number, customer_remarks, customer_registration_date, warehouse_ship_date, logistics_operating, create_time, update_by, update_time from pms_reissue_registration
+    </sql>
+
+    <select id="selectReissueRegistrationList" parameterType="ReissueRegistration" resultMap="ReissueRegistrationResult">
+        <include refid="selectReissueRegistrationVo"/>
+        <where>  
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="customerManager != null  and customerManager != ''"> and customer_manager = #{customerManager}</if>
+            <if test="accountNumber != null  and accountNumber != ''"> and account_number = #{accountNumber}</if>
+            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="warehouseSku != null  and warehouseSku != ''"> and warehouse_SKU = #{warehouseSku}</if>
+            <if test="numberSets != null "> and number_sets = #{numberSets}</if>
+            <if test="number != null "> and number = #{number}</if>
+            <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+            <if test="receiptAddress != null  and receiptAddress != ''"> and receipt_address = #{receiptAddress}</if>
+            <if test="goodsNetweight != null "> and goods_netweight = #{goodsNetweight}</if>
+            <if test="goodsGrossweight != null "> and goods_grossweight = #{goodsGrossweight}</if>
+            <if test="trackingNumber != null  and trackingNumber != ''"> and tracking_number = #{trackingNumber}</if>
+            <if test="customerRemarks != null  and customerRemarks != ''"> and customer_remarks = #{customerRemarks}</if>
+            <if test="customerRegistrationDate != null "> and customer_registration_date = #{customerRegistrationDate}</if>
+            <if test="warehouseShipDate != null "> and warehouse_ship_date = #{warehouseShipDate}</if>
+            <if test="logisticsOperating != null  and logisticsOperating != ''"> and logistics_operating = #{logisticsOperating}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectReissueRegistrationById" parameterType="Long" resultMap="ReissueRegistrationResult">
+        <include refid="selectReissueRegistrationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertReissueRegistration" parameterType="ReissueRegistration" useGeneratedKeys="true" keyProperty="id">
+        insert into pms_reissue_registration
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNumber != null">order_number,</if>
+            <if test="customerManager != null">customer_manager,</if>
+            <if test="accountNumber != null">account_number,</if>
+            <if test="site != null">site,</if>
+            <if test="warehouseSku != null">warehouse_SKU,</if>
+            <if test="numberSets != null">number_sets,</if>
+            <if test="number != null">number,</if>
+            <if test="recipientName != null">recipient_name,</if>
+            <if test="receiptAddress != null">receipt_address,</if>
+            <if test="goodsNetweight != null">goods_netweight,</if>
+            <if test="goodsGrossweight != null">goods_grossweight,</if>
+            <if test="trackingNumber != null">tracking_number,</if>
+            <if test="customerRemarks != null">customer_remarks,</if>
+            <if test="customerRegistrationDate != null">customer_registration_date,</if>
+            <if test="warehouseShipDate != null">warehouse_ship_date,</if>
+            <if test="logisticsOperating != null">logistics_operating,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="customerManager != null">#{customerManager},</if>
+            <if test="accountNumber != null">#{accountNumber},</if>
+            <if test="site != null">#{site},</if>
+            <if test="warehouseSku != null">#{warehouseSku},</if>
+            <if test="numberSets != null">#{numberSets},</if>
+            <if test="number != null">#{number},</if>
+            <if test="recipientName != null">#{recipientName},</if>
+            <if test="receiptAddress != null">#{receiptAddress},</if>
+            <if test="goodsNetweight != null">#{goodsNetweight},</if>
+            <if test="goodsGrossweight != null">#{goodsGrossweight},</if>
+            <if test="trackingNumber != null">#{trackingNumber},</if>
+            <if test="customerRemarks != null">#{customerRemarks},</if>
+            <if test="customerRegistrationDate != null">#{customerRegistrationDate},</if>
+            <if test="warehouseShipDate != null">#{warehouseShipDate},</if>
+            <if test="logisticsOperating != null">#{logisticsOperating},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateReissueRegistration" parameterType="ReissueRegistration">
+        update pms_reissue_registration
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="customerManager != null">customer_manager = #{customerManager},</if>
+            <if test="accountNumber != null">account_number = #{accountNumber},</if>
+            <if test="site != null">site = #{site},</if>
+            <if test="warehouseSku != null">warehouse_SKU = #{warehouseSku},</if>
+            <if test="numberSets != null">number_sets = #{numberSets},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="recipientName != null">recipient_name = #{recipientName},</if>
+            <if test="receiptAddress != null">receipt_address = #{receiptAddress},</if>
+            <if test="goodsNetweight != null">goods_netweight = #{goodsNetweight},</if>
+            <if test="goodsGrossweight != null">goods_grossweight = #{goodsGrossweight},</if>
+            <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+            <if test="customerRemarks != null">customer_remarks = #{customerRemarks},</if>
+            <if test="customerRegistrationDate != null">customer_registration_date = #{customerRegistrationDate},</if>
+            <if test="warehouseShipDate != null">warehouse_ship_date = #{warehouseShipDate},</if>
+            <if test="logisticsOperating != null">logistics_operating = #{logisticsOperating},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteReissueRegistrationById" parameterType="Long">
+        delete from pms_reissue_registration where id = #{id}
+    </delete>
+
+    <delete id="deleteReissueRegistrationByIds" parameterType="String">
+        delete from pms_reissue_registration where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <select id="selectReissueRegistrationByOnlyCondition" parameterType="ReissueRegistration" resultMap="ReissueRegistrationResult">
+        <include refid="selectReissueRegistrationVo"/>
+        where order_number =#{orderNumber}
+    </select>
+
+    <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
+    <update id="updateReissueRegistrationByOnlyCondition" parameterType="ReissueRegistration">
+        update pms_reissue_registration
+        <trim prefix="SET" suffixOverrides=",">
+           <if test="orderNumber != null">order_number = #{orderNumber},</if>
+           <if test="customerManager != null">customer_manager = #{customerManager},</if>
+           <if test="accountNumber != null">account_number = #{accountNumber},</if>
+           <if test="site != null">site = #{site},</if>
+           <if test="warehouseSku != null">warehouse_SKU = #{warehouseSku},</if>
+           <if test="numberSets != null">number_sets = #{numberSets},</if>
+           <if test="number != null">number = #{number},</if>
+           <if test="recipientName != null">recipient_name = #{recipientName},</if>
+           <if test="receiptAddress != null">receipt_address = #{receiptAddress},</if>
+           <if test="goodsNetweight != null">goods_netweight = #{goodsNetweight},</if>
+           <if test="goodsGrossweight != null">goods_grossweight = #{goodsGrossweight},</if>
+           <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+           <if test="customerRemarks != null">customer_remarks = #{customerRemarks},</if>
+           <if test="customerRegistrationDate != null">customer_registration_date = #{customerRegistrationDate},</if>
+           <if test="warehouseShipDate != null">warehouse_ship_date = #{warehouseShipDate},</if>
+           <if test="logisticsOperating != null">logistics_operating = #{logisticsOperating},</if>
+           <if test="createTime != null">create_time = #{createTime},</if>
+           <if test="updateBy != null">update_by = #{updateBy},</if>
+           <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

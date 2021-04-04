@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增补发登记')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-registration-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">订单号：</label>
+                <div class="col-sm-8">
+                    <input name="orderNumber" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">客服负责人：</label>
+                <div class="col-sm-8">
+                    <input name="customerManager" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">账号：</label>
+                <div class="col-sm-8">
+                    <input name="accountNumber" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">站点：</label>
+                <div class="col-sm-8">
+                    <input name="site" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">易仓SKU：</label>
+                <div class="col-sm-8">
+                    <input name="warehouseSku" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">套数：</label>
+                <div class="col-sm-8">
+                    <input name="numberSets" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">个数：</label>
+                <div class="col-sm-8">
+                    <input name="number" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收件人姓名：</label>
+                <div class="col-sm-8">
+                    <input name="recipientName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">收货地址：</label>
+                <div class="col-sm-8">
+                    <input name="receiptAddress" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">对应货物净重：</label>
+                <div class="col-sm-8">
+                    <input name="goodsNetweight" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">对应货物毛重：</label>
+                <div class="col-sm-8">
+                    <input name="goodsGrossweight" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">跟踪号：</label>
+                <div class="col-sm-8">
+                    <input name="trackingNumber" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">客服备注：</label>
+                <div class="col-sm-8">
+                    <input name="customerRemarks" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">客服登记日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="customerRegistrationDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">仓库发货日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="warehouseShipDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">物流是否已操作：</label>
+                <div class="col-sm-8">
+                    <input name="logisticsOperating" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "compdata/registration"
+        $("#form-registration-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-registration-add').serialize());
+            }
+        }
+
+        $("input[name='customerRegistrationDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='warehouseShipDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>
