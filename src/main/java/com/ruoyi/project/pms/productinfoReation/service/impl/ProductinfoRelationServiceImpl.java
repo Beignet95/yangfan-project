@@ -182,7 +182,7 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
 
     @Override
     public Map<String, MskuProductinfoRelationVo> getSkuMskuMap() {
-        List<MskuProductinfoRelationVo> mskuProductinfoRelationVos = productinfoRelationMapper.selectMskuProductinfoRelationVoList();
+        List<MskuProductinfoRelationVo> mskuProductinfoRelationVos = productinfoRelationMapper.selectMskuProductinfoRelationVoList(null);
         Map<String, MskuProductinfoRelationVo> map = mskuProductinfoRelationVos.stream().collect(Collectors.toMap(
                 MskuProductinfoRelationVo::getMsku, Function.identity(),(entity1, entity2) -> entity1));
         return map;
@@ -196,8 +196,8 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     }
 
     @Override
-    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList() {
-        return productinfoRelationMapper.selectMskuProductinfoRelationVoList();
+    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList(String areaCode) {
+        return productinfoRelationMapper.selectMskuProductinfoRelationVoList(areaCode);
     }
 
     @Override
@@ -215,8 +215,8 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     }
 
     @Override
-    public Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap() {
-        List<MskuProductinfoRelationVo> voList  = this.selectMskuProductinfoRelationVoList();
+    public Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap(String areaCode) {
+        List<MskuProductinfoRelationVo> voList  = this.selectMskuProductinfoRelationVoList(areaCode);
         Map<String, MskuProductinfoRelationVo> map =
                 voList.stream().collect(Collectors.toMap(MskuProductinfoRelationVo::getMsku,Function.identity(),(entity1, entity2) -> {
                     String sku1 = entity1.getSku();
@@ -235,8 +235,10 @@ public class ProductinfoRelationServiceImpl implements IProductinfoRelationServi
     }
 
     @Override
-    public Map<String, ProductinfoRelation> getSkuProductinfoRelationVoMap() {
-        List<ProductinfoRelation> prList = this.selectProductinfoRelationList(null);
+    public Map<String, ProductinfoRelation> getSkuProductinfoRelationVoMap(String areaCode) {
+        ProductinfoRelation param  = new ProductinfoRelation();
+        param.setAreaCode(areaCode);
+        List<ProductinfoRelation> prList = this.selectProductinfoRelationList(param);
         Map<String,ProductinfoRelation> map = prList.stream().collect(Collectors
                 .toMap(ProductinfoRelation::getSku,Function.identity(),(key1,key2)->key1));
         return map;

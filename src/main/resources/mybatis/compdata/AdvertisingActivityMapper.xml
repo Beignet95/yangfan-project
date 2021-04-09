@@ -116,6 +116,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCampaignProductinfoRelationList" resultType="CampaignProductinfoRelation" parameterType="CampaignProductinfoRelation">
         select aa.activity as campaign,pr.asin,pr.principal,pr.type,pr.sku from cpd_advertising_activity aa INNER JOIN pms_productinfo_relation pr
         on pr.sku=aa.sku
+        <where>
+            <if test="areaCode != null and areaCode != ''">pr.area_code = #{areaCode},</if>
+        </where>
     </select>
 
 </mapper>

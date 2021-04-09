@@ -209,7 +209,7 @@ public class RemovalDetailServiceImpl implements IRemovalDetailService {
     private Map<String, MskuProductinfoRelationVo> checkAndGetPrlMap(List<RemovalDetail> removalDetailList) {
         if (removalDetailList.get(0) == null) throw new BusinessException("报表格式异常！请下载模板进行对照！");
         List<AsinMsku> asinMskuList = asinMskuService.selectAsinMskuList(null);
-        Map<String, MskuProductinfoRelationVo> mskuPrlMap = productinfoRelationService.getMskuProductinfoRelationVoMap();
+        Map<String, MskuProductinfoRelationVo> mskuPrlMap = productinfoRelationService.getMskuProductinfoRelationVoMap(null);
         Map<String, String> mskuAsinMap = asinMskuList.stream().collect(Collectors.toMap(AsinMsku::getMsku, AsinMsku::getAsin));
         Set<String> cot = new LinkedHashSet();
         Set<String> cot2 = new LinkedHashSet();

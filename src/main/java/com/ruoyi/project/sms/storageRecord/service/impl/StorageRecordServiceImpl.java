@@ -10,6 +10,7 @@ import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
 import com.ruoyi.project.pms.productinfoReation.service.IProductinfoRelationService;
 import com.ruoyi.project.sms.storageRecord.vo.SkuStorageFee;
 import com.ruoyi.project.sms.storageRecord.vo.StorageRecordImpTempVo;
+import com.ruoyi.project.system.config.service.IConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,13 +141,8 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         }
 
         HistoryOperate ho = new HistoryOperate();
-        if(StringUtils.isNotEmpty(site)&&site.contains("-")){
-            String[] siteStrs = site.split("-");
-            String countryCode = siteStrs[1];
-            impTempVos = impTempVos.stream().filter(s->countryCode.equals(s.getCountryCode())).collect(Collectors.toList());
-        }else throw new BusinessException("站点格式异常");
-        Map<String,ProductinfoRelation> relationMap = getAndCheackProductionRelation(impTempVos);
-
+        String areaCode = getAreaCodeBySite(site);
+        Map<String,ProductinfoRelation> relationMap = getAndCheackProductionRelation(impTempVos,areaCode);
         String timeFormatStr = "MMM-yy";
         //Locale locale = new Locale(language,"");
         Locale locale = new Locale("en","");
@@ -211,9 +207,11 @@ public class StorageRecordServiceImpl implements IStorageRecordService
 
     @Autowired
     private IProductinfoRelationService productinfoRelationService;
-    private Map<String,ProductinfoRelation> getAndCheackProductionRelation(List<StorageRecordImpTempVo> storageRecordList) {
+    private Map<String,ProductinfoRelation> getAndCheackProductionRelation(List<StorageRecordImpTempVo> storageRecordList,String areaCode) {
         StringBuilder warnMsg = new StringBuilder();
-        List<ProductinfoRelation> relationList = productinfoRelationService.selectProductinfoRelationList(null);
+        ProductinfoRelation param = new ProductinfoRelation();
+        param.setAreaCode(areaCode);
+        List<ProductinfoRelation> relationList = productinfoRelationService.selectProductinfoRelationList(param);
         Map<String,ProductinfoRelation> asinRelationMap = relationList.stream().collect(Collectors
                 .toMap(ProductinfoRelation::getAsin, Function.identity(),(entity1, entity2) -> {
                     String sku1 = entity1.getSku();
@@ -260,6 +258,11 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         return storageRecordMapper.selectAsinVolumnList(storageRecord);
     }
 
+    @Override
+    public int updateProductinfo2Record(Date month, String account,String areaCode) {
+        return storageRecordMapper.updateProductinfo2Record(month,account,areaCode);
+    }
+
     private String getHistoryCode(String account, String monthStr) {
         return  HISTORY_OPERARE_PREFIX+account+":"+monthStr;
     }
@@ -289,5 +292,24 @@ public class StorageRecordServiceImpl implements IStorageRecordService
         if(hoRes.size()>0) throw new BusinessException(storageRecord.getMonth()+"月份，站点为"
                 +site+"的仓储数据导入操作已被锁定！你可能已经导入过数据了！");
         return ho;
+    }
+
+    @Autowired
+    IConfigService configService;
+    private String getAreaCodeBySite(String site) {
+        String param = configService.selectConfigByKey("sys_countrycode_areacode");
+        if(StringUtils.isEmpty(param)) throw new BusinessException("参数名称为：国家代码对应地区代码参数，参数代码为：sys_countrycode_areacode的 系统参数尚未配置！");
+        Map<String,String> countryAreaMap = new HashMap<>();
+        try{
+            String[] params = param.split(",");
+            for(String p:params){
+                String[] ps = p.split(":");
+                countryAreaMap.put(ps[0],ps[1]);
+            }
+        }catch (Exception e){
+            throw new BusinessException("系统参数 sys_countrycode_areacode 配置异常！");
+        }
+        String countryCode = site.split("-")[1];
+        return countryAreaMap.get(countryCode);
     }
 }

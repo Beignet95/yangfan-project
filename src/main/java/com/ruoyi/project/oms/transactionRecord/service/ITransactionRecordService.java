@@ -114,4 +114,9 @@ public interface ITransactionRecordService
      * @return
      */
     int unlockData(Date month, String site,String spareField);
+
+    /**
+     * 更新财务模块所有关联产品信息的记录（主要更新产品型号，负责人）
+     */
+    int updateProductinfo4AllRecord(Date month, String account, String site, String spareField);
 }

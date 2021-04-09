@@ -86,6 +86,7 @@
 
         $(function() {
             init_month();
+            initAccountSiteSearchArea();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -273,13 +274,15 @@
         //渲染账号站点下拉框
         initAccountSiteSearchArea();
         function  initAccountSiteSearchArea() {
+            $.ajaxSettings.async = false;
             $.get("/ums/account/getJson4AccountSite",{},function(result){
                 //data = JSON.parse(result);
                 var data = eval('(' + result + ')');
                 $('#searchArea').cxSelect({
                     selects: ['type', 'router'],
                     jsonValue: 'v',
-                    data: data
+                    data: data,
+                    required: true
                 });
             });
         }

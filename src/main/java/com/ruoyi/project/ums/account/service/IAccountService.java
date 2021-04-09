@@ -75,4 +75,6 @@ public interface IAccountService
      * @return
      */
     String getJson4AccountSite();
+
+    String getJson4AllAccountSite();
 }

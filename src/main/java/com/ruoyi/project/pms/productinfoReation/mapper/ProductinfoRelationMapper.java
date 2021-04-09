@@ -84,7 +84,7 @@ public interface ProductinfoRelationMapper
      * 获取标准SKU与MSKU关系
      * @return
      */
-    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList();
+    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList(String areaCode);
 
     /**
      * 获取标准sku与父asin的关系

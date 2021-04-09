@@ -83,4 +83,11 @@ public interface IAdvertisingFeeService
      */
     int unlockData(Date month, String site);
 
+    /**
+     * 更新广告费用关联的产品信息
+     * @param month
+     * @param site
+     * @return
+     */
+    int updateProductinfo2Record(Date month, String site,String areaCode);
 }

@@ -125,4 +125,12 @@ public interface TransactionRecordMapper
      * @return
      */
     int batchInsertTransactionRecord(@Param("transactionRecordList") List<TransactionRecord> transactionRecordList);
+
+    /**
+     * 更新最新的产品新题于对应月份对应站点的交易记录
+     * @param month
+     * @param site
+     * @return
+     */
+    int updateProductinfo2TransationRecord(Date month, String site,String areaCode);
 }

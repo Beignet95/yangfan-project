@@ -12,6 +12,7 @@ import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
 import com.ruoyi.project.oms.transactionRecord.vo.SkuFee;
 import com.ruoyi.project.pms.advertisingFee.vo.CampaignProductinfoRelation;
 import com.ruoyi.project.pms.productinfoReation.domain.ProductinfoRelation;
+import com.ruoyi.project.system.config.service.IConfigService;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +148,8 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         }
         if(advertisingFeeList.get(0)==null) new BusinessException("系统识别到第一条数据为空！你导入的报表格式可能有异常！");
 
-        Map<String,CampaignProductinfoRelation> campProdinfoRelaMap =  checkAndGetAdvertisingActivity(advertisingFeeList);//校验广告活动数据是否完整，避免分析数据不准确
+        String areaCode = getAreaCodeBySite(site);
+        Map<String,CampaignProductinfoRelation> campProdinfoRelaMap =  checkAndGetAdvertisingActivity(advertisingFeeList,site);//校验广告活动数据是否完整，避免分析数据不准确
 
         int successNum = 0;
         int failureNum = 0;
@@ -198,6 +200,7 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         return successMsg.toString();
     }
 
+
     @Override
     public List<AdvertisingFee> selectSkuAdvertisingFeeList(AdvertisingFee advertisingFee) {
         List<AdvertisingFee> skuAdvertisingFeeList = advertisingFeeMapper.selectSkuAdvertisingFeeList(advertisingFee);
@@ -213,6 +216,11 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
         }else return -1;
     }
 
+    @Override
+    public int updateProductinfo2Record(Date month, String site,String areaCode) {
+        return advertisingFeeMapper.updateProductinfo2Record(month,site,areaCode);
+    }
+
     private String getHistoryCode(String site, String monthStr) {
         return HISTORY_OPERARE_PREFIX+":"+ site+":"+monthStr;
     }
@@ -220,9 +228,11 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
     @Autowired
     IAdvertisingActivityService advertisingActivityService;
 
-    private Map<String, CampaignProductinfoRelation> checkAndGetAdvertisingActivity(List<AdvertisingFee> advertisingFeeList) {
-       List<AdvertisingActivity> activityList =  advertisingActivityService.selectAdvertisingActivityList(null);
-       List<CampaignProductinfoRelation> cprList = advertisingActivityService.selectCampaignProductinfoRelationList(null);
+    private Map<String, CampaignProductinfoRelation> checkAndGetAdvertisingActivity(List<AdvertisingFee> advertisingFeeList,String areaCode) {
+        List<AdvertisingActivity> activityList =  advertisingActivityService.selectAdvertisingActivityList(null);
+        CampaignProductinfoRelation campaignProductinfoRelationParam = new CampaignProductinfoRelation();
+        campaignProductinfoRelationParam.setAreaCode(areaCode);
+       List<CampaignProductinfoRelation> cprList = advertisingActivityService.selectCampaignProductinfoRelationList(campaignProductinfoRelationParam);
        Map<String,CampaignProductinfoRelation> map = cprList.stream().collect(
                Collectors.toMap(CampaignProductinfoRelation::getCampaign,Function.identity(),(entity1, entity2) -> {
                    String sku1 = entity1.getSku();
@@ -263,5 +273,24 @@ public class AdvertisingFeeServiceImpl implements IAdvertisingFeeService
             throw new BusinessException(warnMsg.toString());
        }
        return map;
+    }
+
+    @Autowired
+    IConfigService configService;
+    private String getAreaCodeBySite(String site) {
+        String param = configService.selectConfigByKey("sys_countrycode_areacode");
+        if(StringUtils.isEmpty(param)) throw new BusinessException("参数名称为：国家代码对应地区代码参数，参数代码为：sys_countrycode_areacode的 系统参数尚未配置！");
+        Map<String,String> countryAreaMap = new HashMap<>();
+        try{
+            String[] params = param.split(",");
+            for(String p:params){
+                String[] ps = p.split(":");
+                countryAreaMap.put(ps[0],ps[1]);
+            }
+        }catch (Exception e){
+            throw new BusinessException("系统参数 sys_countrycode_areacode 配置异常！");
+        }
+        String countryCode = site.split("-")[1];
+        return countryAreaMap.get(countryCode);
     }
 }

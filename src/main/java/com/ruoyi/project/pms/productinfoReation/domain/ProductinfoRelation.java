@@ -52,8 +52,8 @@ public class ProductinfoRelation extends BaseEntity
     private String sku;
 
     /** 站点 */
-    @Excel(name = "站点")
-    private String area_code;
+    @Excel(name = "地区代码")
+    private String areaCode;
 
     public ProductinfoRelation(Long id,String asin,String principal,String type,String sku){
         this.id=id;

@@ -42,6 +42,7 @@
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="tableSearch()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                <a class="btn btn-info btn-rounded btn-sm" onclick="reVlookup()"><i class="fa fa-search"></i>重新VLOOKUP</a>
                             </li>
                         </ul>
                     </div>
@@ -537,6 +538,25 @@
         function toFixed(value){
             if(value!=null)
             return  value.toFixed(4);
+        }
+
+        function reVlookup(){
+            var account = $("select[name='account']").val();
+            var site = $("select[name='site']").val();
+            var month = $("input[name='month']").val();
+            var wargMsg = "";
+            if(account=="") wargMsg =  "账号不能为空<br/>";
+            if(site==""||site==null) wargMsg +=  "站点不能为空<br/>";
+            if(month=="") wargMsg +=  "月份不能为空<br/>";
+            if(wargMsg.length>0) $.modal.alertWarning(wargMsg);
+
+            var confirmMsg = "确定更新站点："+site+" "+month+"月份的产品信息吗！";
+            $.modal.confirm(confirmMsg, function() {
+                $.post(prefix+"/updateProductinfo4AllRecord",{month:month,site:site,account:account},function(result){
+                    layer.msg(result.msg, {icon: 0});
+                });
+            });
+
         }
     </script>
 </body>

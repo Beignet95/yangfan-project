@@ -135,6 +135,7 @@ public class OrderRefundServiceImpl implements IOrderRefundService
 
         //保存重复数据
         //保留size>1的值，就是保留具有重复数据的value
+        orderRefundList =  orderRefundList.stream().filter(k->StringUtils.isNotEmpty(k.getOrderId())).collect(Collectors.toList());
         Map<String, List<OrderRefund>> repeatMap = orderRefundList.stream().collect(Collectors.groupingBy(OrderRefund::getOrderId));
         repeatMap.entrySet().removeIf(m -> m.getValue().size()==1);
         String repeatId = UUID.randomUUID().toString().replaceAll("-","");

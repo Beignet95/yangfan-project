@@ -17,6 +17,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExportExcelUtils;
 import com.ruoyi.common.utils.text.Convert;
+import com.ruoyi.framework.config.RuoYiConfig;
 import com.ruoyi.project.oms.countries.domain.RemainingCountries;
 import com.ruoyi.project.oms.countries.service.IRemainingCountriesService;
 import com.ruoyi.project.pms.registration.domain.ReissueRegistration;
@@ -432,7 +433,91 @@ public class ReissueRegistrationController extends BaseController
     @ResponseBody
     public AjaxResult importTemplate()
     {
-        ExcelUtil<ReissueRegistration> util = new ExcelUtil<ReissueRegistration>(ReissueRegistration.class);
-        return util.importTemplateExcel("补发登记");
+        // 标题
+        String[] title = { "订单号", "客服负责人", "账号", "站点", "易仓SKU", "套数", "个数", "收件人姓名" , "收货地址", "对应货物净重", "对应货物毛重",
+                "跟踪号", "客服备注",  "客服登记日期" , "仓库发货日期" , "物流是否已操作"};
+        // 创建一个工作簿
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        // 创建英国补发
+        HSSFSheet sheet = workbook.createSheet("英国补发");
+        // 设置列宽
+        setColumnWidth(sheet, 17);
+        // 创建第一行
+        HSSFRow row = sheet.createRow(0);
+        // 创建一个单元格
+        HSSFCell cell = null;
+        // 创建表头
+        for (int i = 0; i < title.length; i++) {
+            cell = row.createCell(i);
+            // 设置样式
+            HSSFCellStyle cellStyle = workbook.createCellStyle();
+            // 设置字体
+            HSSFFont font = workbook.createFont();
+            font.setFontName("宋体");
+            // font.setFontHeight((short)12);
+            font.setFontHeightInPoints((short) 13);
+            cellStyle.setFont(font);
+            cell.setCellStyle(cellStyle);
+            cell.setCellValue(title[i]);
+        }
+
+        // 标题
+        String[] title2 = { "易仓SKU", "数量", "跟踪号", "销售备注", "登记日期", "站点"};
+        // 创建其余四国补发
+        HSSFSheet sheet2 = workbook.createSheet("其余四国补发");
+        setColumnWidth(sheet2, 8);
+        HSSFRow row2 = sheet2.createRow(0);
+        // 创建一个单元格
+        HSSFCell cell3 = null;
+        // 创建表头
+        for (int i = 0; i < title2.length; i++) {
+            cell3 = row2.createCell(i);
+            // 设置样式
+            HSSFCellStyle cellStyle = workbook.createCellStyle();
+            // 设置字体
+            HSSFFont font = workbook.createFont();
+            font.setFontName("宋体");
+            font.setFontHeightInPoints((short) 13);
+            cellStyle.setFont(font);
+            cell3.setCellStyle(cellStyle);
+            cell3.setCellValue(title2[i]);
+        }
+
+        // 标题
+        String[] title3 = { "产品SKU", "产品名称", "品类", "重量", "包装尺寸-长(cm)", "包装尺寸-宽(cm)", "包装尺寸-高(cm)"};
+        // 创建SKU净重数据查询
+        HSSFSheet sheet3 = workbook.createSheet("SKU净重数据查询");
+        setColumnWidth(sheet3, 8);
+        HSSFRow row3 = sheet3.createRow(0);
+        // 创建一个单元格
+        HSSFCell cell5 = null;
+        // 创建表头
+        for (int i = 0; i < title3.length; i++) {
+            cell5 = row3.createCell(i);
+            // 设置样式
+            HSSFCellStyle cellStyle = workbook.createCellStyle();
+            // 设置字体
+            HSSFFont font = workbook.createFont();
+            font.setFontName("宋体");
+            font.setFontHeightInPoints((short) 13);
+            cellStyle.setFont(font);
+            cell5.setCellStyle(cellStyle);
+            cell5.setCellValue(title3[i]);
+        }
+
+        // 创建一个文件
+        File file = new File(RuoYiConfig.getProfile() + "/补发登记表.xls");
+        try {
+            file.createNewFile();
+            // 打开文件流
+            FileOutputStream outputStream = FileUtils.openOutputStream(file);
+            workbook.write(outputStream);
+            outputStream.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return  AjaxResult.success(file.getName());
+
     }
 }

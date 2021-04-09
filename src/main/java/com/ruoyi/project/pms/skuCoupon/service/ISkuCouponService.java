@@ -69,6 +69,10 @@ public interface ISkuCouponService
      */
     public String importSkuCoupon(List<SkuCoupon> skuCouponList, boolean isUpdateSupport);
 
-
+    /**
+     * 通过地区代码，获取到Coupu与sku的映射关系
+     * @param areaCode
+     * @return
+     */
     Map<String, String> getCouponSkuMap();
 }

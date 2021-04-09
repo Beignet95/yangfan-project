@@ -166,4 +166,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where month =#{month} and account=#{account} and country_code=#{countryCode}
     </select>
 
+
+    <update id="updateProductinfo2Record">
+        update sms_storage_record sr INNER JOIN  pms_productinfo_relation pr on sr.asin=pr.asin and sr.account=#{account}
+        and sr.month=#{month} and pr.area_code=#{areaCode} set sr.principal=pr.principal,sr.spu=pr.type
+    </update>
+
 </mapper>

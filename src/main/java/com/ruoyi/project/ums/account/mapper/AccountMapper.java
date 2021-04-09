@@ -76,5 +76,5 @@ public interface AccountMapper
      */
     public Account selectAccountByOnlyCondition(Account account);
 
-    List<AccountVo> selectAccountVoList();
+    List<AccountVo> selectAccountVoList(AccountVo accountVo);
 }

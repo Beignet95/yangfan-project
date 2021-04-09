@@ -104,4 +104,12 @@ public interface IStorageRecordService
      * @return
      */
     List<StorageRecord> selectAsinVolumnList(StorageRecord storageRecord);
+
+    /**
+     * 更新最新的产品信息于对应月份对应账号的仓促记录
+     * @param month
+     * @param site
+     * @return
+     */
+    int updateProductinfo2Record(Date month, String account,String areaCode);
 }

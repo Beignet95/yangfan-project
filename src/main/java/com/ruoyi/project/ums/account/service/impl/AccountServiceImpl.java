@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.framework.web.domain.CxSelect;
+import com.ruoyi.project.system.user.domain.User;
+import com.ruoyi.project.system.user.service.IUserService;
 import com.ruoyi.project.ums.account.vo.AccountVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,9 +196,32 @@ public class AccountServiceImpl implements IAccountService
      *      *         cxSelectTB.setS(tmList);
      * @return
      */
+    @Autowired
+    IUserService userService;
+
+    /**
+     * 获取用户所负责的站点对应的账号站点信息
+     * @return  用于渲染cxSelect的JSON数据
+     */
     @Override
     public String getJson4AccountSite() {
-        List<AccountVo> voList = accountMapper.selectAccountVoList();
+        User user = ShiroUtils.getSysUser();
+        AccountVo accountVoParams = new AccountVo();
+        if(!user.isAdmin()) accountVoParams.setPrincipal(user.getUserName());
+        return getJson4AccountSite(accountVoParams);
+    }
+
+    /**
+     * 获取所有账号站点
+     * @return 用于渲染cxSelect的JSON数据
+     */
+    @Override
+    public String getJson4AllAccountSite() {
+        return getJson4AccountSite(null);
+    }
+
+    public String getJson4AccountSite(AccountVo accountVoParams){
+        List<AccountVo> voList = accountMapper.selectAccountVoList(accountVoParams);
         Map<String,List<AccountVo>> groupMap = voList.stream().
                 collect(Collectors.groupingBy(AccountVo::getAccount));
         List<CxSelect> cxList = new ArrayList<CxSelect>();
@@ -217,5 +242,6 @@ public class AccountServiceImpl implements IAccountService
             cxList.add(fSelect);
         }
         return JSONObject.toJSONString(cxList);
+
     }
 }

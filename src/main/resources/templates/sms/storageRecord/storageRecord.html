@@ -21,12 +21,6 @@
                                     <option value="">-请选择-</option>
                                 </select>
                             </li>
-                            <li>
-                                <label>站点：</label>
-                                <select class="router form-control" style="width: 100px;display: inline;" name="site" id="site">
-                                    <option value="">-请选择-</option>
-                                </select>
-                            </li>
 <!--                            <li>-->
 <!--                                <label>account：</label>-->
 <!--                                <input type="text" class="form-control" name="account" style="width: 100px;display: inline;" id="account"/>-->
@@ -84,6 +78,7 @@
 
         $(function() {
             init_month();//初始化上方时间条件
+            initAccountSiteSearchArea();
 
             var options = {
                 url: prefix + "/list",
@@ -234,13 +229,15 @@
         //渲染账号站点下拉框
         //initAccountSiteSearchArea();
         function  initAccountSiteSearchArea() {
+            $.ajaxSettings.async = false;
             $.get("/ums/account/getJson4AccountSite",{},function(result){
                 //data = JSON.parse(result);
                 var data = eval('(' + result + ')');
                 $('#searchArea').cxSelect({
                     selects: ['type', 'router'],
                     jsonValue: 'v',
-                    data: data
+                    data: data,
+                    required: true
                 });
             });
         }
@@ -261,20 +258,6 @@
                 });
             });
 
-        }
-
-        //渲染账号站点下拉框
-        initAccountSiteSearchArea();
-        function  initAccountSiteSearchArea() {
-            $.get("/ums/account/getJson4AccountSite",{},function(result){
-                //data = JSON.parse(result);
-                var data = eval('(' + result + ')');
-                $('#searchArea').cxSelect({
-                    selects: ['type', 'router'],
-                    jsonValue: 'v',
-                    data: data
-                });
-            });
         }
     </script>
 </body>

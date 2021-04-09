@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.ruoyi.common.utils.Arith;
+import com.ruoyi.framework.web.service.ConfigService;
 import com.ruoyi.project.compdata.finance.domain.Finance;
 import com.ruoyi.project.compdata.historyoperate.domain.HistoryOperate;
 import com.ruoyi.project.compdata.historyoperate.service.IHistoryOperateService;
@@ -25,7 +26,9 @@ import com.ruoyi.project.pms.productinfoReation.vo.MskuProductinfoRelationVo;
 import com.ruoyi.project.pms.skuCoupon.service.ISkuCouponService;
 import com.ruoyi.project.sms.storageRecord.domain.StorageRecord;
 import com.ruoyi.project.sms.storageRecord.service.IStorageRecordService;
+import com.ruoyi.project.system.config.service.IConfigService;
 import com.ruoyi.project.system.dict.service.IDictTypeService;
+import com.sun.org.apache.bcel.internal.generic.ATHROW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,12 +188,13 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         String history_operate_code = "";
         HistoryOperate ho = new HistoryOperate();
 
-        Map relationMap = getAndCheackProductionRelation(impTempVos);
+        String areaCode = getAreaCodeBySite(site);
+        Map relationMap = getAndCheackProductionRelation(impTempVos,areaCode);
         Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap = (Map<String, MskuProductinfoRelationVo>) relationMap.get("mskuProductinfoRelationVoMap");
         Map<String, String> conponSkuMap = (Map<String, String>) relationMap.get("couponSkuMap");
         Map<String, String> pasinSkuMap = (Map<String, String>) relationMap.get("pasinSkuMap");
 
-        Map<String,ProductinfoRelation> skuPrMap = productinfoRelationService.getSkuProductinfoRelationVoMap();
+        Map<String,ProductinfoRelation> skuPrMap = productinfoRelationService.getSkuProductinfoRelationVoMap(areaCode);
 
         successNum = impTempVos.size();
 
@@ -216,6 +220,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                 String standardSku = conponSkuMap.get(description.toLowerCase());
                 //skuProductinfoRelationVoMap.get(standardSku);
                 transactionRecord.setStandardSku(standardSku);
+                if(skuPrMap.get(standardSku)==null) throw new BusinessException(areaCode+"地区缺少标准SKU为："+standardSku+"的产品信息关系");
                 transactionRecord.setSpu(skuPrMap.get(standardSku).getType());
                 transactionRecord.setPrincipal(skuPrMap.get(standardSku).getPrincipal());
             }
@@ -227,6 +232,7 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
                     String pasin = strs[strs.length-1];
                     String standardSku = pasinSkuMap.get(pasin);
                     transactionRecord.setStandardSku(standardSku);
+                    if(skuPrMap.get(standardSku)==null) throw new BusinessException(areaCode+"地区缺少标准SKU为："+standardSku+"的产品信息关系");
                     transactionRecord.setSpu(skuPrMap.get(standardSku).getType());
                     transactionRecord.setPrincipal(skuPrMap.get(standardSku).getPrincipal());
                 }
@@ -307,8 +313,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         return "已成功导入"+transactionRecordList.size()+"条数据！";
     }
 
-    private Map getAndCheackProductionRelation(List<TransactionRecordImpTempVo> impTempVos) {
-        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap = productinfoRelationService.getMskuProductinfoRelationVoMap();
+    private Map getAndCheackProductionRelation(List<TransactionRecordImpTempVo> impTempVos,String areaCode) {
+        Map<String, MskuProductinfoRelationVo> mskuProductinfoRelationVoMap =
+                productinfoRelationService.getMskuProductinfoRelationVoMap(areaCode);
         Map<String, String> couponSkuMap = skuCouponService.getCouponSkuMap();
         Map<String, String> pasinSkuMap = productinfoRelationService.getPasinSkuMap();
 
@@ -497,7 +504,9 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         //其他服务费 Manual Processing Fee
         transactionRecord.setDescription("%Manual Processing Fee%");
         TransactionRecord otherTransactionGaterRecord = transactionRecordMapper.selectGatherRecord(transactionRecord);
-        BigDecimal totalOtherServiceFee = Arith.getDecimal(otherTransactionGaterRecord.getOther());
+        BigDecimal totalOtherServiceFee = new BigDecimal(0);
+        if(otherTransactionGaterRecord!=null) totalOtherServiceFee = Arith.getDecimal(otherTransactionGaterRecord.getOther());
+
 
         //TODO 平台调整费 FBA Inventory Reimbursement - General Adjustment
         transactionRecord.setDescription("FBA Inventory Reimbursement - General Adjustment");
@@ -1453,6 +1462,36 @@ public class TransactionRecordServiceImpl implements ITransactionRecordService
         if(historyOperateService.deleteHistoryOperateByOperateCode(getHistoryCode(site,monstr,spareField))>0){
             return transactionRecordMapper.deleteTransactionRecordByMonthSiteAndSpareField(month,site,spareField);
         }else return -1;
+    }
+
+    @Override
+    @Transactional
+    public int updateProductinfo4AllRecord(Date month, String account, String site, String spareField) {
+        String areaCode = getAreaCodeBySite(site);
+
+        int updateNum = transactionRecordMapper.updateProductinfo2TransationRecord(month,site,areaCode);
+        updateNum += storageRecordService.updateProductinfo2Record(month,account,areaCode);
+        updateNum += advertisingFeeService.updateProductinfo2Record(month,site,areaCode);
+        return updateNum;
+    }
+
+    @Autowired
+    IConfigService configService;
+    private String getAreaCodeBySite(String site) {
+        String param = configService.selectConfigByKey("sys_countrycode_areacode");
+        if(StringUtils.isEmpty(param)) throw new BusinessException("参数名称为：国家代码对应地区代码参数，参数代码为：sys_countrycode_areacode的 系统参数尚未配置！");
+        Map<String,String> countryAreaMap = new HashMap<>();
+        try{
+            String[] params = param.split(",");
+            for(String p:params){
+                String[] ps = p.split(":");
+                countryAreaMap.put(ps[0],ps[1]);
+            }
+        }catch (Exception e){
+            throw new BusinessException("系统参数 sys_countrycode_areacode 配置异常！");
+        }
+        String countryCode = site.split("-")[1];
+        return countryAreaMap.get(countryCode);
     }
 
     private String getHistoryCode(String site, String monstr,String spareField) {

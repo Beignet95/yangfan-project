@@ -111,6 +111,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectAccountVoList" parameterType="AccountVo" resultMap="AccountVoResult">
         select ua.account,us.site from ums_account ua INNER JOIN ums_site us on ua.id=us.account_id
+        <where>
+            <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
+        </where>
     </select>
 
 </mapper>

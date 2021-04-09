@@ -48,5 +48,9 @@ public class Site extends BaseEntity
     private String descript;
 
 
+    /** 负责人 */
+    private String principal;
+
+
 
 }

@@ -29,7 +29,7 @@
                         <li>
                             <label>账号：</label>
                             <select class="type form-control" style="width: 100px;display: inline;" name="account">
-                                <option value="">-请选择-</option>
+<!--                                <option value="">-请选择-</option>-->
                             </select>
                         </li>
                         <li>
@@ -111,7 +111,7 @@
                     title: '标准SKU'
                 },
                 {
-                    field: 'area_code',
+                    field: 'areaCode',
                     title: '地区代码'
                 },
                 {
@@ -131,7 +131,7 @@
     //渲染账号站点下拉框
     initAccountSiteSearchArea();
     function  initAccountSiteSearchArea() {
-        $.get("/ums/account/getJson4AccountSite",{},function(result){
+        $.get("/ums/account/getJson4AllAccountSite",{},function(result){
             //data = JSON.parse(result);
             var data = eval('(' + result + ')');
             $('#searchArea').cxSelect({

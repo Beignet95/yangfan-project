@@ -17,7 +17,7 @@
                             </li>
                             <li>
                                 <label>账号：</label>
-                                <select class="type form-control" style="width: 100px;display: inline;" name="account">
+                                <select class="type form-control" style="width: 100px;display: inline;" name="account" id="account">
                                     <option value="">-请选择-</option>
                                 </select>
                             </li>
@@ -91,6 +91,8 @@
 
         $(function() {
             init_month();
+            //渲染账号站点下拉框
+            initAccountSiteSearchArea();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -298,15 +300,16 @@
         }
 
         //渲染账号站点下拉框
-        initAccountSiteSearchArea();
         function  initAccountSiteSearchArea() {
+            $.ajaxSettings.async = false;
             $.get("/ums/account/getJson4AccountSite",{},function(result){
                 //data = JSON.parse(result);
                 var data = eval('(' + result + ')');
                 $('#searchArea').cxSelect({
                     selects: ['type', 'router'],
                     jsonValue: 'v',
-                    data: data
+                    data: data,
+                    required: true
                 });
             });
         }

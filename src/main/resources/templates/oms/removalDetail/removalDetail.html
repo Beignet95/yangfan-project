@@ -9,8 +9,18 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
-                    <div class="select-list">
+                    <div class="select-list" id="searchArea">
                         <ul>
+                            <li>
+                                <label>账号：</label>
+                                <select class="type form-control" style="width: 100px;display: inline;" name="account" id="account">
+                                    <option value="">-请选择-</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>月份：</label>
+                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
+                            </li>
                             <li>
                                 <label>order-id：</label>
                                 <input type="text" name="orderId"/>
@@ -26,14 +36,6 @@
                             <li>
                                 <label style="width: 85px;">removal-fee：</label>
                                 <input type="text" name="removalFee"/>
-                            </li>
-                            <li>
-                                <label>账号：</label>
-                                <input type="text" name="account" id="account"/>
-                            </li>
-                            <li>
-                                <label>月份：</label>
-                                <input type="text" class="form-control" placeholder="请选择月份" name="month" id="month" style="width: 100px;display: inline;"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -71,12 +73,16 @@
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: datetimepicker-js" />
+     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('oms:removalDetail:edit')}]];
         var removeFlag = [[${@permission.hasPermi('oms:removalDetail:remove')}]];
         var prefix = ctx + "oms/removalDetail";
 
         $(function() {
+            init_month();
+            //渲染账号拉框
+            initAccountSiteSearchArea();
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -93,6 +99,17 @@
                     field: 'id',
                     title: '主键',
                     visible: false
+                },
+                {
+                    field: 'month',
+                    title: '月份',
+                    formatter: function (value,row,index) {
+                        return value.substr(0,7);
+                    }
+                },
+                {
+                    field: 'account',
+                    title: '账号'
                 },
                 {
                     field: 'orderId',
@@ -220,6 +237,39 @@
                 });
             });
 
+        }
+
+        //渲染账号站点下拉框
+        function  initAccountSiteSearchArea() {
+            $.ajaxSettings.async = false;
+            $.get("/ums/account/getJson4AccountSite",{},function(result){
+                //data = JSON.parse(result);
+                var data = eval('(' + result + ')');
+                $('#searchArea').cxSelect({
+                    selects: ['type', 'router'],
+                    jsonValue: 'v',
+                    data: data,
+                    required: true
+                });
+            });
+        }
+
+        //此方法用于填充本月于面上方输入月份的input
+        function init_month(){
+            var myDate = new Date();
+            //获取当前年
+            var year=myDate.getFullYear();
+
+            var Last_month = new Date().getMonth();
+
+            if(Last_month==0){
+                Last_month=12;
+                year--;
+            }
+
+            //Last_month = ((Last_month == 0) ? (12) : (Last_month));
+            //渲染页面上方输入月份的input
+            $("#month").val(year+"-"+Last_month);
         }
     </script>
 </body>

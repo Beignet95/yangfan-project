@@ -647,4 +647,11 @@ GROUP BY principal,type,spu,standard_sku,site,account
         </foreach>
     </insert>
 
+
+    <update id="updateProductinfo2TransationRecord">
+        update oms_transaction_record tr INNER JOIN pms_asin_msku am on am.msku=tr.sku INNER JOIN pms_productinfo_relation pr
+        on am.asin=pr.asin and tr.site=#{site} and tr.month=#{month} and pr.area_code=#{areaCode}
+        set tr.principal=pr.principal,tr.spu=pr.type
+    </update>
+
 </mapper>

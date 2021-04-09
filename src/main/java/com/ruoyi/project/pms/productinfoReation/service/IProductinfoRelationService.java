@@ -80,7 +80,12 @@ public interface IProductinfoRelationService
      */
     public Map<String, String> getPasinSkuMap();
 
-    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList();
+    /**
+     * 通过地区代码，获取MSKUProductinfoRelation列表
+     * @param areaCode
+     * @return
+     */
+    public List<MskuProductinfoRelationVo> selectMskuProductinfoRelationVoList(String areaCode);
 
     /**
      * 获取父ASIN与商品的关系Map
@@ -94,11 +99,16 @@ public interface IProductinfoRelationService
      */
     Map<String, ProductinfoRelationVo> getCouponProductinfoRelationVoMap();
 
-    Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap();
+    Map<String, MskuProductinfoRelationVo> getMskuProductinfoRelationVoMap(String areaCode);
 
     Map<String, MskuProductinfoRelationVo> getAsinProductinfoRelationVoMap();
 
-    Map<String, ProductinfoRelation> getSkuProductinfoRelationVoMap();
+    /**
+     * 通过地区代码获取SKU与产品信息的映射关系
+     * @param areaCode
+     * @return
+     */
+    Map<String, ProductinfoRelation> getSkuProductinfoRelationVoMap(String areaCode);
 
     boolean checkProductinfoRelation(ProductinfoRelation pr);
 }

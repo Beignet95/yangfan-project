@@ -357,4 +357,22 @@ public class TransactionRecordController extends BaseController
     }
 
 
+    /**
+     * 更新财务模块所有关联产品信息的记录（主要更新产品型号，负责人）
+     */
+    @PostMapping("/updateProductinfo4AllRecord")
+    @RequiresPermissions("pms:advertisingFee:remove")
+    @Log(title = "交易记录重V", businessType = BusinessType.DELETE)
+    @ResponseBody
+    public AjaxResult updateProductinfo4AllRecord(Date month,String account, String site,String spareField)
+    {
+        int updateNum = transactionRecordService.updateProductinfo4AllRecord(month,account,site,spareField);
+        if(updateNum>-1){
+            return AjaxResult.success("重新VLOOKUP成功！更新相关数据条数："+updateNum);
+        }else{
+            return AjaxResult.success("重新VLOOKUP成功！更新相关数据条数："+updateNum);
+        }
+    }
+
+
 }

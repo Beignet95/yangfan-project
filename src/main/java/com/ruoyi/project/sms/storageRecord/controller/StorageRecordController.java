@@ -3,6 +3,7 @@ package com.ruoyi.project.sms.storageRecord.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.csv.CsvUtil;
 import com.ruoyi.project.oms.transactionRecord.domain.TransactionRecordImpTempVo;
 import com.ruoyi.project.sms.storageRecord.vo.StorageRecordImpTempVo;
@@ -137,6 +138,7 @@ public class StorageRecordController extends BaseController
     @ResponseBody
     public AjaxResult importData(MultipartFile file, boolean updateSupport,String account,String site) throws Exception
     {
+        if(StringUtils.isEmpty(account)) throw new BusinessException("导入账号不能为空！");
         CsvUtil<StorageRecordImpTempVo> util = new CsvUtil<StorageRecordImpTempVo>(StorageRecordImpTempVo.class);
         List<StorageRecordImpTempVo> imps = util.importCvs(file.getInputStream(),0);
         String message = storageRecordService.importStorageRecord(imps, updateSupport,account,site);

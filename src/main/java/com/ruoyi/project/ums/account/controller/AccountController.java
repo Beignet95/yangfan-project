@@ -170,4 +170,17 @@ public class AccountController extends BaseController
         String jsonString = accountService.getJson4AccountSite();
         return jsonString;
     }
+
+    /**
+     * 查询账号列表
+     */
+
+    @RequiresPermissions("ums:account:list")
+    @GetMapping("/getJson4AllAccountSite")
+    @ResponseBody
+    public String getJson4AllAccountSite(Account account)
+    {
+        String jsonString = accountService.getJson4AllAccountSite();
+        return jsonString;
+    }
 }

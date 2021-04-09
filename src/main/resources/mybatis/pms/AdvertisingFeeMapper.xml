@@ -137,4 +137,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from pms_advertising_fee where month =#{month} and site=#{site}
     </delete>
 
+    <update id="updateProductinfo2Record">
+        update pms_advertising_fee af INNER JOIN cpd_advertising_activity aa on aa.activity=af.campaign INNER JOIN pms_productinfo_relation pr
+        on pr.sku=af.standard_sku and af.site=#{site} and af.month=#{month} and pr.area_code=#{areaCode}
+         set af.principal=pr.principal, af.spu=pr.type
+    </update>
+
 </mapper>

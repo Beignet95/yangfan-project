@@ -103,4 +103,6 @@ public interface StorageRecordMapper
      * @return
      */
     List<StorageRecord> selectAsinVolumnList(StorageRecord storageRecord);
+
+    int updateProductinfo2Record(Date month, String account,String areaCode);
 }

@@ -10,15 +10,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="principal"    column="principal"    />
         <result property="type"    column="type"    />
         <result property="sku"    column="sku"    />
+        <result property="areaCode"    column="area_code"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
-        <result property="site"    column="site"    />
     </resultMap>
 
     <sql id="selectProductinfoRelationVo">
-        select id, asin, principal, type, sku, create_by, create_time, update_by, update_time, site from pms_productinfo_relation
+        select id, asin, principal, type, sku, area_code, create_by, create_time, update_by, update_time from pms_productinfo_relation
     </sql>
 
     <select id="selectProductinfoRelationList" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">
@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null  and principal != ''"> and principal = #{principal}</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
             <if test="sku != null  and sku != ''"> and sku = #{sku}</if>
-            <if test="site != null  and site != ''"> and site = #{site}</if>
+            <if test="areaCode != null  and areaCode != ''"> and area_code = #{areaCode}</if>
         </where>
         order by id desc
     </select>
@@ -45,22 +45,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null and principal != ''">principal,</if>
             <if test="type != null and type != ''">type,</if>
             <if test="sku != null and sku != ''">sku,</if>
+            <if test="areaCode != null">area_code,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-            <if test="site != null">site,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="asin != null and asin != ''">#{asin},</if>
             <if test="principal != null and principal != ''">#{principal},</if>
             <if test="type != null and type != ''">#{type},</if>
             <if test="sku != null and sku != ''">#{sku},</if>
+            <if test="areaCode != null">#{areaCode},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-            <if test="site != null">#{site},</if>
         </trim>
     </insert>
 
@@ -71,11 +71,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null and principal != ''">principal = #{principal},</if>
             <if test="type != null and type != ''">type = #{type},</if>
             <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="areaCode != null">area_code = #{areaCode},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="site != null">site = #{site},</if>
         </trim>
         where id = #{id}
     </update>
@@ -95,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
     <select id="selectProductinfoRelationByOnlyCondition" parameterType="ProductinfoRelation" resultMap="ProductinfoRelationResult">
         <include refid="selectProductinfoRelationVo"/>
-        where asin = #{asin} and sku = #{sku}
+        where asin = #{asin} and sku = #{sku} and area_code=#{areaCode}
     </select>
 
     <!-- 此mybatis映射sql是由系统生成的，需根据业务情况，保留onlyCondition -->
@@ -106,12 +106,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="principal != null and principal != ''">principal = #{principal},</if>
             <if test="type != null and type != ''">type = #{type},</if>
             <if test="sku != null and sku != ''">sku = #{sku},</if>
+            <if test="areaCode != null and areaCode != ''">area_code = #{areaCode},</if>
         </trim>
-        where asin = #{asin} and sku = #{sku}
+        where asin = #{asin} and sku = #{sku} and area_code=#{areaCode}
     </update>
 
-    <select id="selectMskuProductinfoRelationVoList" resultType="MskuProductinfoRelationVo">
+    <select id="selectMskuProductinfoRelationVoList" resultType="MskuProductinfoRelationVo" parameterType="String">
         SELECT pr.sku,pr.principal,pr.type,am.msku from pms_productinfo_relation pr inner JOIN pms_asin_msku am on pr.asin=am.asin
+        <where>
+        <if test="areaCode != areaCode  and areaCode != ''"> and pr.area_code = #{areaCode}</if>
+        </where>
     </select>
 
     <select id="selectPasinProductinfoRelationVoList" resultType="PasinProductinfoRelationVo">

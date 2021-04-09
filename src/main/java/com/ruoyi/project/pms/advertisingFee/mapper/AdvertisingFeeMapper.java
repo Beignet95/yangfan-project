@@ -87,4 +87,12 @@ public interface AdvertisingFeeMapper
      * @return
      */
     int deleteAdvertisingFeeByTypeAndSite(Date month, String site);
+
+    /**
+     * 更新平广告费用所关联的产品信息
+     * @param month
+     * @param site
+     * @return
+     */
+    int updateProductinfo2Record(Date month, String site,String areaCode);
 }
